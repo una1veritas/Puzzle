@@ -4,34 +4,39 @@ Created on 2019/09/22
 @author: Sin Shimozono
 '''
 import curses
-
+from curses import ascii
 
 def main(stdscr):
     stdscr.clear()
     stdscr.nodelay(True)
     stdscr.refresh()
+    curses.curs_set(0)
     posx = 0
     posy = 1
     prevx = posx
     prevy = posy
+    character = '@'
     while True:
         ch = stdscr.getch()            # scan a pressed key 
         if ch != -1 :
             prevx = posx
             prevy = posy
-            if ch == ord('Q') or ch == ord('q') :
-                break
-            elif ch == curses.KEY_UP :
+            if ch == curses.KEY_UP :
                 posy = max(1, posy-1)
             elif ch == curses.KEY_DOWN :
-                posy = min(24, posy+1)
+                posy = min(23, posy+1)
             elif ch == curses.KEY_LEFT :
                 posx = max(0, posx-1)
             elif ch == curses.KEY_RIGHT :
-                posx = min(80, posx+1)
-            stdscr.addstr(0,0,str(posx)+' '+str(posy))
-            stdscr.addstr(prevy, prevx, '   ')
-            stdscr.addstr(posy, posx, str(ch))
+                posx = min(79, posx+1)
+            elif ch == ord('Q') or ch == ord('q') :
+                break
+            
+            stdscr.addstr(0,0,"posx = {0}, posy = {1}".format(posx, posy))
+            stdscr.addstr(prevy, prevx, ' ')
+            if curses.ascii.isprint(chr(ch)) :
+                character = chr(ch)
+            stdscr.addstr(posy, posx, character)
             stdscr.refresh()
 
 if __name__ == '__main__' :
