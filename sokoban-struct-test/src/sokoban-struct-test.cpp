@@ -16,60 +16,54 @@ typedef uint8_t uint8;
 typedef uint16_t uint16;
 typedef unsigned int uint;
 
-class Storehouse {
-private:
-	vector<uint8> map;
-	uint8 rows, columns;
+enum {
+	YUKA = 1,
+	WALL = 2,
+	GOAL = 3,
+	BOX  = 4,
+	HITO = 5,
+	NISE = 6,
+} map_elem;
 
-	typedef	vector<uint16> boxplaces;
-	boxplaces boxes;
-	uint16 personpos;
+//wmap:壁や床の位置、マップの幅を示す
+struct wmap
+{
+	int map[640];
+	int wallmap[640];
+	int wid;
+	int high;
+};
 
-public:
-	enum {
-		floor = 0,
-		wall = 1,
-		dest = 2,
-		box = 4,
-		person = 8,
-	};
+//positions:人と箱の位置を示す
+typedef int positions[20];
 
-	Storehouse(const uint r, const uint c, const char str[]) :
-	rows(r), columns(c), personpos(0) {
-		for(int i = 0; str[i]; ++i) {
-			switch(str[i]) {
-			case '#':
-				map.push_back(wall);
-				break;
-			case '.':
-				map.push_back(floor);
-				break;
-			case '@':
-				map.push_back(dest);
-				break;
-			case 'b':
-			case 'B':
-				map.push_back(box);
-				break;
-			case 'p':
-			case 'P':
-				map.push_back(person);
-				break;
-			}
-		}
-		if ( map.size() < r*c ) {
-			cerr << "map string is not long enough." << endl;
-		}
-		for(uint i = 0; i < map.size(); ++i) {
-			if (map[i] == box)
-				boxes.push_back(i);
-			if (map[i] == person)
-				personpos = i;
-		}
-	}
+//moves:動きの記録
+struct moves
+{
+	positions move[100];
+	positions ban[100];
+	int length;
+	int num;
+	int banlen;
 };
 
 int main() {
+
+	wmap mmap = {{
+	WALL,WALL,WALL,WALL,WALL,WALL,
+	WALL,WALL,WALL,GOAL,GOAL,WALL,
+	WALL,WALL,WALL,GOAL,GOAL,WALL,
+	WALL,WALL,YUKA,YUKA,GOAL,WALL,
+	WALL,YUKA,YUKA,YUKA,GOAL,WALL,
+	WALL,YUKA,YUKA,YUKA,WALL,WALL,
+	WALL,YUKA,YUKA,YUKA,WALL,WALL,
+	WALL,YUKA,YUKA,YUKA,WALL,WALL,
+	WALL,YUKA,YUKA,YUKA,WALL,WALL,
+	WALL,WALL,YUKA,YUKA,WALL,WALL,
+	WALL,WALL,WALL,WALL,WALL,WALL
+	},{-1},6,11};
+	moves mmove = {{{25,21,26,32,38,44,50}},{{-1}},0,7,0};
+
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
 	return 0;
 }
