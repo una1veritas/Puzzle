@@ -12,11 +12,8 @@
 
 using namespace std;
 
-typedef int8_t int8;
-typedef uint8_t uint8;
-typedef uint16_t uint16;
-typedef int16_t int16;
 typedef unsigned int uint;
+typedef int8_t int8;
 
 enum {
 	YUKA = 1,
@@ -88,6 +85,7 @@ public:
 		places.resize(mvs.num);
 		for (int i = 0; i < places.size(); ++i)
 			places[i] = mvs.move[0][i];
+		std::sort(places.begin() + 1, places.end());
 	}
 
 	int8 operator()(int col, int row) const {
@@ -139,6 +137,19 @@ public:
 		out << ") ";
 		return out;
 	}
+};
+
+struct sokomoves {
+	sokomap & smap;
+	vector<vector<int> > moves;
+	vector<vector<int> > banned;
+
+public:
+	sokomoves(sokomap & map) : smap(map) {
+		moves.push_back(smap.placement());
+	}
+
+	int boxcount() { return smap.boxcount(); }
 };
 
 int main() {
