@@ -24,7 +24,7 @@ enum {
 	NISE = 6,
 };
 
-struct wmap
+struct _wmap
 {
 	int map[640];
 	int wallmap[640];
@@ -32,12 +32,12 @@ struct wmap
 	int high;
 };
 
-typedef int positions[20];
+typedef int _positions[20];
 
-struct moves
+struct _moves
 {
-	positions move[100];
-	positions ban[100];
+	_positions move[100];
+	_positions ban[100];
 	int length;
 	int num;
 	int banlen;
@@ -47,63 +47,103 @@ struct sokomap {
 private:
 	int width;
 	int height;
-	vector<int8> room;
-	vector<int> places;
+	vector<int8> wallmap;
+	vector<int> positions;
 
 public:
-	sokomap(const wmap & map) : width(map.wid), height(map.high) {
+	sokomap(const _wmap & map) : width(map.wid), height(map.high) {
 		int h = 0, w = 0;
-		room.resize(width*height);
-		places.clear();
+		wallmap.resize(width*height);
+		positions.clear();
 		for(int c = 0; c < width * height; ++c) {
 			h = c % width; w = c / width;
 			switch (map.map[c]) {
 			case WALL:
 			case GOAL:
-				room[c] = map.map[c];
+				wallmap[c] = map.map[c];
 				break;
 			case BOX:
-				room[c] = YUKA;
-				places.push_back(c);
+				wallmap[c] = YUKA;
+				positions.push_back(c);
 				break;
 			case HITO:
-				room[c] = YUKA;
-				places[0] = c;
+				wallmap[c] = YUKA;
+				positions[0] = c;
 				break;
 			default:
-				room[c] = YUKA;
+				wallmap[c] = YUKA;
 				break;
 			}
 		}
 	}
 
-	sokomap(const wmap & map, const moves & mvs) : sokomap(map) {
-		arrange(mvs);
+	sokomap(const _wmap & map, const _moves & mvs) : sokomap(map) {
+		place(mvs);
 	}
 
-	void arrange(const moves &mvs) {
-		places.resize(mvs.num);
-		for (int i = 0; i < places.size(); ++i)
-			places[i] = mvs.move[0][i];
-		std::sort(places.begin() + 1, places.end());
+	sokomap(const char mapstr[]) {
+		int c, r;
+		for( c = 0; mapstr[c]; ++c) {
+			if ( mapstr[c] == '\n' )
+				break;
+		}
+		width = c;
+		positions.push_back(0);
+		const char * p = mapstr;
+		for (r = 0; ; ++r) {
+			++height;
+			for(c = 0; c < width; ++c) {
+				switch(*p++) {
+				case '#':
+					wallmap.push_back(WALL);
+					break;
+				case '.':
+					wallmap.push_back(YUKA);
+					break;
+				case '+':
+					wallmap.push_back(GOAL);
+					break;
+				case '@':
+					wallmap.push_back(YUKA);
+					positions.push_back(width * r + c);
+					break;
+				case 'p':
+					wallmap.push_back(YUKA);
+					positions[0] = width * r + c;
+					break;
+				}
+			}
+			if ( *p == '\n' )
+				p++; // skip '\n'
+			if ( *p == 0 ) {
+				break;
+			}
+		}
+	}
+
+	void place(const _moves &mvs) {
+		positions.resize(mvs.num);
+		for (int i = 0; i < positions.size(); ++i)
+			positions[i] = mvs.move[0][i];
+		std::sort(positions.begin() + 1, positions.end());
 	}
 
 	int8 operator()(int col, int row) const {
 		int cellnum = row*width + col;
-		if (room[cellnum] == WALL || room[cellnum] == GOAL)
-			return room[cellnum];
-		if (places[0] == cellnum)
+		if (wallmap[cellnum] == WALL || wallmap[cellnum] == GOAL)
+			return wallmap[cellnum];
+		if (positions[0] == cellnum)
 			return HITO;
-		for(int i = 1; i < places.size(); ++i) {
-			if (places[i] == cellnum)
+		for(int i = 1; i < positions.size(); ++i) {
+			if (positions[i] == cellnum)
 				return BOX;
 		}
 		return YUKA;
 	}
 
 	int cellcount() const { return height * width; }
-	int boxcount() const { return places.size() - 1; }
-	vector<int> & placement() { return places; }
+	int boxcount() const { return positions.size() - 1; }
+	vector<int> & placement() { return positions; }
 
 	friend ostream & operator<<(ostream & out, const sokomap & map) {
 		out << "sokomap(" << endl;
@@ -141,12 +181,11 @@ public:
 
 struct sokomoves {
 	sokomap & smap;
-	vector<vector<int> > moves;
-	vector<vector<int> > banned;
+	vector<vector<int> > placements;
 
 public:
 	sokomoves(sokomap & map) : smap(map) {
-		moves.push_back(smap.placement());
+		placements.push_back(smap.placement());
 	}
 
 	int boxcount() { return smap.boxcount(); }
@@ -154,7 +193,7 @@ public:
 
 int main() {
 
-	wmap mmap = {{
+	_wmap mmap = {{
 	WALL,WALL,WALL,WALL,WALL,WALL,
 	WALL,WALL,WALL,GOAL,GOAL,WALL,
 	WALL,WALL,WALL,GOAL,GOAL,WALL,
@@ -167,13 +206,30 @@ int main() {
 	WALL,WALL,YUKA,YUKA,WALL,WALL,
 	WALL,WALL,WALL,WALL,WALL,WALL
 	},{-1},6,11};
-	moves mmove = {{{25,21,26,32,38,44,50}},{{-1}},0,7,0};
+	_moves mmove = {{{25,21,26,32,38,44,50}},{{-1}},0,7,0};
+
+	char soko2[] =
+			"######\n"
+			"###++#\n"
+			"###++#\n"
+			"##.@+#\n"
+			"#p@.+#\n"
+			"#.@.##\n"
+			"#.@.##\n"
+			"#.@.##\n"
+			"#.@.##\n"
+			"##..##\n"
+			"######";
 
 	sokomap smap(mmap, mmove);
-	cout << "Hello, " << endl;
+	sokomoves mymoves(smap), bannedmoves(smap);
+	sokomap map2(soko2);
 
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
 	cout << smap << endl;
-	//cout << smoves << endl;
+	//cout << mymoves << endl;
+	cout << endl << endl;
+	cout << map2 << endl;
+
 	return 0;
 }
