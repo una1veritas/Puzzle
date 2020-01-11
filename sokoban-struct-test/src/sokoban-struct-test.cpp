@@ -113,7 +113,7 @@ public:
 					break;
 				}
 			}
-			if ( *p == '\n' )
+			if ( isspace(*p) )
 				p++; // skip '\n'
 			if ( *p == 0 ) {
 				break;
@@ -188,7 +188,31 @@ public:
 		placements.push_back(smap.placement());
 	}
 
-	int boxcount() { return smap.boxcount(); }
+	sokomoves(sokomap & map, const _moves & mov) : smap(map) {
+		placements.push_back(vector<int>(mov.num));
+		for(int i = 0; i < mov.num; ++i)
+			placements.back()[i] = mov.move[0][i];
+	}
+
+	const vector<int> & operator[](const int & i) const {
+		return placements[i];
+	}
+
+	int boxcount() const { return smap.boxcount(); }
+	int person() const { return placements.back().front(); }
+	vector<int> & placement() { return placements.back(); }
+
+	friend ostream & operator<<(ostream & out, const sokomoves & moves) {
+		for(int v = 0; v < moves.placements.size(); ++v) {
+			out << "[";
+			out << moves[v][0] << "; ";
+			for(int i = 1; i < moves[v].size(); ++i) {
+				out << moves[v][i] << ", ";
+			}
+			out << "], ";
+		}
+		return out;
+	}
 };
 
 int main() {
@@ -208,7 +232,9 @@ int main() {
 	},{-1},6,11};
 	_moves mmove = {{{25,21,26,32,38,44,50}},{{-1}},0,7,0};
 
-	char soko2[] =
+	sokomap smap(mmap, mmove);
+	sokomoves mymoves(smap, mmove), bannedmoves(smap);
+	sokomap map2(
 			"######\n"
 			"###++#\n"
 			"###++#\n"
@@ -219,15 +245,11 @@ int main() {
 			"#.@.##\n"
 			"#.@.##\n"
 			"##..##\n"
-			"######";
-
-	sokomap smap(mmap, mmove);
-	sokomoves mymoves(smap), bannedmoves(smap);
-	sokomap map2(soko2);
+			"######");
 
 	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
 	cout << smap << endl;
-	//cout << mymoves << endl;
+	cout << mymoves << endl;
 	cout << endl << endl;
 	cout << map2 << endl;
 
