@@ -192,14 +192,20 @@ public:
 		placements.push_back(vector<int>(mov.num));
 		for(int i = 0; i < mov.num; ++i)
 			placements.back()[i] = mov.move[0][i];
+		std::sort(placements.begin() + 1, placements.end());
 	}
 
 	const vector<int> & operator[](const int & i) const {
 		return placements[i];
 	}
 
+	vector<int> & operator[](const int & i) {
+		return placements[i];
+	}
+
 	int boxcount() const { return smap.boxcount(); }
-	int person() const { return placements.back().front(); }
+	int & person() const { return placements.back().front(); }
+	int & box(const int & index) const { return placements.back()[index]; }
 	vector<int> & placement() { return placements.back(); }
 
 	friend ostream & operator<<(ostream & out, const sokomoves & moves) {
