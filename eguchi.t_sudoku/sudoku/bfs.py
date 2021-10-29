@@ -81,18 +81,59 @@ def block(value, x, y, i):
             for _y in range(ybase, ybase + 3)
                 for _x in range(xbase, xbase + 3))
 
-value = value_from_grid('003020600900305001001806400008102900700000008006708200002609500800203009005010300')
-for _y in range(0, 9):
-    for _x in range(0, 9):
-        print(value[_y][_x], end = '')
-    print('\n')
-print('\n')
-solver(value)
-print(len(child))
+class Sudoku():
+    def __init__(self, grid):
+        if isinstance(grid, str) :
+            if len(grid) != 81 :
+                raise ValueError('digit string has illegal length '+str(len(grid)))
+            self.values = [int(d) if d.isdigit() else int('0') for d in grid]
+            return
+        elif isinstance(grid, list) :
+            if len(grid) == 81 :
+                self.values = [int(d) for d in grid]
+                return
+            elif len(grid) == 9 :
+                self.values = list()
+                for r in grid:
+                    if len(r) != 9 :
+                        raise ValueError('nested list has illegal number of elements '+str(len(r)))
+                    self.values += r
+                return
+            raise ValueError('list has illegal number of elements '+str(len(grid)))
+        else:
+            raise ValueError('illegal arguments for constructor.')
+            
+            
+    def __str__(self):
+        tmp = ''
+        for r in range(9):
+            for c in range(9):
+                tmp += str(self.values[r*9+c])
+                if c % 3 == 2:
+                    tmp += '|'
+                else:
+                    tmp += ' '
+            tmp += '\n'
+            if r % 3 == 2 :
+                tmp += '-----+-----+-----+\n'
+        return tmp
+    
+    def issolved(self):
+        return 0 not in self.values
+    
+#    def children(self):
+        
 
-for _y in range(0, 9):
-    for _x in range(0, 9):
-        print(value[_y][_x], end = '')
-    print('\n')
+sudoku = Sudoku('003020600900305001001806400008102900700000008006708200002609500800203009005010300')
+print(sudoku)
+
+print(sudoku.issolved())
+
+#solver(value)
+frontier = list()
+frontier.append(sudoku)
+while any([not s.issolved() for s in frontier]):
+    print(frontier)
+    break
 
 
