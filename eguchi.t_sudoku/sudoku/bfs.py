@@ -1,114 +1,19 @@
-#テキストを二次元配列に変換する関数
-def value_from_grid(grid):
-    value = []
-    num = "123456789"
-    chars = [c for c in grid if c in num or c in '0.']
-    assert len(chars) == 81
-    #入力文字列をint型にする
-    grid_int = map(lambda x: int(x) if x != "." else 0, chars)
-
-    count = 0
-    row = []
-
-    #入力文字列を9*9に分割する
-    for i in grid_int:
-        row.append(i)
-        count += 1
-        if count % 9 == 0:
-            value.append(row)
-            row = []
-    return value
-
-child = []
-x = 0
-y = 0
-i = 0
-
-def solver(value):
-    
-    #bfsにおけるnode = value
-    #最後まで解き終わっていればループ終了
-    if answer(value):
-        return True
-    
-    #左上から空きマスに数字を1つ入れていく
-    for y in range(9):
-        for x in range(9):
-            if value[y][x] == 0:
-                for i in range(1, 9):
-                    #数字を入れた盤面をチェックし制約を満たすとき、その盤面を子とする
-                    if check(value, x, y, i):
-                        value[y][x] = i
-                        child.append(value)
-                        
-    #子が空でないとき先頭の子を取り出し、それをnodeとして再帰する
-    if len(child) != 0:
-        solver(child.pop(0))
-
-
-#盤面に空きマスが無ければtrueを返す
-def answer(value):
-    x = y = 0
-
-    for y in range(9):
-        for x in range(9):
-            if value[y][x] == 0:
-                return False
-    return True
-
-#行,列,グループに対して制約を満たすかチェック
-def check(value, x, y, i):
-    if row(value, y, i) and column(value, x, i) and block(value, x, y, i):
-        return True
-    return False
-
-#y行に対して制約を満たすかチェック
-def row(value, y, i):
-    return all(True if i != value[y][_x] else False for _x in range(9))
-
-#x列に対して制約を満たすかチェック
-def column(value, x, i):
-    return all(True if i != value[_y][x] else False for _y in range(9))
-
-#グループに対して制約を満たすかチェック
-def block(value, x, y, i):
-    #所属するブロックの一番左上のマスの座標を求める
-    xbase = (x // 3) * 3
-    ybase = (y // 3) * 3
-
-    #求めた座標のx,y軸を+3した範囲でチェックするとブロック内でのチェックが出来る
-    return all(True if i != value[_y][_x] else False
-            for _y in range(ybase, ybase + 3)
-                for _x in range(xbase, xbase + 3))
 
 class Sudoku():
     def __init__(self, grid):
         if isinstance(grid, str) :
-            if len(grid) != 81 :
-                raise ValueError('digit string has illegal length '+str(len(grid)))
-            self.values = [int(d) if d.isdigit() else int('0') for d in grid]
-            return
-        elif isinstance(grid, list) :
-            if len(grid) == 81 :
-                self.values = [int(d) for d in grid]
-                return
-            elif len(grid) == 9 :
-                self.values = list()
-                for r in grid:
-                    if len(r) != 9 :
-                        raise ValueError('nested list has illegal number of elements '+str(len(r)))
-                    self.values += r
-                return
+            grid = [int(d) for d in grid]
+        if not isinstance(grid, list) :
+            raise TypeError('illegal arguments for constructor.')
+        if len(grid) != 81 :
             raise ValueError('list has illegal number of elements '+str(len(grid)))
-        else:
-            raise ValueError('illegal arguments for constructor.')
-            
+        self.values = tuple([d for d in grid])            
             
     def __str__(self):
         tmp = ''
         for r in range(9):
             for c in range(9):
-                tmp += str(self.values[r*9+c])
+                tmp += str(self.at(r, c))
                 if c % 3 == 2:
                     tmp += '|'
                 else:
@@ -118,22 +23,105 @@ class Sudoku():
                 tmp += '-----+-----+-----+\n'
         return tmp
     
+    def __hash__(self):
+        hashval = 0
+        for bval in self.values:
+            hashval = hashval*9 + bval
+        return hashval
+    
+    def __eq__(self, another):
+        if isinstance(another, Sudoku) :
+            for i in range(len(self.values)):
+                if self.values[i] != another.values[i] : return False
+            return True
+        return False 
+    
+    def at(self, row, col):
+        #return self.values[self.index(row, col)]
+        return self.values[row*9+col]
+    
+    def index(self, row, col):
+        return row*9+col
+    
     def issolved(self):
         return 0 not in self.values
     
-#    def children(self):
+    def rowboxes(self, row, col = 0):
+        if 0 <= row < 9 and 0 <= col < 9:
+            for c in range(9):
+                yield (row, c)
+
+    def columnboxes(self, row = 0, col = 0):
+        if 0 <= row < 9 and 0 <= col < 9:
+            for r in range(9):
+                yield (r, col)      
+    
+    def blockboxes(self, row, col):
+        if 0 <= row < 9 and 0 <= col < 9:
+            baserow = (row // 3)*3
+            basecol = (col // 3)*3
+            for r in range(baserow, baserow+3):
+                for c in range(basecol, basecol+3):
+                    yield (r, c)
+
+    def check(self, row, col, num):
+        if num == 0 : return True
+        for r,c in self.rowboxes(row):
+            if self.at(r,c) == num : return False
+        for r,c in self.columnboxes(col=col):
+            if self.at(r,c) == num : return False
+        for r,c in self.blockboxes(row, col):
+            if self.at(r,c) == num : return False
+        return True
+
+    def possible(self, row, col):
+        if self.at(row,col) != 0 : return set()
+        numset = set([1,2,3,4,5,6,7,8,9])
+        for r,c in self.rowboxes(row):
+            numset.discard(self.at(r,c))
+        for r,c in self.columnboxes(col=col):
+            numset.discard(self.at(r,c))
+        for r,c in self.blockboxes(row, col):
+            numset.discard(self.at(r,c))
+        return numset
+    
+    def fillsomebox(self):
+        filled = list()
+        for r, c in [(r,c) for r in range(9) for c in range(9)]:
+            for i in self.possible(r,c):
+                #print(r,c,i,self.check(r,c,i))
+                filled.append(self.filledwith(r,c,i))
+        return filled
+    
+    def filledwith(self, row, col, num):
+        newvalues = list(self.values)
+        newvalues[self.index(row, col)] = num
+        return Sudoku(newvalues)
         
+    def level(self):
+        return [box != 0 for box in self.values].count(True)
 
 sudoku = Sudoku('003020600900305001001806400008102900700000008006708200002609500800203009005010300')
 print(sudoku)
 
-print(sudoku.issolved())
-
+#print([(r,c) for r, c in sudoku.blockboxes(6,5)])
 #solver(value)
 frontier = list()
+#done = set()
 frontier.append(sudoku)
-while any([not s.issolved() for s in frontier]):
-    print(frontier)
-    break
+level = 0
+solved = None
+while solved == None :
+    first = frontier.pop(0)
+    if first.issolved():
+        solved = first
+        break
+    #done.add(first)
+    if first.level() > level :
+        level = first.level()
+        print('level {}, frontier size = {}, hash = {}'.format(first.level(), len(frontier), hex(hash(first))))
+        print(first)
+    nextgen = first.fillsomebox()
+    frontier.extend(nextgen)
 
-
+print(solved)
