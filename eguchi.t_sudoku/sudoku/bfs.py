@@ -15,15 +15,15 @@ class Sudoku():
     
     def __str__(self):
         tmp = ''
-        for r in range(9):
-            for c in range(9):
+        for r in range(self.size):
+            for c in range(self.size):
                 tmp += str(self.at(r, c) if self.at(r, c) != 0 else ' ')
-                if c % 3 == 2:
+                if c % self.factor == self.factor - 1:
                     tmp += '|'
                 else:
                     tmp += ' '
             tmp += '\n'
-            if r % 3 == 2 :
+            if r % self.factor == self.factor - 1 :
                 tmp += '-----+-----+-----+\n'
         return tmp
     
@@ -78,7 +78,7 @@ class Sudoku():
             cand.discard(self.at(r,c))
         return cand
     
-    def fillout(self):
+    def tighten(self):
         counter = 0
         fixable = list()
         while True:
@@ -103,8 +103,8 @@ class Sudoku():
     
     def fillsomecell(self):
         filled = list()
-        for r in range(9):
-            for c in range(9):
+        for r in range(self.factor):
+            for c in range(self.factor):
                 for i in self.allowednumbers(r,c):
                     s = Sudoku(self.cells)
                     s.put(r,c,i)
@@ -112,7 +112,7 @@ class Sudoku():
         return filled
 
     def filllevel(self):
-        return sum([1 if self.cells[n] != 0 else 0 for n in self.values])
+        return sum([1 if n != 0 else 0 for n in self.cells])
     
     def solve(self):
         solved = None
@@ -122,9 +122,9 @@ class Sudoku():
         while len(frontier) > 0 :
             counter += 1
             sd = frontier.pop()
-            print(sd)
-            print(counter, len(frontier))
-            if sd.fillout() :
+            if sd.tighten() :
+                print(sd.filllevel())
+                print(sd)
                 if sd.issolved():
                     solved = sd
                     break
