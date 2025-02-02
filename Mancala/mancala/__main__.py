@@ -1,17 +1,15 @@
-
 from typing import List, Optional, Type
-from board import Board
+
+from board import Board2players
 from player import Player
-import math
-import time
-from datetime import datetime
+
 
 class Game:
     def __init__(
         self,
         player_classes: List[Type[Player]],
         init_pieces_per_grid: int = 3,
-        grids_per_player: int = 3,
+        grids_per_player: int = 4,
         grids_between_players: int = 1,
         max_turns: int = 100,
     ):
@@ -19,16 +17,14 @@ class Game:
             raise ValueError("Players should be more than 2.")
         players = [player_class(player_id=i) for i, player_class in enumerate(player_classes)]
         players_num = len(players)
-        self.NUM_OF_PLAYERS = players_num
+        self.players_num = players_num
         self.init_pieces_per_grid = init_pieces_per_grid
         self.grids_per_player = grids_per_player
         self.grids_between_players = grids_between_players
         self.max_turns = max_turns
-        self.board = Board(
-            players_num=players_num,
+        self.board = Board2players(
             init_pieces_per_grid=init_pieces_per_grid,
             grids_per_player=grids_per_player,
-            grids_between_players=grids_between_players,
         )
         self.players = players
 
@@ -58,16 +54,17 @@ class Game:
 
 if __name__ == "__main__":
     from player import Human, MinMaxPlayer, RandomPlayer
+    import time
+    from datetime import datetime
     
-    swatch_start = time.time()
     print(datetime.now())
+    swatch_start = time.time()
     game = Game(player_classes=[MinMaxPlayer, MinMaxPlayer], \
-                 init_pieces_per_grid = 1, \
-                 grids_per_player = 6, \
-                 grids_between_players = 1 )
-
+                init_pieces_per_grid=2, \
+                grids_per_player=6
+                )
     winner = game.run()
     swatch_stop = time.time()
     print(datetime.now())
     print(f"winner: {winner}")
-    print( math.ceil((swatch_stop - swatch_start)*1000)/1000 )
+    print(swatch_stop - swatch_start)

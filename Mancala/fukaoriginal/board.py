@@ -3,22 +3,22 @@ from typing import Dict
 INITIAL_PIECES_FOR_GRIDS_BETWEEN_PLAYERS = 0
 
 
-class Board:
+class Board2players:
     def __init__(
         self,
-        players_num: int = 2,
+        NUMBER_OF_PLAYERS: int = 2,
         init_pieces_per_grid: int = 3,
         grids_per_player: int = 3,
-        grids_between_players: int = 1,
+        STORES_PER_PLAYER: int = 1,
     ):
-        self.players_num = players_num
+        self.players_num = NUMBER_OF_PLAYERS
         self.init_pieces_per_grid = init_pieces_per_grid
         self.grids_per_player = grids_per_player
-        self.grids_between_players = grids_between_players
+        self.grids_between_players = STORES_PER_PLAYER
         self.data = (
             [init_pieces_per_grid] * grids_per_player
-            + [INITIAL_PIECES_FOR_GRIDS_BETWEEN_PLAYERS] * grids_between_players
-        ) * players_num
+            + [INITIAL_PIECES_FOR_GRIDS_BETWEEN_PLAYERS] * STORES_PER_PLAYER
+        ) * NUMBER_OF_PLAYERS
 
     def move(self, index: int) -> bool:
         """Move the pieces which are in the grid of the given index.
