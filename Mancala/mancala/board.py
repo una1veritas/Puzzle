@@ -4,7 +4,7 @@ class Board2players:
     INITIAL_STONES_IN_SOTRE = 0
     NUMBER_OF_PLAYERS: int = 2
     STORES_PER_PLAYER : int = 1
-
+    
     def __init__(
         self,
         init_pieces_per_grid : int = 3,
@@ -37,6 +37,12 @@ class Board2players:
             hashes.append(hash(tuple(self.data[start_pit: start_pit + self.grids_per_player]))) 
         return hash(tuple(hashes))
 
+    def signature(self):
+        nums = list()
+        for i in range(self.NUMBER_OF_PLAYERS) :
+            start_pit = self.get_player_start_index(i)
+            nums += self.data[start_pit: start_pit + self.grids_per_player]
+        return sorted(nums,reverse=True)[:self.grids_per_player]
     
     def move(self, index: int) -> bool:
         """Move the pieces which are in the grid of the given index.

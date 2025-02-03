@@ -3,10 +3,10 @@ from typing import Dict
 
 from board import Board2players
 
-
 def search_with_min_max(player_id: int, board: Board2players) -> Dict[str, int]:
     dp = {}
     original_player_id = player_id
+    search_with_min_max.max_signature = [0] #関数内の静的変数
 
     def _evaluate(player_id: int, board: Board2players) -> Dict[str, int]:
         value = dp.get((board, player_id)) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
@@ -39,7 +39,12 @@ def search_with_min_max(player_id: int, board: Board2players) -> Dict[str, int]:
             result = {"action": best_action, "value": eval_tables[best_action]}
 
         #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
-        dp[(board, player_id)] = result
+        board_signature = board.signature()
+        if board_signature < [13] :
+            dp[(board, player_id)] = result
+        if board_signature > search_with_min_max.max_signature :
+            search_with_min_max.max_signature = board_signature
+            print('max signature = ', search_with_min_max.max_signature)
         return result
 
     return _evaluate(player_id=player_id, board=board)
