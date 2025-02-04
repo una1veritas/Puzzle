@@ -1,6 +1,6 @@
 import random
 from abc import ABCMeta, abstractmethod
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from algorithm import search_with_min_max
 from board import Board2players
@@ -48,6 +48,6 @@ class MinMaxPlayer(Player):
     def act(self, board: Board2players) -> int:
         # if board.players_num > 2:
         #     raise Exception("When players are more than 3, Min max algorithm takes a lot of time to run.")
-        result: Dict[str, int] = search_with_min_max(player_id=self.player_id, board=board)
-        print(f"Evaluation: {result['value']}")
-        return result["action"]
+        result : Tuple[str, int] = search_with_min_max(player_id=self.player_id, board=board)
+        print(f"Evaluation: {result[1]}")
+        return result[0]
