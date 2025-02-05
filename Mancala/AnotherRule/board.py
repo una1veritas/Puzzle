@@ -3,22 +3,22 @@ from typing import Dict
 INITIAL_PIECES_FOR_GRIDS_BETWEEN_PLAYERS = 0
 
 
-class Board2players:
+class Board:
     def __init__(
         self,
-        NUMBER_OF_PLAYERS: int = 2,
+        players_num: int = 2,
         init_pieces_per_grid: int = 3, #それぞれの枠に入った玉の数（初期配置）
         grids_per_player: int = 3, #枠の数
-        STORES_PER_PLAYER: int = 1,
+        grids_between_players: int = 1,
     ):
-        self.NUM_OF_PLAYERS = NUMBER_OF_PLAYERS
+        self.NUM_OF_PLAYERS = players_num
         self.init_pieces_per_grid = init_pieces_per_grid
         self.grids_per_player = grids_per_player
-        self.grids_between_players = STORES_PER_PLAYER
+        self.grids_between_players = grids_between_players
         self.data = (
             [init_pieces_per_grid] * grids_per_player
-            + [INITIAL_PIECES_FOR_GRIDS_BETWEEN_PLAYERS] * STORES_PER_PLAYER
-        ) * NUMBER_OF_PLAYERS
+            + [INITIAL_PIECES_FOR_GRIDS_BETWEEN_PLAYERS] * grids_between_players
+        ) * players_num
 
     # プレイヤー間のグリッドのピース数を取得
     def get_pieces_in_between_grids(self, player_id: int) -> int:

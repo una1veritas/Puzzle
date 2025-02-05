@@ -1,17 +1,30 @@
+from copy import deepcopy
 from typing import Dict
 
+<<<<<<< HEAD:Mancala/mancala/board.py
 class Board2players:
     INITIAL_STONES_IN_SOTRE = 0
     NUMBER_OF_PLAYERS: int = 2
     STORES_PER_PLAYER : int = 1
     
+=======
+INITIAL_PIECES_FOR_GRIDS_BETWEEN_PLAYERS = 0
+
+
+class Board2:
+    NUM_OF_PLAYERS: int = 2
+>>>>>>> parent of dc87796 (snap shot):Mancala/fuka/board.py
     def __init__(
         self,
-        init_pieces_per_grid : int = 3,
-        grids_per_player : int = 3
+        init_pieces_per_grid: int = 3,
+        grids_per_player: int = 3,
+        grids_between_players: int = 1,
+        data : list = None
     ):
+        self.NUM_OF_PLAYERS = players_num
         self.init_pieces_per_grid = init_pieces_per_grid
         self.grids_per_player = grids_per_player
+<<<<<<< HEAD:Mancala/mancala/board.py
         self.data = (
             [init_pieces_per_grid] * grids_per_player
             + [self.INITIAL_STONES_IN_SOTRE] * self.STORES_PER_PLAYER
@@ -52,6 +65,36 @@ class Board2players:
     
     def progress_turn(self):
         self.next_player_id = (self.next_player_id + 1) % self.NUMBER_OF_PLAYERS
+=======
+        self.grids_between_players = grids_between_players
+        if data is None :
+            self.data = (
+                [init_pieces_per_grid] * grids_per_player
+                + [INITIAL_PIECES_FOR_GRIDS_BETWEEN_PLAYERS] * grids_between_players
+            ) * players_num
+        else:
+            self.data = [i for i in data]
+    
+#    def __str__(self):
+#        return "|".join([str(i) for i in self.data])
+    
+    def __eq__(self, other):
+        return self.NUM_OF_PLAYERS == other.NUM_OF_PLAYERS and \
+        self.grids_per_player == other.grids_per_player and \
+        self.grids_between_players == other.grids_between_players and \
+        self.data == other.data
+        
+    def __hash__(self):
+        mask64 = (1<<64) - 1
+        val = 0
+        for ix in range(self.NUM_OF_PLAYERS):
+            ms5bits = (val >> (64 - 5)) & 0x1f
+            val <<= 5 
+            val += self.data[ix]
+            val ^= ms5bits
+            val &= mask64
+        return val
+>>>>>>> parent of dc87796 (snap shot):Mancala/fuka/board.py
         
     def move(self, index: int) -> bool:
         """Move the pieces which are in the grid of the given index.
@@ -84,7 +127,7 @@ class Board2players:
         return (index + diff) % len(self.data)
 
     def _is_grid_between_players(self, index: int):
-        return index % (self.grids_per_player + self.STORES_PER_PLAYER) >= self.grids_per_player
+        return index % (self.grids_per_player + self.grids_between_players) >= self.grids_per_player
 
     def get_players_grids(self, player_id: int) -> Dict[int, int]:
         start_index = self.get_player_start_index(player_id=player_id)
@@ -95,7 +138,7 @@ class Board2players:
         return {index: self.data[index] for index in range(start_index, start_index + self.grids_per_player)}
 
     def get_player_start_index(self, player_id: int) -> int:
-        return player_id * (self.grids_per_player + self.STORES_PER_PLAYER)
+        return player_id * (self.grids_per_player + self.grids_between_players)
 
     def get_start_index(self) -> int:
         return self.next_player_id * (self.grids_per_player + self.STORES_PER_PLAYER)
@@ -117,6 +160,7 @@ class Board2players:
         return len(movable_grids) == 0
 
     def __str__(self):
+<<<<<<< HEAD:Mancala/mancala/board.py
         strlist = list()
         for i in range(self.NUMBER_OF_PLAYERS) :
             result = '*' if i == self.next_player_id else ' '
@@ -129,3 +173,12 @@ class Board2players:
             strlist.append(result)
         return '('+', '.join(strlist)+')'
     
+=======
+        val = ''
+        for i in range(self.NUM_OF_PLAYERS):
+            player_start_grid = self.get_player_start_index(i)
+            player_last_grid = player_start_grid + self.grids_per_player
+            val += str(self.data[player_start_grid : player_last_grid])
+            val += str(self.data[player_last_grid : player_last_grid + self.grids_between_players])
+        return val
+>>>>>>> parent of dc87796 (snap shot):Mancala/fuka/board.py

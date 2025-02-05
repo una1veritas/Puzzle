@@ -1,3 +1,4 @@
+<<<<<<< HEAD:Mancala/mancala/algorithm.py
 from copy import deepcopy
 from typing import Dict, Tuple
 
@@ -15,6 +16,25 @@ def search_with_min_max(player_id: int, board: Board2players) -> Tuple[str, int]
         result.clear()
         board.next_player_id = player_id
         value = dp.get(board, None) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
+=======
+from typing import Dict
+
+from board import Board
+
+
+def search_with_min_max(player_id: int, board: Board) -> Dict[str, int]:
+    dp = list()
+    for id in range(board.NUM_OF_PLAYERS):
+        dp.append(dict())
+        
+    original_player_id = player_id
+
+    def _evaluate(player_id: int, board: Board) -> Dict[str, int]:
+        value = dp[player_id].get(board)
+        #print("dp size = {}, {}".format(len(dp[0]), len(dp[1])))
+        #print("hash = " + str(hash(board)))
+        #print(str(board) + f", {player_id}")
+>>>>>>> parent of dc87796 (snap shot):Mancala/fuka/algorithm.py
         if value is not None:
             #value[1] += 1
             result += value
@@ -25,7 +45,11 @@ def search_with_min_max(player_id: int, board: Board2players) -> Tuple[str, int]
         threads = []
         return_values = {}
         for action in candidates.keys():
-            tmp_board = deepcopy(board)
+            tmp_board = Board(board.NUM_OF_PLAYERS, \
+                              board.init_pieces_per_grid, 
+                              board.grids_per_player, \
+                              board.grids_between_players,
+                              board.data)
             act_again = tmp_board.move(action)
             if tmp_board.does_player_win(player_id=player_id):
                 if player_id == original_player_id:
@@ -34,6 +58,7 @@ def search_with_min_max(player_id: int, board: Board2players) -> Tuple[str, int]
                     result += [action, -1]
                 break
 
+<<<<<<< HEAD:Mancala/mancala/algorithm.py
             if act_again :
                 new_player_id = player_id 
             else:
@@ -59,6 +84,13 @@ def search_with_min_max(player_id: int, board: Board2players) -> Tuple[str, int]
             eval_tables[key] = val
             
         if len(result) == 0 :
+=======
+            new_player_id = player_id if act_again else (player_id + 1) % board.NUM_OF_PLAYERS
+
+            eval_tables[action] = _evaluate(player_id=new_player_id, board=tmp_board)["value"]
+
+        if result is None:
+>>>>>>> parent of dc87796 (snap shot):Mancala/fuka/algorithm.py
             if player_id == original_player_id:
                 best_action = max(eval_tables, key=eval_tables.get)
             else:
@@ -66,6 +98,7 @@ def search_with_min_max(player_id: int, board: Board2players) -> Tuple[str, int]
 
             result += [best_action, eval_tables[best_action]]
 
+<<<<<<< HEAD:Mancala/mancala/algorithm.py
         #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
         #dp[board] = result
         board_signature = board.signature()
@@ -79,6 +112,10 @@ def search_with_min_max(player_id: int, board: Board2players) -> Tuple[str, int]
             #     del dp[key]
             # gc.collect()
         return 
+=======
+        dp[player_id][board] = result
+        return result
+>>>>>>> parent of dc87796 (snap shot):Mancala/fuka/algorithm.py
 
     # return _evaluate(player_id=player_id, board=board)
     return_val = []
@@ -87,5 +124,5 @@ def search_with_min_max(player_id: int, board: Board2players) -> Tuple[str, int]
 
 
 if __name__ == "__main__":
-    board = Board2players(grids_per_player=3, init_pieces_per_grid=3, grids_between_players=3)
+    board = Board(grids_per_player=3, init_pieces_per_grid=3, grids_between_players=3)
     print(search_with_min_max(player_id=0, board=board))

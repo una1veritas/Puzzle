@@ -1,14 +1,14 @@
 from copy import deepcopy
 from typing import Dict
 
-from board import Board2players
+from board import Board
 
 
-def search_with_min_max(player_id: int, board: Board2players) -> Dict[str, int]:
+def search_with_min_max(player_id: int, board: Board) -> Dict[str, int]:
     dp = {}
     original_player_id = player_id
 
-    def _evaluate(player_id: int, board: Board2players) -> Dict[str, int]:
+    def _evaluate(player_id: int, board: Board) -> Dict[str, int]:
         value = dp.get("|".join([str(i) for i in board.data]) + f"_{player_id}")
         if value is not None:
             return value
@@ -45,5 +45,5 @@ def search_with_min_max(player_id: int, board: Board2players) -> Dict[str, int]:
 
 
 if __name__ == "__main__":
-    board = Board2players(grids_per_player=3, init_pieces_per_grid=3, grids_between_players=3)
+    board = Board(grids_per_player=3, init_pieces_per_grid=3, grids_between_players=3)
     print(search_with_min_max(player_id=0, board=board))
