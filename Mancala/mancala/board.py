@@ -16,9 +16,12 @@ class Board2players:
             [init_pieces_per_grid] * grids_per_player
             + [self.INITIAL_STONES_IN_SOTRE] * self.STORES_PER_PLAYER
         ) * self.NUMBER_OF_PLAYERS
+        self.next_player_id = 0
     
     def __eq__(self, another):
         if not isinstance(another, type(self)) :
+            return False
+        if self.next_player_id != another.next_player_id :
             return False
         if self.init_pieces_per_grid == another.init_pieces_per_grid \
         and self.grids_per_player == another.grids_per_player :
@@ -31,7 +34,7 @@ class Board2players:
         return False
 
     def __hash__(self):
-        hashes = list()
+        hashes = [self.next_player_id]
         for i in range(self.NUMBER_OF_PLAYERS) :
             start_pit = self.get_player_start_index(i)
             hashes.append(hash(tuple(self.data[start_pit: start_pit + self.grids_per_player]))) 
@@ -44,6 +47,12 @@ class Board2players:
             nums += self.data[start_pit: start_pit + self.grids_per_player]
         return sorted(nums,reverse=True)[:self.grids_per_player]
     
+    def next_player(self):
+        return self.next_player_id
+    
+    def progress_turn(self):
+        self.next_player_id = (self.next_player_id + 1) % self.NUMBER_OF_PLAYERS
+        
     def move(self, index: int) -> bool:
         """Move the pieces which are in the grid of the given index.
 
@@ -81,21 +90,37 @@ class Board2players:
         start_index = self.get_player_start_index(player_id=player_id)
         return {index: self.data[index] for index in range(start_index, start_index + self.grids_per_player)}
 
+    def get_grids(self) -> Dict[int, int]:
+        start_index = self.get_start_index()
+        return {index: self.data[index] for index in range(start_index, start_index + self.grids_per_player)}
+
     def get_player_start_index(self, player_id: int) -> int:
         return player_id * (self.grids_per_player + self.STORES_PER_PLAYER)
 
+    def get_start_index(self) -> int:
+        return self.next_player_id * (self.grids_per_player + self.STORES_PER_PLAYER)
+
     def get_players_movable_grids(self, player_id: int) -> Dict[int, int]:
         players_grids = self.get_players_grids(player_id=player_id)
+        return {key: value for key, value in players_grids.items() if value > 0}
+
+    def get_movable_grids(self) -> Dict[int, int]:
+        players_grids = self.get_players_grids(player_id=self.next_player_id)
         return {key: value for key, value in players_grids.items() if value > 0}
 
     def does_player_win(self, player_id: int) -> bool:
         movable_grids = self.get_players_movable_grids(player_id=player_id)
         return len(movable_grids) == 0
 
+    def does_next_player_win(self) -> bool:
+        movable_grids = self.get_players_movable_grids(player_id=self.next_player_id)
+        return len(movable_grids) == 0
+
     def __str__(self):
         strlist = list()
         for i in range(self.NUMBER_OF_PLAYERS) :
-            result = '['
+            result = '*' if i == self.next_player_id else ' '
+            result += '['
             start_pit = self.get_player_start_index(0)
             result += ', '.join([ str(i) for i in self.data[start_pit : start_pit + self.grids_per_player]]) + '; '
             result += ','.join([str(i) for i in self.data[start_pit + self.grids_per_player : \

@@ -48,6 +48,6 @@ class MinMaxPlayer(Player):
     def act(self, board: Board2players) -> int:
         # if board.players_num > 2:
         #     raise Exception("When players are more than 3, Min max algorithm takes a lot of time to run.")
-        result : Tuple[str, int] = search_with_min_max(player_id=self.player_id, board=board)
+        result = search_with_min_max(player_id=self.player_id, board=board)
         print(f"Evaluation: {result[1]}")
         return result[0]
