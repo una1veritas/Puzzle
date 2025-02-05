@@ -69,10 +69,15 @@ def search_with_min_max(player_id: int, board: Board2players) -> Tuple[str, int]
         #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
         #dp[board] = result
         board_signature = board.signature()
+<<<<<<< Updated upstream
         if [1, 1, 1, 1, 1] < board_signature < [16, 1]:
             dp[board] = result
+=======
+        if board_signature < [16, 0]:
+            dp[(board, player_id)] = result
+>>>>>>> Stashed changes
         if board_signature > search_with_min_max.max_signature :
-            search_with_min_max.max_signature = board_signature
+            search_with_min_max.max_signature = max(board_signature, search_with_min_max.max_signature )
             print(f'max signature = {search_with_min_max.max_signature}, dp length = {len(dp)}.\n', end='')
             # lowrefkeys = [ key for key, value in dp.items() if value[1] <= 2]
             # for key in lowrefkeys:
