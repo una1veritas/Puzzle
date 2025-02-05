@@ -66,10 +66,10 @@ def search_with_min_max(player_id: int, board: Board2players) -> Tuple[str, int]
         if board_signature > search_with_min_max.max_signature :
             search_with_min_max.max_signature = board_signature
             print(f'max signature = {search_with_min_max.max_signature}, dp length = {len(dp)}.\n', end='')
-            lowrefkeys = [ key for key, value in dp.items() if value[1] <= 1]
-            for key in lowrefkeys:
-                del dp[key]
-            gc.collect()
+            # lowrefkeys = [ key for key, value in dp.items() if value[1] <= 2]
+            # for key in lowrefkeys:
+            #     del dp[key]
+            # gc.collect()
         return 
 
     # return _evaluate(player_id=player_id, board=board)
