@@ -34,21 +34,29 @@ def search_with_min_max(player_id: int, board: Board2players) -> Tuple[str, int]
                     result += [action, -1]
                 break
 
-            new_player_id = player_id if act_again else (player_id + 1) % board.NUMBER_OF_PLAYERS
-            if not act_again : tmp_board.progress_turn()
-            #result_pair = []
-            #_evaluate(new_player_id, tmp_board, result_pair)
-            return_values[action] = []
-            a_thread = threading.Thread(target=_evaluate, args=(new_player_id, tmp_board, return_values[action]) )
-            threads.append(a_thread)
-            a_thread.start()
-            # eval_tables[action] = result_pair[0]
+            if act_again :
+                new_player_id = player_id 
+            else:
+                new_player_id = (player_id + 1) % board.NUMBER_OF_PLAYERS
+                tmp_board.progress_turn()
+            if tmp_board.next_player() != new_player_id :
+                print('player id does not match.')
+            try: 
+                return_values[action] = []
+                a_thread = threading.Thread(target=_evaluate, args=(new_player_id, tmp_board, return_values[action]) )
+                threads.append(a_thread)
+                a_thread.start()
+            except Exception as e:
+                print(f'Thread exception: {e}' )
+                if a_thread in threads :
+                    a_thread.stop()
+                _evaluate(new_player_id, tmp_board, return_values[action])
         
         for a_thread in threads:
             a_thread.join()
         
         for key, val in return_values.items():
-            eval_tables[key] = val[0]
+            eval_tables[key] = val
             
         if len(result) == 0 :
             if player_id == original_player_id:
@@ -62,7 +70,7 @@ def search_with_min_max(player_id: int, board: Board2players) -> Tuple[str, int]
         #dp[board] = result
         board_signature = board.signature()
         if [1, 1, 1, 1, 1] < board_signature < [16, 1]:
-            dp[(board, player_id)] = result
+            dp[board] = result
         if board_signature > search_with_min_max.max_signature :
             search_with_min_max.max_signature = board_signature
             print(f'max signature = {search_with_min_max.max_signature}, dp length = {len(dp)}.\n', end='')
