@@ -1,5 +1,6 @@
 from copy import deepcopy
 from typing import Dict
+import gc
 
 from board import Board2players
 
@@ -7,6 +8,7 @@ from board import Board2players
 def search_with_min_max(player_id: int, board: Board2players) -> Dict[str, int]:
     dp = {}
     original_player_id = player_id
+    search_with_min_max.max_signature = [0]
 
     def _evaluate(player_id: int, board: Board2players) -> Dict[str, int]:
         value = dp.get((board, player_id)) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
@@ -37,7 +39,13 @@ def search_with_min_max(player_id: int, board: Board2players) -> Dict[str, int]:
                 best_action = min(eval_tables, key=eval_tables.get)
 
             result = {"action": best_action, "value": eval_tables[best_action]}
-
+        
+        sig = board.signature()
+        if sig > search_with_min_max.max_signature :
+            search_with_min_max.max_signature = sig
+            print('signature = ', search_with_min_max.max_signature, ' dp length = ', len(dp))
+            gc.collect()
+            
         #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
         dp[(board, player_id)] = result
         return result

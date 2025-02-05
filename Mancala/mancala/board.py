@@ -86,15 +86,27 @@ class Board2players:
         movable_grids = self.get_players_movable_grids(player_id=player_id)
         return len(movable_grids) == 0
 
+    def signature(self):
+        count_in_pits = list()
+        for i in range(self.NUMBER_OF_PLAYERS) :
+            start_grid_index = i*(self.grids_per_player + self.STORES_PER_PLAYER)
+            count_in_pits += self.data[start_grid_index: start_grid_index + self.grids_per_player]
+        count_in_pits.sort(reverse=True)
+        return count_in_pits
+
     def __str__(self):
         strlist = list()
         for i in range(self.NUMBER_OF_PLAYERS) :
-            result = '['
-            start_pit = self.get_player_start_index(0)
-            result += ', '.join([ str(i) for i in self.data[start_pit : start_pit + self.grids_per_player]]) + '; '
-            result += ','.join([str(i) for i in self.data[start_pit + self.grids_per_player : \
-                                         start_pit + self.grids_per_player + self.STORES_PER_PLAYER]])
-            result += ']'
+            result = ''
+            start_grid_index = i*(self.grids_per_player + self.STORES_PER_PLAYER)
+            result += str(self.data[start_grid_index: start_grid_index + self.grids_per_player])
+            result += str(self.data[start_grid_index + self.grids_per_player: start_grid_index + self.grids_per_player + self.STORES_PER_PLAYER])
+            # result = '['
+            # start_pit = self.get_player_start_index(0)
+            # result += ', '.join([ str(i) for i in self.data[start_pit : start_pit + self.grids_per_player]]) + '; '
+            # result += ','.join([str(i) for i in self.data[start_pit + self.grids_per_player : \
+            #                              start_pit + self.grids_per_player + self.STORES_PER_PLAYER]])
+            # result += ']'
             strlist.append(result)
         return '('+', '.join(strlist)+')'
     
