@@ -1,12 +1,33 @@
-2025-02-06 01:34:58.924164
+2025-02-06 10:04:10.593505
 Turn 1
 ([2, 2, 2, 2, 2][0], [2, 2, 2, 2, 2][0])
 Player 0
+signature =  [5, 4, 3, 3, 3]  dp length =  0
+signature =  [5, 5, 4, 3, 1]  dp length =  1
+signature =  [6, 6, 2, 1, 1]  dp length =  2
+signature =  [7, 6, 1, 1, 1]  dp length =  5
+signature =  [8, 1]  dp length =  22126
+signature =  [8, 2]  dp length =  72544
+signature =  [9, 1]  dp length =  82343
+signature =  [9, 3, 1, 1]  dp length =  160289
+signature =  [10, 3]  dp length =  166733
+signature =  [11, 1]  dp length =  171252
+signature =  [11, 2]  dp length =  345263
+signature =  [11, 2, 1]  dp length =  421691
+signature =  [11, 3]  dp length =  428021
+signature =  [11, 4]  dp length =  481701
+signature =  [12, 2]  dp length =  503982
+signature =  [13, 1]  dp length =  682782
+signature =  [13, 2]  dp length =  1224762
+signature =  [14, 1]  dp length =  3647209
+signature =  [14, 2]  dp length =  3986180
+signature =  [15, 1]  dp length =  5340342
+signature =  [15, 2]  dp length =  6774360
 Evaluation: 1
 Action 4
 ([2, 2, 2, 2, 0][1], [3, 2, 2, 2, 2][0])
 Player 1
-Evaluation: -1
+Evaluation: 1
 Action 6
 Turn 2
 ([2, 2, 2, 2, 0][1], [0, 3, 3, 3, 2][0])
@@ -15,7 +36,7 @@ Evaluation: 1
 Action 0
 ([0, 3, 3, 2, 0][1], [0, 3, 3, 3, 2][0])
 Player 1
-Evaluation: -1
+Evaluation: 1
 Action 7
 Turn 3
 ([0, 3, 3, 2, 0][1], [0, 0, 4, 4, 3][0])
@@ -24,7 +45,7 @@ Evaluation: 1
 Action 1
 ([0, 0, 4, 3, 1][1], [0, 0, 4, 4, 3][0])
 Player 1
-Evaluation: -1
+Evaluation: 1
 Action 8
 Turn 4
 ([1, 0, 4, 3, 1][1], [0, 0, 0, 5, 4][1])
@@ -33,7 +54,7 @@ Evaluation: 1
 Action 0
 ([0, 1, 4, 3, 1][1], [0, 0, 0, 5, 4][1])
 Player 1
-Evaluation: -1
+Evaluation: 1
 Action 9
 Turn 5
 ([1, 2, 5, 3, 1][1], [0, 0, 0, 0, 5][2])
@@ -42,7 +63,7 @@ Evaluation: 1
 Action 2
 ([1, 2, 0, 4, 2][2], [1, 1, 0, 0, 5][2])
 Player 1
-Evaluation: -1
+Evaluation: 1
 Action 6
 Turn 6
 ([1, 2, 0, 4, 2][2], [0, 2, 0, 0, 5][2])
@@ -51,7 +72,7 @@ Evaluation: 1
 Action 0
 ([0, 3, 0, 4, 2][2], [0, 2, 0, 0, 5][2])
 Player 1
-Evaluation: -1
+Evaluation: 1
 Action 7
 Turn 7
 ([0, 3, 0, 4, 2][2], [0, 0, 1, 1, 5][2])
@@ -60,7 +81,7 @@ Evaluation: 1
 Action 4
 ([0, 3, 0, 4, 0][3], [1, 0, 1, 1, 5][2])
 Player 1
-Evaluation: -1
+Evaluation: 1
 Action 6
 Turn 8
 ([0, 3, 0, 4, 0][3], [0, 1, 1, 1, 5][2])
@@ -69,7 +90,7 @@ Evaluation: 1
 Action 3
 ([0, 3, 0, 0, 1][4], [1, 2, 1, 1, 5][2])
 Player 1
-Evaluation: -1
+Evaluation: 1
 Action 6
 Turn 9
 ([0, 3, 0, 0, 1][4], [0, 3, 1, 1, 5][2])
@@ -80,7 +101,7 @@ Evaluation: 1
 Action 1
 ([0, 0, 1, 1, 1][5], [0, 3, 1, 1, 5][2])
 Player 1
-Evaluation: -1
+Evaluation: 1
 Action 7
 Turn 10
 ([0, 0, 1, 1, 1][5], [0, 0, 2, 2, 6][2])
@@ -89,7 +110,7 @@ Evaluation: 1
 Action 2
 ([0, 0, 0, 2, 1][5], [0, 0, 2, 2, 6][2])
 Player 1
-Evaluation: -1
+Evaluation: 1
 Action 8
 Turn 11
 ([0, 0, 0, 2, 1][5], [0, 0, 0, 3, 7][2])
@@ -100,6 +121,6 @@ Evaluation: 1
 Action 4
 Player 0 wins!
 ([0, 0, 0, 0, 0][7], [1, 0, 0, 3, 7][2])
-2025-02-06 01:46:03.732251
+2025-02-06 10:07:09.118518
 winner: 0
-664.8080642223358
+178.52499389648438
