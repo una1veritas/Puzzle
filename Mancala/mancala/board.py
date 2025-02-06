@@ -87,12 +87,12 @@ class Board2players:
         return len(movable_grids) == 0
 
     def signature(self):
-        count_in_pits = list()
+        distribution = list()
         for i in range(self.NUMBER_OF_PLAYERS) :
             start_grid_index = i*(self.grids_per_player + self.STORES_PER_PLAYER)
-            count_in_pits += self.data[start_grid_index: start_grid_index + self.grids_per_player]
-        count_in_pits.sort(reverse=True)
-        return count_in_pits
+            distribution += [ c for c in self.data[start_grid_index: start_grid_index + self.grids_per_player] if c > 0]
+        distribution.sort(reverse=True)
+        return distribution
 
     def __str__(self):
         strlist = list()

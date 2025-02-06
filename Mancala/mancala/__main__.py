@@ -29,6 +29,7 @@ class Game:
         self.players = players
 
     def run(self) -> Optional[int]:
+        hint_dp = dict()
         turn_n = 1
         while True:
             print(f"Turn {turn_n}")
@@ -36,7 +37,7 @@ class Game:
                 print(self.board)
                 print(f"Player {player.player_id}")
                 while True:
-                    index = player.act(self.board)
+                    index = player.act(self.board) if not isinstance(player, MinMaxPlayer) else player.act(self.board, hint_dp)
                     print(f"Action {index}")
                     act_again = self.board.move(index=index)
                     if not act_again:

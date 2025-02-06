@@ -5,8 +5,9 @@ import gc
 from board import Board2players
 
 
-def search_with_min_max(player_id: int, board: Board2players) -> Dict[str, int]:
-    dp = {}
+def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Dict[str, int]:
+    if dp == None :
+        dp = {}
     original_player_id = player_id
     search_with_min_max.max_signature = [0]
 

@@ -44,10 +44,10 @@ class Human(Player):
 
 class MinMaxPlayer(Player):
     """Choose grid based on min-max algorithm."""
-
-    def act(self, board: Board2players) -> int:
+        
+    def act(self, board: Board2players, shared_dp : dict == None) -> int:
         # if board.players_num > 2:
         #     raise Exception("When players are more than 3, Min max algorithm takes a lot of time to run.")
-        result: Dict[str, int] = search_with_min_max(player_id=self.player_id, board=board)
+        result: Dict[str, int] = search_with_min_max(player_id=self.player_id, board=board, dp=shared_dp)
         print(f"Evaluation: {result['value']}")
         return result["action"]
