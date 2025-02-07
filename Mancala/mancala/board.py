@@ -20,15 +20,15 @@ class Board2players:
     def __eq__(self, another):
         if not isinstance(another, type(self)) :
             return False
-        if self.init_pieces_per_grid == another.init_pieces_per_grid \
-        and self.grids_per_player == another.grids_per_player :
+        if self.grids_per_player == another.grids_per_player :
             for i in range(self.NUMBER_OF_PLAYERS) :
-                start_pit = self.get_player_start_index(i)
-                for x in range(start_pit, start_pit + self.grids_per_player) :
-                    if self.data[x] != another.data[x] :
-                        return False
+                start_ix = self.get_player_start_index(i)
+                end_ix = start_ix + self.grids_per_player
+                if self.data[start_ix: end_ix] != another.data[start_ix: end_ix] :
+                    return False
             return True
-        return False
+        else:
+            return False
 
     def __hash__(self):
         hashes = list()
