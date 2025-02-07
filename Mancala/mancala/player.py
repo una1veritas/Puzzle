@@ -1,9 +1,9 @@
 import random
 from abc import ABCMeta, abstractmethod
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from algorithm import search_with_min_max
-from board import Board
+from board import Board2players
 
 
 class Player(metaclass=ABCMeta):
@@ -11,14 +11,14 @@ class Player(metaclass=ABCMeta):
         self.player_id = player_id
 
     @abstractmethod
-    def act(self, board: Board) -> int:
+    def act(self, board: Board2players) -> int:
         pass
 
 
 class RandomPlayer(Player):
     """Choose grid randomly."""
 
-    def act(self, board: Board) -> int:
+    def act(self, board: Board2players) -> int:
         candidates: List = list(board.get_players_movable_grids(player_id=self.player_id).keys())
         return random.choice(candidates)
 
@@ -26,7 +26,7 @@ class RandomPlayer(Player):
 class Human(Player):
     """Grid is chosen by human interactively."""
 
-    def act(self, board: Board) -> int:
+    def act(self, board: Board2players) -> int:
         candidates: Dict = board.get_players_movable_grids(player_id=self.player_id)
         while True:
             board.print_board()
@@ -44,19 +44,10 @@ class Human(Player):
 
 class MinMaxPlayer(Player):
     """Choose grid based on min-max algorithm."""
-
-<<<<<<< HEAD:Mancala/mancala/player.py
-    def act(self, board: Board2players) -> int:
+        
+    def act(self, board: Board2players, shared_dp : dict == None) -> int:
         # if board.players_num > 2:
         #     raise Exception("When players are more than 3, Min max algorithm takes a lot of time to run.")
-        result = search_with_min_max(player_id=self.player_id, board=board)
-        print(f"Evaluation: {result[1]}")
-        return result[0]
-=======
-    def act(self, board: Board) -> int:
-        if board.NUM_OF_PLAYERS > 2:
-            raise Exception("When players are more than 3, Min max algorithm takes a lot of time to run.")
-        result: Dict[str, int] = search_with_min_max(player_id=self.player_id, board=board)
+        result: Dict[str, int] = search_with_min_max(player_id=self.player_id, board=board, dp=shared_dp)
         print(f"Evaluation: {result['value']}")
         return result["action"]
->>>>>>> parent of dc87796 (snap shot):Mancala/fuka/player.py
