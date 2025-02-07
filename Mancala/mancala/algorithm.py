@@ -1,6 +1,6 @@
 from copy import deepcopy
-from typing import Dict
-import gc
+from typing import Dict, Tuple, List, Any
+import gc, json
 
 from board import Board2players
 
@@ -46,7 +46,8 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Dict
             search_with_min_max.max_signature = sig
             print('signature = ', search_with_min_max.max_signature, ' dp length = ', len(dp))
             gc.collect()
-            
+            with open('dp_dict.json', mode='w') as file:
+                json.dump(dp, file)
         #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
         dp[(board, player_id)] = result
         return result
