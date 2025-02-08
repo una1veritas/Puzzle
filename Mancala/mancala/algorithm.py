@@ -17,7 +17,7 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Dict
             return value
 
         candidates = board.get_players_movable_grids(player_id=player_id)
-        eval_tables = {}
+        eval_tables = dict()
         result = None
         for action in candidates.keys():
             tmp_board = deepcopy(board)
@@ -29,16 +29,15 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Dict
                     result = {"action": action, "value": -1}
                 break
 
-            new_player_id = player_id if act_again else (player_id + 1) % board.NUMBER_OF_PLAYERS
+            next_player_id = player_id if act_again else (player_id + 1) % board.NUMBER_OF_PLAYERS
 
-            eval_tables[action] = _evaluate(player_id=new_player_id, board=tmp_board)["value"]
+            eval_tables[action] = _evaluate(next_player_id, tmp_board)["value"]
 
         if result is None:
             if player_id == original_player_id:
                 best_action = max(eval_tables, key=eval_tables.get)
             else:
                 best_action = min(eval_tables, key=eval_tables.get)
-
             result = {"action": best_action, "value": eval_tables[best_action]}
         
         sig = board.signature()
