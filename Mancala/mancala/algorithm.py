@@ -11,7 +11,8 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Dict
     original_player_id = player_id
     search_with_min_max.max_signature = [0]
 
-    def _evaluate(player_id: int, board: Board2players) -> Dict[str, int]:
+    '''Returns a pair (action, value) where action is the choice as a move, and value is its evaluation '''
+    def _evaluate(player_id: int, board: Board2players) -> Tuple[int, int]:
         value = dp.get((board, player_id)) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
         if value is not None:
             return value
@@ -24,21 +25,21 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Dict
             act_again = tmp_board.move(action)
             if tmp_board.does_player_win(player_id=player_id):
                 if player_id == original_player_id:
-                    result = {"action": action, "value": 1}
+                    result = ( action, 1 )
                 else:
-                    result = {"action": action, "value": -1}
+                    result = ( action, -1 )
+                
                 break
-
-            next_player_id = player_id if act_again else (player_id + 1) % board.NUMBER_OF_PLAYERS
-
-            eval_tables[action] = _evaluate(next_player_id, tmp_board)["value"]
+            else:
+                next_player_id = player_id if act_again else (player_id + 1) % board.NUMBER_OF_PLAYERS
+                eval_tables[action] = _evaluate(next_player_id, tmp_board)[1]
 
         if result is None:
             if player_id == original_player_id:
                 best_action = max(eval_tables, key=eval_tables.get)
             else:
                 best_action = min(eval_tables, key=eval_tables.get)
-            result = {"action": best_action, "value": eval_tables[best_action]}
+            result = ( best_action, eval_tables[best_action])
         
         sig = board.signature()
         if sig > search_with_min_max.max_signature :
