@@ -30,12 +30,10 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
             
             if tmp_board.does_player_win(player_id=player_id):
                 if player_id == search_with_min_max.original_player_id:
-                    #result = ( action, 1 )
                     eval_table[action] = 1
                 else:
-                    #result = ( action, -1 )
                     eval_table[action] = -1
-                #break
+                break
             else:
                 next_player_id = player_id if act_again else (player_id + 1) % board.NUMBER_OF_PLAYERS
                 r = _evaluate(next_player_id, tmp_board)[1]
