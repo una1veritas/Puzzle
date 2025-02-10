@@ -3,6 +3,14 @@ from typing import List, Optional, Type
 from board import Board2players
 from player import Player
 
+import psutil
+import os
+
+def get_memory_usage():
+    process = psutil.Process(os.getpid())
+    memory_info = process.memory_info()
+    return memory_info.rss  # in bytes
+
 
 class Game:
     def __init__(
@@ -39,6 +47,10 @@ class Game:
                 while True:
                     index = player.act(self.board) if not isinstance(player, MinMaxPlayer) else player.act(self.board, hint_dp)
                     print(f"Action {index}")
+                    mem_usa = get_memory_usage()
+                    print(f'memory usage {mem_usa/10245/1024:.2f}Mb.')
+                    if index == -1 :
+                        break
                     act_again = self.board.move(index=index)
                     if not act_again:
                         break
@@ -47,6 +59,7 @@ class Game:
                     print(f"Player {player.player_id} wins!")
                     print(self.board)
                     return player.player_id
+                print()
             turn_n += 1
             if turn_n >= self.max_turns:
                 print("Draw...")

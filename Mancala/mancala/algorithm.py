@@ -5,41 +5,49 @@ import gc, json
 from board import Board2players
 
 
-def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Dict[str, int]:
+def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tuple[int, int]:
     if dp == None :
         dp = {}
-    original_player_id = player_id
+    search_with_min_max.original_player_id = player_id
     search_with_min_max.max_signature = [0]
 
     '''Returns a pair (action, value) where action is the choice as a move, and value is its evaluation '''
     def _evaluate(player_id: int, board: Board2players) -> Tuple[int, int]:
-        value = dp.get((board, player_id)) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
-        if value is not None:
-            return value
-
-        candidates = board.get_players_movable_grids(player_id=player_id)
-        eval_tables = dict()
-        result = None
-        for action in candidates.keys():
+        result = dp.get((board, player_id)) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
+        if result is not None:
+            #print(result)
+            return result
+        candidates = list(board.get_players_movable_grids(player_id=player_id).keys())
+        #print('_evaluate', player_id, board, candidates)            
+        eval_table = dict()
+        if len(candidates) == 0:
+            '''no pieces in player_id's grids'''
+            eval_table[-1] = 1 if player_id == search_with_min_max.original_player_id else -1
+        #result = None
+        for action in candidates:
             tmp_board = deepcopy(board)
             act_again = tmp_board.move(action)
+            
             if tmp_board.does_player_win(player_id=player_id):
-                if player_id == original_player_id:
-                    result = ( action, 1 )
+                if player_id == search_with_min_max.original_player_id:
+                    #result = ( action, 1 )
+                    eval_table[action] = 1
                 else:
-                    result = ( action, -1 )
-                
-                break
+                    #result = ( action, -1 )
+                    eval_table[action] = -1
+                #break
             else:
                 next_player_id = player_id if act_again else (player_id + 1) % board.NUMBER_OF_PLAYERS
-                eval_tables[action] = _evaluate(next_player_id, tmp_board)[1]
-
-        if result is None:
-            if player_id == original_player_id:
-                best_action = max(eval_tables, key=eval_tables.get)
-            else:
-                best_action = min(eval_tables, key=eval_tables.get)
-            result = ( best_action, eval_tables[best_action])
+                r = _evaluate(next_player_id, tmp_board)[1]
+                eval_table[action] = r + 1 if r > 0 else r - 1
+        
+        if len(eval_table) == 0 :
+            print(board, eval_table, player_id, search_with_min_max.original_player_id)
+        if player_id == search_with_min_max.original_player_id:
+            best_action = max(eval_table, key=eval_table.get)
+        else:
+            best_action = min(eval_table, key=eval_table.get)
+        result = ( best_action, eval_table[best_action])
         
         sig = board.signature()
         if sig > search_with_min_max.max_signature :
@@ -49,7 +57,8 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Dict
             # with open('dp_dict.json', mode='w') as file:
             #     json.dump(dp, file)
         #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
-        dp[(board, player_id)] = result
+        if sum(sig) <= 18 :
+            dp[(board, player_id)] = result
         return result
 
     return _evaluate(player_id=player_id, board=board)
