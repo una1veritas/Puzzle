@@ -3,7 +3,7 @@ from typing import Dict, Tuple, List, Any
 import gc, json
 
 from board import Board2players
-
+import pickle
 
 def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tuple[int, int]:
     if dp == None :
@@ -52,10 +52,12 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
             search_with_min_max.max_signature = sig
             print('signature = ', search_with_min_max.max_signature, ' dp length = ', len(dp))
             gc.collect()
+            with open('hint_dp.pkl', mode = 'wb') as file:
+                pickle.dump(dp, file)
             # with open('dp_dict.json', mode='w') as file:
             #     json.dump(dp, file)
         #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
-        if sum(sig) <= 18 :
+        if sum(sig) <= 19 :
             dp[(board, player_id)] = result
         return result
 
