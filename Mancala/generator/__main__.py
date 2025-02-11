@@ -12,7 +12,7 @@ from player import *
 import psutil
 import os
 
-def consistent_just_bofore(board : Board2players, player_id : int, start : int, amount: int):
+def consistent_prev_move(board : Board2players, player_id : int, start : int, amount: int):
     if board.data[start] != 0 :
         return False
     placed = [0] * len(board.data)
@@ -30,4 +30,4 @@ if __name__ == '__main__':
     board = Board2players(init_pieces_per_grid = 2, grids_per_player = 3)
     board.data[2] = 0
     print(board)
-    print(consistent_just_bofore(board, player_id=0, start=2, amount=3))
+    print(consistent_prev_move(board, player_id=0, start=2, amount=4))

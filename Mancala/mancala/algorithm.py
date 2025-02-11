@@ -55,11 +55,12 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
             #     pickle.dump(dp, file)
             # with open('dp_dict.json', mode='w') as file:
             #     json.dump(dp, file)
-        #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
-        if 7 <= sum(sig) :
+        if sum(sig) > 5 :
             dp[(board, player_id)] = result
-            gc.collect()
-            print(f"added key {str(board)}, {player_id} and value {result}.")
+            if sum(sig) > 8 :
+                gc.collect()
+            #     print(f"added key {str(board)}, {player_id} and value {result}, dp len = {len(dp)}.")
+        # #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
         return result
 
     return _evaluate(player_id=player_id, board=board)
