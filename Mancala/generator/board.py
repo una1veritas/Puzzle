@@ -72,6 +72,14 @@ class Board2players:
     def _is_grid_between_players(self, index: int):
         return index % (self.grids_per_player + self.STORES_PER_PLAYER) >= self.grids_per_player
 
+    def is_players_store(self, player_id: int, index : int):
+        return index == self.grids_per_player + player_id * (self.grids_per_player + self.STORES_PER_PLAYER)
+
+    def is_store(self, index : int):
+        for pid in range(self.NUMBER_OF_PLAYERS) :
+            if self.is_players_store(pid, index) : return True
+        return False
+        
     def get_players_grids(self, player_id: int) -> Dict[int, int]:
         start_index = self.get_player_start_index(player_id=player_id)
         return {index: self.data[index] for index in range(start_index, start_index + self.grids_per_player)}
