@@ -51,15 +51,13 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
         if sig > search_with_min_max.max_signature :
             search_with_min_max.max_signature = sig
             print('signature = ', search_with_min_max.max_signature, ' dp length = ', len(dp))
+            print(f"adding key {str(board)}, {player_id} and value {result}.")
             # with open('hint_dp.pkl', mode = 'wb') as file:
             #     pickle.dump(dp, file)
             # with open('dp_dict.json', mode='w') as file:
             #     json.dump(dp, file)
-        if sum(sig) > 5 :
-            dp[(board, player_id)] = result
-            if sum(sig) > 8 :
-                gc.collect()
-            #     print(f"added key {str(board)}, {player_id} and value {result}, dp len = {len(dp)}.")
+            gc.collect()
+        dp[(board, player_id)] = result
         # #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
         return result
 
