@@ -9,7 +9,7 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
     if dp == None :
         dp = {}
     search_with_min_max.original_player_id = player_id
-    search_with_min_max.max_signature = [0]
+    search_with_min_max.max_to_over = 0
 
     '''Returns a pair (action, value) where action is the choice as a move, and value is its evaluation '''
     def _evaluate(player_id: int, board: Board2players) -> Tuple[int, int]:
@@ -17,47 +17,47 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
         if result is not None:
             #print(result)
             return result
+        
         candidates = [i for i in board.possible_moves(player_id)]
-        #print('_evaluate', player_id, board, candidates)            
-        eval_table = dict()
-        if len(candidates) == 0:
-            '''no pieces in player_id's grids'''
-            eval_table[-1] = 1 if player_id == search_with_min_max.original_player_id else -1
-        #result = None
         for action in candidates:
             tmp_board = deepcopy(board)
             act_again = tmp_board.move(action)
             
-            if tmp_board.does_player_win(player_id=player_id):
-                if player_id == search_with_min_max.original_player_id:
-                    eval_table[action] = 1
+            if tmp_board.does_player_win(player_id=player_id) :
+                if player_id == search_with_min_max.original_player_id :
+                    result = (action, 1)
                 else:
-                    eval_table[action] = -1
+                    result = (action, -1)
                 break
             else:
                 next_player_id = player_id if act_again else (player_id + 1) % board.NUMBER_OF_PLAYERS
-                r = _evaluate(next_player_id, tmp_board)[1]
-                eval_table[action] = r + 1 if r > 0 else r - 1
-        
-        if len(eval_table) == 0 :
-            print(board, eval_table, player_id, search_with_min_max.original_player_id)
-        if player_id == search_with_min_max.original_player_id:
-            best_action = max(eval_table, key=eval_table.get)
-        else:
-            best_action = min(eval_table, key=eval_table.get)
-        result = ( best_action, eval_table[best_action])
-        
-        sig = board.signature()
-        if sig > search_with_min_max.max_signature :
-            search_with_min_max.max_signature = sig
-            print('signature = ', search_with_min_max.max_signature, ' dp length = ', len(dp))
+                if result == None :
+                    result = _evaluate(next_player_id, tmp_board)
+                else:
+                    r = _evaluate(next_player_id, tmp_board)
+                    if player_id == search_with_min_max.original_player_id: 
+                        if r[1] > result[1] :
+                            result = r
+                    else:
+                        if r[1] < result[1] :
+                            result = r
+        if board.data[result[0]] == 0 :
+            print(board, result)
+            for k, v in dp.items():
+                print(str(k[0]),str(k[1]),v)
+            raise ValueError('empty pit chosen.')
+        to_go = result[1]
+        if to_go > search_with_min_max.max_to_over :
+            search_with_min_max.max_to_over = to_go
+            print('max to over = ', search_with_min_max.max_to_over, ' dp length = ', len(dp))
             print(f"adding key {str(board)}, {player_id} and value {result}.")
             # with open('hint_dp.pkl', mode = 'wb') as file:
             #     pickle.dump(dp, file)
             # with open('dp_dict.json', mode='w') as file:
             #     json.dump(dp, file)
-            gc.collect()
-        dp[(board, player_id)] = result
+            #gc.collect()
+        if to_go > 0 :
+            dp[(board, player_id)] = result
         # #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
         return result
 

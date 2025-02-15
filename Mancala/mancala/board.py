@@ -56,6 +56,7 @@ class Board2players:
         pieces = self.data[index]
 
         if pieces == 0:
+            print(self, index)
             raise ValueError(f"The grid with index={index} has no pieces.")
 
         for i in range(1, pieces + 1):
