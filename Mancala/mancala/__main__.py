@@ -45,6 +45,11 @@ class Game:
                 print(self.board)
                 print(f"Player {player.player_id}")
                 while True:
+                    if self.board.does_player_win(player.player_id):
+                        print(f"Player {player.player_id} wins!")
+                        print(self.board)
+                        return player.player_id
+                    
                     index = player.act(self.board) if not isinstance(player, MinMaxPlayer) else player.act(self.board, hint_dp)
                     print(f"Action {index}")
                     mem_usa = get_memory_usage()
@@ -75,7 +80,7 @@ if __name__ == "__main__":
     swatch_start = time.time()
     game = Game(player_classes=[MinMaxPlayer, MinMaxPlayer], \
                 init_pieces_per_grid=2, \
-                grids_per_player=3
+                grids_per_player=6
                 )
     winner = game.run()
     swatch_stop = time.time()
