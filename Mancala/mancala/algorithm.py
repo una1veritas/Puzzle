@@ -7,9 +7,11 @@ import pickle
 
 def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tuple[int, int]:
     if dp == None :
-        dp = {}
+        search_with_min_max.dp = {}
     search_with_min_max.original_player_id = player_id
-    search_with_min_max.max_to_over = 0
+    search_with_min_max.max_to_go = 0
+    search_with_min_max.max_sig = []
+    
 
     '''Returns a pair (action, value) where action is the choice as a move, and value is its evaluation '''
     def _evaluate(player_id: int, board: Board2players) -> Tuple[int, int, int]:
@@ -49,17 +51,22 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
         #     for k, v in dp.items():
         #         print("dict: ", str(k[0]),str(k[1]),v)
         #     raise ValueError('empty pit chosen.')
+        
         to_go = result[2]
-        if to_go > search_with_min_max.max_to_over :
-            search_with_min_max.max_to_over = to_go
-            print('max to over = ', search_with_min_max.max_to_over, ' dp length = ', len(dp))
+        sig = board.signature()
+        if to_go > search_with_min_max.max_to_go or sig > search_with_min_max.max_sig :
+            if sig > search_with_min_max.max_sig :
+                search_with_min_max.max_sig = sig
+            if to_go > search_with_min_max.max_to_go :
+                search_with_min_max.max_to_go = to_go
+            print(f'max to over = {search_with_min_max.max_to_go}, dp size = {len(dp)}, signature = {search_with_min_max.max_sig}')
             print(f"key {str(board)}, {player_id} and value {result}.")
             # with open('hint_dp.pkl', mode = 'wb') as file:
             #     pickle.dump(dp, file)
             # with open('dp_dict.json', mode='w') as file:
             #     json.dump(dp, file)
             gc.collect()
-        if to_go > 3 :
+        if to_go >= 5 :
             dp[(board, player_id)] = result
         # #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
         return result
