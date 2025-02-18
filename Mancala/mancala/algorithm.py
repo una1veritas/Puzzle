@@ -11,7 +11,7 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
     search_with_min_max.original_player_id = player_id
     search_with_min_max.max_to_go = 0
     search_with_min_max.max_sig = []
-    
+    search_with_min_max.dict_size_limit = 1e5
 
     '''Returns a pair (action, value) where action is the choice as a move, and value is its evaluation '''
     def _evaluate(player_id: int, board: Board2players) -> Tuple[int, int, int]:
@@ -66,8 +66,15 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
             # with open('dp_dict.json', mode='w') as file:
             #     json.dump(dp, file)
             gc.collect()
-        if to_go >= 5 :
-            dp[(board, player_id)] = result
+        dp[(board, player_id)] = result
+        n = len(dp)
+        if n > search_with_min_max.dict_size_limit:
+            for key in list(dp.keys()) :
+                if dp[key][2] <= (search_with_min_max.max_to_go/2) :
+                    del dp[key]
+            print(n, len(dp))
+            gc.collect()
+            search_with_min_max.dict_size_limit *= 10
         # #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
         return result
 
