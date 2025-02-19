@@ -70,7 +70,7 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
         n = len(dp)
         if n > search_with_min_max.dict_size_limit:
             for key in list(dp.keys()) :
-                if dp[key][2] <= (search_with_min_max.max_to_go/2) :
+                if dp[key][2] <= (search_with_min_max.max_to_go/2.4) :
                     del dp[key]
             print(n, len(dp))
             gc.collect()
