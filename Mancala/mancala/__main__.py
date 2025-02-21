@@ -1,6 +1,6 @@
 from typing import List, Optional, Type
 
-from board import Board2players
+from board import Board2p
 from player import Player
 
 import psutil
@@ -30,7 +30,7 @@ class Game:
         self.grids_per_player = grids_per_player
         self.grids_between_players = grids_between_players
         self.max_turns = max_turns
-        self.board = Board2players(
+        self.board = Board2p(
             init_pieces_per_grid=init_pieces_per_grid,
             grids_per_player=grids_per_player,
         )

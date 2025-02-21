@@ -2,10 +2,10 @@ from copy import deepcopy
 from typing import Dict, Tuple, List, Any
 import gc, json
 
-from board import Board2players
+from board import Board2p
 import pickle
 
-def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tuple[int, int]:
+def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int, int]:
     if dp == None :
         search_with_min_max.dp = {}
     search_with_min_max.original_player_id = player_id
@@ -14,8 +14,9 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
     search_with_min_max.dict_size_limit = 1e5
 
     '''Returns a pair (action, value) where action is the choice as a move, and value is its evaluation '''
-    def _evaluate(player_id: int, board: Board2players) -> Tuple[int, int, int]:
-        result = dp.get((board, player_id)) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
+    def _evaluate(player_id: int, board: Board2p) -> Tuple[int, int, int]:
+        board.next_move_player = player_id
+        result = dp.get(board) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
         if result is not None:
             #print(result)
             return result
@@ -66,11 +67,11 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
             # with open('dp_dict.json', mode='w') as file:
             #     json.dump(dp, file)
             gc.collect()
-        dp[(board, player_id)] = result
+        dp[board] = result
         n = len(dp)
         if n > search_with_min_max.dict_size_limit:
             for key in list(dp.keys()) :
-                if dp[key][2] <= (search_with_min_max.max_to_go/2.4) :
+                if dp[key][2] <= (search_with_min_max.max_to_go/4) :
                     del dp[key]
             print(n, len(dp))
             gc.collect()
@@ -83,5 +84,5 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
 
 
 if __name__ == "__main__":
-    board = Board2players(grids_per_player=3, init_pieces_per_grid=3, grids_between_players=3)
+    board = Board2p(grids_per_player=3, init_pieces_per_grid=3, grids_between_players=3)
     print(search_with_min_max(player_id=0, board=board))

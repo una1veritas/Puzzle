@@ -1,7 +1,7 @@
 from typing import Dict
 from numpy import ix_
 
-class Board2players:
+class Board2p:
     INITIAL_STONES_IN_SOTRE = 0
     NUMBER_OF_PLAYERS: int = 2
     STORES_PER_PLAYER : int = 1

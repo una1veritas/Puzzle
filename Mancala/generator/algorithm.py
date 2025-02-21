@@ -2,17 +2,17 @@ from copy import deepcopy
 from typing import Dict, Tuple, List, Any
 import gc, json
 
-from board import Board2players
+from board import Board2p
 import pickle
 
-def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tuple[int, int]:
+def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int, int]:
     if dp == None :
         dp = {}
     search_with_min_max.original_player_id = player_id
     search_with_min_max.max_signature = [0]
 
     '''Returns a pair (action, value) where action is the choice as a move, and value is its evaluation '''
-    def _evaluate(player_id: int, board: Board2players) -> Tuple[int, int]:
+    def _evaluate(player_id: int, board: Board2p) -> Tuple[int, int]:
         result = dp.get((board, player_id)) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
         if result is not None:
             #print(result)
@@ -66,5 +66,5 @@ def search_with_min_max(player_id: int, board: Board2players, dp : dict) -> Tupl
 
 
 if __name__ == "__main__":
-    board = Board2players(grids_per_player=3, init_pieces_per_grid=3, grids_between_players=3)
+    board = Board2p(grids_per_player=3, init_pieces_per_grid=3, grids_between_players=3)
     print(search_with_min_max(player_id=0, board=board))
