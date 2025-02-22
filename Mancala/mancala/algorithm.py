@@ -68,14 +68,14 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
             #     json.dump(dp, file)
             gc.collect()
         dp[board] = result
-        n = len(dp)
-        if n > search_with_min_max.dict_size_limit:
-            for key in list(dp.keys()) :
-                if dp[key][2] <= (search_with_min_max.max_to_go/4) :
-                    del dp[key]
-            print(n, len(dp))
-            gc.collect()
-            search_with_min_max.dict_size_limit *= 10
+        # n = len(dp)
+        # if n > search_with_min_max.dict_size_limit:
+        #     for key in list(dp.keys()) :
+        #         if dp[key][2] <= (search_with_min_max.max_to_go/4) :
+        #             del dp[key]
+        #     print(n, len(dp))
+        #     gc.collect()
+        #     search_with_min_max.dict_size_limit *= 10
         # #dp["|".join([str(i) for i in board.data]) + f"_{player_id}"] = result
         return result
 
