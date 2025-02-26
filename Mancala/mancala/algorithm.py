@@ -3,7 +3,7 @@ from typing import Dict, Tuple, List, Any
 import gc, json
 
 from board import Board2p
-import pickle
+
 
 def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int, int]:
     if dp == None :
@@ -12,7 +12,7 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
     search_with_min_max.max_to_go = 0
     search_with_min_max.max_sig = []
     search_with_min_max.dict_size_limit = 1e5
-
+    search_with_min_max.stats = dict()
     '''Returns a pair (action, value) where action is the choice as a move, and value is its evaluation '''
     def _evaluate(player_id: int, board: Board2p) -> Tuple[int, int, int]:
         board.next_move_player = player_id
@@ -60,8 +60,20 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
                 search_with_min_max.max_sig = sig
             if to_go > search_with_min_max.max_to_go :
                 search_with_min_max.max_to_go = to_go
+            # for key, val in dp.items():
+            #     search_with_min_max.stats[val[2]] = search_with_min_max.stats.get(val[2], 0) + 1
+            # for k, _ in sorted(search_with_min_max.stats.items()):
+            #     print(f'{k:8} ',end='')
+            # print()
+            # for k, v in sorted(search_with_min_max.stats.items()):
+            #     print(f'{v:8} ',end='')
+            # print()
+            # for key, val in dp.items():
+            #     if val[2] == 0 :
+            #         print(key)
             print(f'max to over = {search_with_min_max.max_to_go}, dp size = {len(dp)}, signature = {search_with_min_max.max_sig}')
             print(f"key {str(board)}, {player_id} and value {result}.")
+            print()
             # with open('hint_dp.pkl', mode = 'wb') as file:
             #     pickle.dump(dp, file)
             # with open('dp_dict.json', mode='w') as file:
@@ -70,8 +82,8 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
         dp[board] = result
         # n = len(dp)
         # if n > search_with_min_max.dict_size_limit:
-        #     for key in list(dp.keys()) :
-        #         if dp[key][2] <= (search_with_min_max.max_to_go/4) :
+        #     for key, value in dp.items() :
+        #         search_with_min_max.distrib[value[2]] :
         #             del dp[key]
         #     print(n, len(dp))
         #     gc.collect()
