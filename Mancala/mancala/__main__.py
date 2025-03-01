@@ -45,7 +45,7 @@ class Game:
                 print(self.board)
                 print(f"Player {player.player_id}")
                 while True:
-                    if self.board.does_player_win(player.player_id):
+                    if self.board.won_by_player(player.player_id):
                         print(f"Player {player.player_id} wins!")
                         print(self.board)
                         return player.player_id
