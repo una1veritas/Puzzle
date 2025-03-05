@@ -55,7 +55,7 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
                         if ( r[1] == 0 and ( result[1] == 0 and r[2] + 1 < result[2]) ) \
                         or ( r[1] == 1 and (result[1] == 1 and r[2] + 1 > result[2]) ):
                             result = (action, r[1], r[2] + 1)
-        print(f'board = {board} result = {result}')
+        #print(f'board = {board} result = {result}')
         to_go = result[2]
         sig = board.signature()
         if to_go > search_with_min_max.max_to_go or sig > search_with_min_max.max_sig :
@@ -63,9 +63,9 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
                 search_with_min_max.max_sig = sig
             if to_go > search_with_min_max.max_to_go :
                 search_with_min_max.max_to_go = to_go
-            # print(f'max to over = {search_with_min_max.max_to_go}, dp size = {len(dp)}, signature = {search_with_min_max.max_sig}')
-            # print(f"key {str(board)} and value {result}.")
-            # print()
+            print(f'max to over = {search_with_min_max.max_to_go}, dp size = {len(dp)}, signature = {search_with_min_max.max_sig}')
+            print(f"key {str(board)} and value {result}.")
+            print()
             gc.collect()
         dp[board] = result
         return result
