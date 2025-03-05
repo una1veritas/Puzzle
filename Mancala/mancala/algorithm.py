@@ -5,6 +5,8 @@ import gc, json
 from board import Board2p
 
 def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int, int]:
+    if player_id != board.next_move_player() :
+        raise ValueError('Error!')
     if dp == None :
         search_with_min_max.dp = {}
     search_with_min_max.original_player_id = player_id
@@ -15,33 +17,45 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
     def _evaluate(board: Board2p) -> Tuple[int, int, int]:
         result = dp.get(board) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
         if result is not None:
-            #print(result)
             return result
         candidates = [i for i in board.possible_moves()]
-        #print(board, candidates)
         for action in candidates:
             tmp_board = deepcopy(board)
             act_again = tmp_board.move(action)
+            #print(f'after move tmp_board = {tmp_board}, act_agin = {act_again}')
             
-            if tmp_board.won_by_player() :
+            if act_again and tmp_board.won_by_player(tmp_board.next_move_player()) :
                 if tmp_board.next_move_player() == search_with_min_max.original_player_id :
                     result = (action, 1, 0)
-                    #print('original')
+                    #print('first player')
                 else:
                     result = (action, 0, 0)
-                    #print('opponent')
+                    #print('second player')
+                break
+            elif not act_again and tmp_board.won_by_player(tmp_board.previous_move_player()) :
+                if tmp_board.previous_move_player() == search_with_min_max.original_player_id :
+                    result = (action, 1, 0)
+                    #print('first player')
+                else:
+                    result = (action, 0, 0)
+                    #print('second player')
                 break
             else:
+                #print('play still continues')
                 r = _evaluate(tmp_board)
+                #print(f'r = {r}')
                 if result == None :
-                    result = (action, r[1], r[2] + 1) # action の move をした結果数手先でおきた結果
+                    result = (action, r[1], r[2] + 1) # action という手を打った move した結果数手先でおきた結果
                 else:
-                    if board.next_move_player() == search_with_min_max.original_player_id: 
-                        if r[1] > result[1] or (r[1] == result[1] and r[2] + 1 < result[2]) :
+                    if tmp_board.previous_move_player() == search_with_min_max.original_player_id: 
+                        if ( r[1] == 1 and (result[1] == 1 and r[2] + 1 < result[2]) ) \
+                        or ( r[1] == 0 and (result[1] == 0 and r[2] + 1 > result[2]) ):
                             result = (action, r[1], r[2] + 1)
                     else:
-                        if r[1] < result[1] or (r[1] == result[1] and r[2] + 1 > result[2]):
+                        if ( r[1] == 0 and ( result[1] == 0 and r[2] + 1 < result[2]) ) \
+                        or ( r[1] == 1 and (result[1] == 1 and r[2] + 1 > result[2]) ):
                             result = (action, r[1], r[2] + 1)
+        print(f'board = {board} result = {result}')
         to_go = result[2]
         sig = board.signature()
         if to_go > search_with_min_max.max_to_go or sig > search_with_min_max.max_sig :
@@ -49,9 +63,9 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
                 search_with_min_max.max_sig = sig
             if to_go > search_with_min_max.max_to_go :
                 search_with_min_max.max_to_go = to_go
-            print(f'max to over = {search_with_min_max.max_to_go}, dp size = {len(dp)}, signature = {search_with_min_max.max_sig}')
-            print(f"key {str(board)} and value {result}.")
-            print()
+            # print(f'max to over = {search_with_min_max.max_to_go}, dp size = {len(dp)}, signature = {search_with_min_max.max_sig}')
+            # print(f"key {str(board)} and value {result}.")
+            # print()
             gc.collect()
         dp[board] = result
         return result

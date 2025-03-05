@@ -60,7 +60,7 @@ class Game:
                     if not act_again:
                         break
 
-                if self.board.does_player_win(player.player_id):
+                if self.board.won_by_player(player.player_id):
                     print(f"Player {player.player_id} wins!")
                     print(self.board)
                     return player.player_id
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     swatch_start = time.time()
     game = Game(player_classes=[MinMaxPlayer, MinMaxPlayer], \
                 init_pieces_per_grid=2, \
-                grids_per_player=6
+                grids_per_player=3
                 )
     winner = game.run()
     swatch_stop = time.time()
