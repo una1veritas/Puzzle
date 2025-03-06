@@ -61,6 +61,8 @@ class Game:
                         break
 
                 if self.board.won_by_player(player.player_id):
+                    # for key, val in hint_dp.items():
+                    #     print(key, val)
                     print(f"Player {player.player_id} wins!")
                     print(self.board)
                     return player.player_id
