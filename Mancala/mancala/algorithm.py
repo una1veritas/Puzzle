@@ -23,14 +23,13 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
             tmp_board = deepcopy(board)
             act_again = tmp_board.move(action)
             #print(f'after move tmp_board = {tmp_board}, act_agin = {act_again}')
-            
+            '''ターンがかわる（差し手の交代）がおきたときと、起きなかったとき act_again == True
+            直前の move による勝利者を区別する必要がある。'''
             if act_again and tmp_board.won_by_player(tmp_board.next_move_player()) :
                 if tmp_board.next_move_player() == search_with_min_max.original_player_id :
                     result = (action, 1, 0)
-                    #print('first player')
                 else:
                     result = (action, 0, 0)
-                    #print('second player')
                 break
             elif not act_again and tmp_board.won_by_player(tmp_board.previous_move_player()) :
                 if tmp_board.previous_move_player() == search_with_min_max.original_player_id :

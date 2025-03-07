@@ -33,7 +33,7 @@ class Board2p:
     def __hash__(self):
         hash_codes = list()
         hash_codes.append(hash(tuple(self.players_pit_array(self.next_move_player()))))
-        hash_codes.append(hash(tuple(self.players_pit_array(self.previous_move_player()))))
+        hash_codes.append(hash(tuple(self.players_pit_array((self.next_move_player() + 1) % self.NUMBER_OF_PLAYERS))))
         return hash(tuple(hash_codes))
     
     def players_pit_array(self, player_id : int):
@@ -43,7 +43,7 @@ class Board2p:
     def next_move_player(self):
         return self.next_move_player_id 
     
-    def previous_move_player(self):
+    def next_turn_player(self):
         return (self.next_move_player_id + 1) % self.NUMBER_OF_PLAYERS
     
     def move(self, index: int) -> bool:
