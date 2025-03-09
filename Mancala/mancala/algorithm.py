@@ -5,7 +5,7 @@ import gc, json
 from board import Board2p
 
 def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int, int]:
-    if player_id != board.next_move_player() :
+    if player_id != board.current_player() :
         raise ValueError('Error!')
     if dp == None :
         search_with_min_max.dp = {}

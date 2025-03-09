@@ -14,38 +14,47 @@ class Board2p:
     ):
         self.init_pieces_per_grid = init_pieces_per_grid
         self.grids_per_player = grids_per_player
-        self.data = (
-            [init_pieces_per_grid] * grids_per_player
-            + [self.INITIAL_STONES_IN_SOTRE] * self.STORES_PER_PLAYER
-        ) * self.NUMBER_OF_PLAYERS
-        self.next_move_player_id = 0
+        self.board = [
+            [init_pieces_per_grid] * grids_per_player + [self.INITIAL_STONES_IN_SOTRE] * self.STORES_PER_PLAYER 
+            ]* self.NUMBER_OF_PLAYERS
+        self.player_in_turn = 0
     
     def __eq__(self, another):
         if not isinstance(another, type(self)) :
             return False
         if self.grids_per_player != another.grids_per_player :
             return False
-        if self.players_pit_array(self.next_move_player()) + self.players_pit_array(self.previous_move_player()) \
-        != another.players_pit_array(another.next_move_player()) + another.players_pit_array(another.previous_move_player()) :
+        if self.pit_array(self.current_player()) + self.pit_array(self.next_turn_player()) \
+        != another.pit_array(another.current_player()) + another.pit_array(another.next_turn_player()) :
             return False
         return True
 
     def __hash__(self):
         hash_codes = list()
-        hash_codes.append(hash(tuple(self.players_pit_array(self.next_move_player()))))
-        hash_codes.append(hash(tuple(self.players_pit_array((self.next_move_player() + 1) % self.NUMBER_OF_PLAYERS))))
+        hash_codes.append(hash(tuple(self.pit_array(self.current_player()))))
+        hash_codes.append(hash(tuple(self.pit_array(self.next_turn_player()))))
         return hash(tuple(hash_codes))
     
-    def players_pit_array(self, player_id : int):
-        start_ix = self.get_player_start_index(player_id)
-        return self.data[start_ix : start_ix + self.grids_per_player]
+    def pit_array(self, player_id : int):
+        return self.board[player_id][:self.grids_per_player]
     
-    def next_move_player(self):
-        return self.next_move_player_id 
+    def store(self, player_id : int):
+        return self.board[player_id][self.grids_per_player:]
+    
+    def current_player(self):
+        return self.player_in_turn 
     
     def next_turn_player(self):
-        return (self.next_move_player_id + 1) % self.NUMBER_OF_PLAYERS
+        return (self.player_in_turn + 1) % self.NUMBER_OF_PLAYERS
     
+    def pit_number(self, player_id : int, pit_or_store_index : int):
+        return player_id * (self.grids_per_player + self.STORES_PER_PLAYER) + pit_or_store_index 
+
+    def pit_position(self, index : int):
+        player_id = index // (self.grids_per_player + self.STORES_PER_PLAYER)
+        pit_or_store_index = index % (self.grids_per_player + self.STORES_PER_PLAYER)
+        return (player_id, pit_or_store_index) 
+        
     def move(self, index: int) -> bool:
         """Move the pieces which are in the grid of the given index.
 
@@ -55,43 +64,39 @@ class Board2p:
         :return
         whether you can move again or not.
         """
-        if index < self.get_player_start_index(self.next_move_player_id) \
-        or index >= self.get_player_start_index(self.next_move_player_id) + self.grids_per_player :
-            raise ValueError(f"Invalid index: {index}. index should satisfy index < {len(self.data)}")
-        if self._is_grid_between_players(index):
-            raise ValueError(f"Invalid index: {index}. The index points grids between players.")
+        if index < 0 or index >= len(self.pit_array(self.player_in_turn)) :
+            raise ValueError(f"Invalid index: {index}. choice of move should be in from 0 to before {len(self.pit_array(self.player_in_turn))}")
 
-        pieces = self.data[index]
+        pieces = self.pit_array(self.player_in_turn)[index]
 
         if pieces == 0:
             print(self, index)
-            raise ValueError(f"The grid with index={index} has no pieces.")
+            raise ValueError(f"The pit of player {self.player_in_turn} index={index} has no pieces.")
         
-        self.data[index] = 0
-        last_placed = index
-        for i in range(1, pieces + 1):
-            last_placed = (index + i) % len(self.data)
-            self.data[last_placed] += 1
+        self.pit_array(self.player_in_turn)[index] = 0
+        start_index = self.pit_number(self.player_in_turn, index)
+        last_pos = self.pit_position(start_index)
+        for i in range(start_index + 1, start_index + pieces + 1):
+            last_pos = self.pit_position(i)
+            self.board[last_pos[0]][last_pos[1]] += 1
             
-        if self._is_grid_between_players(last_placed) :
+        if last_pos[1] >= self.grids_per_player :
             return True
         else:
-            self.next_move_player_id += 1
-            self.next_move_player_id %= self.NUMBER_OF_PLAYERS
             return False 
 
-    def _add_index(self, index, diff):
-        return (index + diff) % len(self.data)
+    # def _add_index(self, index, diff):
+    #     return (index + diff) % len(self.data)
 
-    def _is_grid_between_players(self, index: int):
-        return index % (self.grids_per_player + self.STORES_PER_PLAYER) >= self.grids_per_player
+    # def _is_grid_between_players(self, index: int):
+    #     return index % (self.grids_per_player + self.STORES_PER_PLAYER) >= self.grids_per_player
 
     # def get_players_grids(self, player_id: int) -> Dict[int, int]:
     #     start_index = self.get_player_start_index(player_id=player_id)
     #     return {index: self.data[index] for index in range(start_index, start_index + self.grids_per_player)}
 
-    def get_player_start_index(self, player_id: int) -> int:
-        return player_id * (self.grids_per_player + self.STORES_PER_PLAYER)
+    # def get_player_start_index(self, player_id: int) -> int:
+    #     return player_id * (self.grids_per_player + self.STORES_PER_PLAYER)
 
     # def get_players_movable_grids(self, player_id: int) -> Dict[int, int]:
     #     players_grids = self.get_players_grids(player_id=player_id)
@@ -99,11 +104,9 @@ class Board2p:
 
     def possible_moves(self, player_id = None):
         if player_id == None :
-            player_id = self.next_move_player()
-        start_ix = self.get_player_start_index(player_id)
-        end_ix = start_ix + self.grids_per_player
-        for ix in range(start_ix, end_ix) :
-            if self.data[ix] > 0 :
+            player_id = self.current_player()
+        for ix in range(len(self.pit_array(player_id))) :
+            if self.pit_array(player_id)[ix] > 0 :
                 yield ix
     
     # def does_player_win(self, player_id: int) -> bool:
@@ -111,7 +114,8 @@ class Board2p:
     #     return len(movable_grids) == 0
 
     def won_by_player(self, player_id):
-        return sum(self.players_pit_array(player_id)) == 0
+        #print(self.pit_array(player_id))
+        return sum(self.pit_array(player_id)) == 0
     
     def signature(self):
         distribution = list()
@@ -123,10 +127,10 @@ class Board2p:
 
     def __str__(self):
         result = ''
-        result += str(self.data[: self.grids_per_player])
-        result += str(self.data[self.grids_per_player: self.grids_per_player + self.STORES_PER_PLAYER])
+        result += str(self.board[0][:self.grids_per_player])
+        result += str(self.board[0][self.grids_per_player:])
         result += ', '
-        result += str(self.data[self.grids_per_player + self.STORES_PER_PLAYER: self.grids_per_player + self.STORES_PER_PLAYER + self.grids_per_player])
-        result += str(self.data[self.grids_per_player + self.STORES_PER_PLAYER + self.grids_per_player : ])
-        return 'Board2p('+str(self.next_move_player_id)+' ' + result+')'
+        result += str(self.board[1][:self.grids_per_player])
+        result += str(self.board[1][self.grids_per_player:])
+        return 'Board2p('+str(self.player_in_turn)+' ' + result+')'
     
