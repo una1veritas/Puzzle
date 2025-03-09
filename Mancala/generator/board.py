@@ -102,7 +102,7 @@ class Board2p:
         movable_grids = self.get_players_movable_grids(player_id=player_id)
         return len(movable_grids) == 0
 
-    def won_by_player(self, player_id: int):
+    def game_won_by(self, player_id: int):
         for _ in self.possible_moves(player_id) :
             return False
         return True

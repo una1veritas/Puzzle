@@ -5,53 +5,40 @@ import gc, json
 from board import Board2p
 
 def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int, int]:
-    if player_id != board.current_player() :
-        raise ValueError('Error!')
+    # if player_id != board.current_player() :
+    #     raise ValueError('Error!')
     if dp == None :
         search_with_min_max.dp = {}
-    search_with_min_max.original_player_id = player_id
+    search_with_min_max.original_player_id = board.current_player() #player_id
     search_with_min_max.max_to_go = 0
     search_with_min_max.max_sig = []
     
     '''Returns a pair (action, value) where action is the choice as a move, and value is its evaluation '''
     def _evaluate(board: Board2p) -> Tuple[int, int, int]:
+        #print('_evaluate', board)
         result = dp.get(board) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
         if result is not None:
             return result
-        candidates = [i for i in board.possible_moves()]
-        for action in candidates:
+        for a_move in board.possible_moves():
             tmp_board = deepcopy(board)
-            act_again = tmp_board.move(action)
-            #print(f'after move tmp_board = {tmp_board}, act_agin = {act_again}')
-            '''ターンがかわる（差し手の交代）がおきたときと、起きなかったとき act_again == True
-            直前の move による勝利者を区別する必要がある。'''
-            if act_again and tmp_board.won_by_player(tmp_board.next_move_player()) :
-                if tmp_board.next_move_player() == search_with_min_max.original_player_id :
-                    result = (action, 1, 0)
+            won_by_current = tmp_board.move(a_move)
+            if won_by_current :
+                if tmp_board.current_player() == search_with_min_max.original_player_id :
+                    result = (a_move, 1, 0)
                 else:
-                    result = (action, 0, 0)
+                    result = (a_move, 0, 0)
                 break
-            elif not act_again and tmp_board.won_by_player(tmp_board.previous_move_player()) :
-                if tmp_board.previous_move_player() == search_with_min_max.original_player_id :
-                    result = (action, 1, 0)
-                    #print('first player')
-                else:
-                    result = (action, 0, 0)
-                    #print('second player')
-                break
+            r = _evaluate(tmp_board)
+            if result == None :
+                result = (a_move, r[1], r[2] + 1) # a_move という手を打った move した結果数手先でおきた結果
             else:
-                #print('play still continues')
-                r = _evaluate(tmp_board)
-                if result == None :
-                    result = (action, r[1], r[2] + 1) # action という手を打った move した結果数手先でおきた結果
+                if board.current_player() == search_with_min_max.original_player_id:
+                    if r[1] == 1:
+                        result = (a_move, r[1], r[2] + 1)
                 else:
-                    if board.previous_move_player() == search_with_min_max.original_player_id:
-                        if r[1] == 1:
-                            result = (action, r[1], r[2] + 1)
-                    else:
-                        if r[1] == 0:
-                            result = (action, r[1], r[2] + 1)
-        #print(f'board = {board} result = {result}')
+                    if r[1] == 0:
+                        result = (a_move, r[1], r[2] + 1)
+        print(f'board = {board} result = {result}')
         to_go = result[2]
         sig = board.signature()
         if to_go > search_with_min_max.max_to_go or sig > search_with_min_max.max_sig :

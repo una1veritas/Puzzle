@@ -45,7 +45,7 @@ class Game:
                 print(self.board)
                 print(f"Player {player.player_id}")
                 while True:
-                    if self.board.won_by_player(player.player_id):
+                    if self.board.game_won_by(player.player_id):
                         print(f"Player {player.player_id} wins!")
                         print(self.board)
                         return player.player_id
@@ -56,16 +56,16 @@ class Game:
                     print(f'memory usage {mem_usa/10245/1024:.2f}Mb.')
                     if index == -1 :
                         break
-                    act_again = self.board.move(index=index)
-                    if not act_again:
+                    game_finished = self.board.move(index=index)
+                    if game_finished:
                         break
 
-                if self.board.won_by_player(player.player_id):
+                if game_finished :
                     # for key, val in hint_dp.items():
                     #     print(key, val)
-                    print(f"Player {player.player_id} wins!")
+                    print(f"Player {self.board.current_player()} wins!")
                     print(self.board)
-                    return player.player_id
+                    return self.board.current_player()
                 print()
             turn_n += 1
             if turn_n >= self.max_turns:
