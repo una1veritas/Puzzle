@@ -33,12 +33,12 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
                 result = (a_move, r[1], r[2] + 1) # a_move という手を打った move した結果数手先でおきた結果
             else:
                 if board.current_player() == search_with_min_max.original_player_id:
-                    if r[1] == 1:
+                    if r[1] > result[1] or (r[1] == 1 and r[2] + 1 < result[2]) or (r[1] == 0 and r[2] + 1 > result[2]) :
                         result = (a_move, r[1], r[2] + 1)
                 else:
-                    if r[1] == 0:
+                    if r[1] < result[1] or (r[1] == 1 and r[2] + 1 > result[2]) or (r[1] == 0 and r[2] + 1 < result[2]) :
                         result = (a_move, r[1], r[2] + 1)
-        print(f'board = {board} result = {result}')
+        #print(f'board = {board} result = {result}')
         to_go = result[2]
         sig = board.signature()
         if to_go > search_with_min_max.max_to_go or sig > search_with_min_max.max_sig :

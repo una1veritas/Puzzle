@@ -23,50 +23,48 @@ class Game:
     ):
         if not len(player_classes) > 1:
             raise ValueError("Players should be more than 2.")
-        players = [player_class(player_id=i) for i, player_class in enumerate(player_classes)]
-        players_num = len(players)
-        self.players_num = players_num
-        self.init_pieces_per_grid = init_pieces_per_grid
-        self.grids_per_player = grids_per_player
+        self.players = [player_class(player_id=i) for i, player_class in enumerate(player_classes)]
+        self.initial_pieces = init_pieces_per_grid
+        self.nuber_of_pits = grids_per_player
         self.grids_between_players = grids_between_players
         self.max_turns = max_turns
         self.board = Board2p(
             init_pieces_per_grid=init_pieces_per_grid,
             grids_per_player=grids_per_player,
         )
-        self.players = players
-
+    
+    def number_of_players(self):
+        return len(self.players)
+    
     def run(self) -> Optional[int]:
         hint_dp = dict()
         turn_n = 1
         while True:
             print(f"Turn {turn_n}")
-            for player in self.players:
+            print(f"Player {self.board.current_player()}")
+            current_player_id = self.board.current_player()
+            while self.board.current_player() == current_player_id :
                 print(self.board)
-                print(f"Player {player.player_id}")
-                while True:
-                    if self.board.game_won_by(player.player_id):
-                        print(f"Player {player.player_id} wins!")
-                        print(self.board)
-                        return player.player_id
-                    
-                    index = player.act(self.board) if not isinstance(player, MinMaxPlayer) else player.act(self.board, hint_dp)
-                    print(f"Action {index}")
-                    mem_usa = get_memory_usage()
-                    print(f'memory usage {mem_usa/10245/1024:.2f}Mb.')
-                    if index == -1 :
-                        break
-                    game_finished = self.board.move(index=index)
-                    if game_finished:
-                        break
-
-                if game_finished :
-                    # for key, val in hint_dp.items():
-                    #     print(key, val)
-                    print(f"Player {self.board.current_player()} wins!")
-                    print(self.board)
-                    return self.board.current_player()
+                player = self.players[current_player_id]
+                index = player.act(self.board) if not isinstance(player, MinMaxPlayer) else player.act(self.board, hint_dp)
+                #print(f"Took action {index}")
+                mem_usa = get_memory_usage()
+                #print(f'memory usage {mem_usa/10245/1024:.2f}Mb.')
+                # if index == -1 :
+                #     break
+                #print("before move", self.board)                
+                game_finished = self.board.move(index=index)
+                #print("after move", self.board)
+                if game_finished:
+                    break
                 print()
+            if game_finished :
+                print()
+                print(f"Player {self.board.current_player()} wins!")
+                print(self.board)
+                print()
+                return self.board.current_player()
+            
             turn_n += 1
             if turn_n >= self.max_turns:
                 print("Draw...")
@@ -82,7 +80,7 @@ if __name__ == "__main__":
     swatch_start = time.time()
     game = Game(player_classes=[MinMaxPlayer, MinMaxPlayer], \
                 init_pieces_per_grid=2, \
-                grids_per_player=3
+                grids_per_player=6
                 )
     winner = game.run()
     swatch_stop = time.time()

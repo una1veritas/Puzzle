@@ -21,8 +21,8 @@ class Game:
         players = [player_class(player_id=i) for i, player_class in enumerate(player_classes)]
         players_num = len(players)
         self.players_num = players_num
-        self.init_pieces_per_grid = init_pieces_per_grid
-        self.grids_per_player = grids_per_player
+        self.initial_pieces = init_pieces_per_grid
+        self.nuber_of_pits = grids_per_player
         self.grids_between_players = grids_between_players
         self.max_turns = max_turns
         self.board = Board2p(

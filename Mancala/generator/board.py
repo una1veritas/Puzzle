@@ -11,21 +11,21 @@ class Board2p:
         init_pieces_per_grid : int = 3,
         grids_per_player : int = 3
     ):
-        self.init_pieces_per_grid = init_pieces_per_grid
-        self.grids_per_player = grids_per_player
+        self.initial_pieces = init_pieces_per_grid
+        self.nuber_of_pits = grids_per_player
         self.data = (
             [init_pieces_per_grid] * grids_per_player
             + [self.INITIAL_STONES_IN_SOTRE] * self.STORES_PER_PLAYER
         ) * self.NUMBER_OF_PLAYERS
     
-    def __eq__(self, another):
-        if not isinstance(another, type(self)) :
+    def __eq__(self, other):
+        if not isinstance(other, type(self)) :
             return False
-        if self.grids_per_player == another.grids_per_player :
+        if self.nuber_of_pits == other.nuber_of_pits :
             for i in range(self.NUMBER_OF_PLAYERS) :
                 start_ix = self.get_player_start_index(i)
-                end_ix = start_ix + self.grids_per_player
-                if self.data[start_ix: end_ix] != another.data[start_ix: end_ix] :
+                end_ix = start_ix + self.nuber_of_pits
+                if self.data[start_ix: end_ix] != other.data[start_ix: end_ix] :
                     return False
             return True
         else:
@@ -35,7 +35,7 @@ class Board2p:
         hashes = list()
         for i in range(self.NUMBER_OF_PLAYERS) :
             start_pit = self.get_player_start_index(i)
-            hashes.append(hash(tuple(self.data[start_pit: start_pit + self.grids_per_player]))) 
+            hashes.append(hash(tuple(self.data[start_pit: start_pit + self.nuber_of_pits]))) 
         return hash(tuple(hashes))
 
     
@@ -70,10 +70,10 @@ class Board2p:
         return (index + diff) % len(self.data)
 
     def _is_grid_between_players(self, index: int):
-        return index % (self.grids_per_player + self.STORES_PER_PLAYER) >= self.grids_per_player
+        return index % (self.nuber_of_pits + self.STORES_PER_PLAYER) >= self.nuber_of_pits
 
     def is_players_store(self, player_id: int, index : int):
-        return index == self.grids_per_player + player_id * (self.grids_per_player + self.STORES_PER_PLAYER)
+        return index == self.nuber_of_pits + player_id * (self.nuber_of_pits + self.STORES_PER_PLAYER)
 
     def is_store(self, index : int):
         for pid in range(self.NUMBER_OF_PLAYERS) :
@@ -82,10 +82,10 @@ class Board2p:
         
     def get_players_grids(self, player_id: int) -> Dict[int, int]:
         start_index = self.get_player_start_index(player_id=player_id)
-        return {index: self.data[index] for index in range(start_index, start_index + self.grids_per_player)}
+        return {index: self.data[index] for index in range(start_index, start_index + self.nuber_of_pits)}
 
     def get_player_start_index(self, player_id: int) -> int:
-        return player_id * (self.grids_per_player + self.STORES_PER_PLAYER)
+        return player_id * (self.nuber_of_pits + self.STORES_PER_PLAYER)
 
     def get_players_movable_grids(self, player_id: int) -> Dict[int, int]:
         players_grids = self.get_players_grids(player_id=player_id)
@@ -93,7 +93,7 @@ class Board2p:
 
     def possible_moves(self, player_id: int):
         start_ix = self.get_player_start_index(player_id)
-        end_ix = start_ix + self.grids_per_player
+        end_ix = start_ix + self.nuber_of_pits
         for ix in range(start_ix, end_ix) :
             if self.data[ix] > 0 :
                 yield ix
@@ -110,17 +110,17 @@ class Board2p:
     def signature(self):
         distribution = list()
         for i in range(self.NUMBER_OF_PLAYERS) :
-            start_grid_index = i*(self.grids_per_player + self.STORES_PER_PLAYER)
-            distribution += [ c for c in self.data[start_grid_index: start_grid_index + self.grids_per_player] if c > 0]
+            start_grid_index = i*(self.nuber_of_pits + self.STORES_PER_PLAYER)
+            distribution += [ c for c in self.data[start_grid_index: start_grid_index + self.nuber_of_pits] if c > 0]
         distribution.sort(reverse=True)
         return distribution
 
     def __str__(self):
         result = ''
-        result += str(self.data[: self.grids_per_player])
-        result += str(self.data[self.grids_per_player: self.grids_per_player + self.STORES_PER_PLAYER])
+        result += str(self.data[: self.nuber_of_pits])
+        result += str(self.data[self.nuber_of_pits: self.nuber_of_pits + self.STORES_PER_PLAYER])
         result += ', '
-        result += str(self.data[self.grids_per_player + self.STORES_PER_PLAYER: self.grids_per_player + self.STORES_PER_PLAYER + self.grids_per_player])
-        result += str(self.data[self.grids_per_player + self.STORES_PER_PLAYER + self.grids_per_player : ])
+        result += str(self.data[self.nuber_of_pits + self.STORES_PER_PLAYER: self.nuber_of_pits + self.STORES_PER_PLAYER + self.nuber_of_pits])
+        result += str(self.data[self.nuber_of_pits + self.STORES_PER_PLAYER + self.nuber_of_pits : ])
         return 'Board2Player('+result+')'
     
