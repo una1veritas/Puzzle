@@ -1,6 +1,6 @@
 from typing import Dict
 from numpy import ix_
-from pickle import TRUE
+from pickle import TRUE, FALSE
 
 class Board2p:
     INITIAL_STONES_IN_SOTRE = 0
@@ -56,6 +56,25 @@ class Board2p:
     def switch_turn(self):
         self.player_in_turn = self.next_turn_player()
     
+        '''手を打つ．石を動かさず、勝利の場合 True を返し．そうでない場合 False を返す．エラーチェックしない．'''
+    def winning_move(self, index: int) -> bool:
+        """Move the pieces which are in the grid of the given index.
+        :params
+        index: int: which grid to be moved
+        :return
+        whether you can move again or not.
+        """
+
+        remain = (self.num_of_pits + self.STORES_PER_PLAYER) - (index % (self.num_of_pits + self.STORES_PER_PLAYER))
+        if remain > self.STORES_PER_PLAYER:
+            return False        
+        pieces = self.board[self.player_in_turn][index]
+        if pieces == 0 :
+            return False
+        if pieces - self.STORES_PER_PLAYER > self.num_of_pits + self.STORES_PER_PLAYER :
+            return False
+        return sum(self._pits_of_current()) == pieces
+        
     '''手を打つ．石を動かす．勝利の場合 True を返す．そうでない場合，必要ならターンを変えて False を返す．'''
     def move(self, index: int) -> bool:
         """Move the pieces which are in the grid of the given index.
