@@ -19,7 +19,7 @@ class Game:
         init_pieces_per_grid: int = 3,
         grids_per_player: int = 4,
         grids_between_players: int = 1,
-        max_turns: int = 100,
+        max_turns: int = 255,
     ):
         if not len(player_classes) > 1:
             raise ValueError("Players should be more than 2.")
@@ -67,8 +67,12 @@ class Game:
             
             turn_n += 1
             if turn_n >= self.max_turns:
-                print("Draw...")
-                return
+                ans = input("Shall we continue? (yes/no) ")
+                if 'yes' in ans :
+                    self.max_turns *= 2
+                else:
+                    print("Draw...")
+                    return
 
 
 if __name__ == "__main__":
@@ -80,7 +84,7 @@ if __name__ == "__main__":
     swatch_start = time.time()
     game = Game(player_classes=[MinMaxPlayer, MinMaxPlayer], \
                 init_pieces_per_grid=2, \
-                grids_per_player=5
+                grids_per_player=6
                 )
     winner = game.run()
     swatch_stop = time.time()

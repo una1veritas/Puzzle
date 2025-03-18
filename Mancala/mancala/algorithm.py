@@ -30,7 +30,8 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
                 break
             r = _evaluate(tmp_board)
             if result == None :
-                result = (a_move, r[1], r[2] + 1) # a_move という手を打った move した結果数手先でおきた結果
+                '''a_move という手を打った move の結果その r[2] 手先でおきた勝敗'''
+                result = (a_move, r[1], r[2] + 1) 
             else:
                 if board.current_player() == search_with_min_max.original_player_id:
                     if r[1] > result[1] or (r[1] == 1 and r[2] + 1 < result[2]) or (r[1] == 0 and r[2] + 1 > result[2]) :
