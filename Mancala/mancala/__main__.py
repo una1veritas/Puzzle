@@ -3,6 +3,8 @@ from typing import List, Optional, Type
 from board import Board2p
 from player import Player
 
+import psutil
+import os
 
 
 class Game:
@@ -41,7 +43,6 @@ class Game:
                 player = self.players[current_player_id]
                 index = player.act(self.board) if not isinstance(player, MinMaxPlayer) else player.act(self.board, hint_dp)
                 #print(f"Took action {index}")
-                #print(f'memory usage {mem_usa/10245/1024:.2f}Mb.')
                 # if index == -1 :
                 #     break
                 #print("before move", self.board)                

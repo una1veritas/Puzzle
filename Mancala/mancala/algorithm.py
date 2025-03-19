@@ -1,10 +1,9 @@
 from copy import deepcopy
 from typing import Dict, Tuple, List, Any
 import gc, json
+import psutil, os
 
 from board import Board2p
-import psutil
-import os
 
 def get_memory_usage():
     process = psutil.Process(os.getpid())
@@ -56,7 +55,8 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
                 search_with_min_max.max_to_go = to_go
             print(f'max to over = {search_with_min_max.max_to_go}, dp size = {len(dp)}, signature = {search_with_min_max.max_sig}')
             print(f"key {str(board)} and value {result}.")
-            print(f'mem usage: {get_memory_usage()//1024//1024} mb')
+            mem_usa = get_memory_usage()
+            print(f'memory usage {mem_usa/10245/1024:.2f}Mb.')
             print()
             gc.collect()
         dp[board] = result
