@@ -1,104 +1,1346 @@
+
+sin@alpheratz Mancala % python3 mancala
+2025-03-18 17:16:53.793347
 Turn 1
-[3, 3, 3, 3][0, 0][3, 3, 3, 3][0, 0]
 Player 0
-Evaluation: -1
-Action 0
-[0, 4, 4, 4][0, 0][3, 3, 3, 3][0, 0]
-Player 1
-Evaluation: 1
-Action 6
+Board2p(0, [2, 2, 2, 2, 2, 2; 0],[2, 2, 2, 2, 2, 2; 0])
+max to over = 0, dp size = 0, signature = [5, 5, 3, 3, 3, 2]
+key Board2p(0, [0, 0, 0, 0, 0, 5; 3],[0, 3, 5, 3, 3, 2; 0]) and value (5, 1, 0).
+memory usage 2.64Mb.
+
+max to over = 0, dp size = 1, signature = [6, 5, 4, 3, 2, 1]
+key Board2p(0, [0, 0, 0, 0, 0, 5; 3],[1, 0, 6, 4, 3, 2; 0]) and value (5, 1, 0).
+memory usage 2.64Mb.
+
+max to over = 0, dp size = 7, signature = [7, 3, 3, 2]
+key Board2p(1, [0, 0, 0, 3, 3, 2; 4],[0, 0, 0, 0, 0, 7; 5]) and value (5, 0, 0).
+memory usage 2.64Mb.
+
+max to over = 1, dp size = 9, signature = [7, 3, 3, 2]
+key Board2p(1, [0, 2, 1, 4, 4, 2; 4],[0, 0, 0, 0, 2, 0; 5]) and value (4, 0, 1).
+memory usage 2.64Mb.
+
+max to over = 1, dp size = 14, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 1, 0, 0, 7, 4; 5],[0, 0, 0, 0, 0, 1; 6]) and value (5, 0, 0).
+memory usage 2.64Mb.
+
+max to over = 2, dp size = 26, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 1, 1, 2, 0, 0; 7],[0, 0, 0, 0, 2, 0; 10]) and value (0, 0, 2).
+memory usage 2.64Mb.
+
+max to over = 3, dp size = 42, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 2, 1, 1, 1, 1; 7],[0, 0, 0, 0, 1, 0; 10]) and value (4, 0, 3).
+memory usage 2.64Mb.
+
+max to over = 4, dp size = 87, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 0, 0, 2, 1, 0; 9],[0, 0, 0, 0, 1, 1; 10]) and value (3, 1, 4).
+memory usage 2.65Mb.
+
+max to over = 5, dp size = 89, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 0, 0, 2, 1, 0; 9],[0, 0, 0, 1, 0, 0; 11]) and value (3, 0, 5).
+memory usage 2.65Mb.
+
+max to over = 6, dp size = 90, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 0, 0, 2, 1, 0; 9],[0, 0, 0, 1, 0, 1; 10]) and value (5, 0, 6).
+memory usage 2.65Mb.
+
+max to over = 7, dp size = 117, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 0, 2, 1, 0, 0; 9],[0, 0, 0, 1, 0, 1; 10]) and value (2, 0, 7).
+memory usage 2.65Mb.
+
+max to over = 8, dp size = 119, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 0, 2, 1, 0, 0; 9],[0, 0, 1, 0, 0, 0; 11]) and value (2, 0, 8).
+memory usage 2.65Mb.
+
+max to over = 9, dp size = 169, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 2, 1, 0, 0, 0; 9],[0, 0, 1, 0, 0, 1; 10]) and value (2, 1, 9).
+memory usage 2.65Mb.
+
+max to over = 10, dp size = 172, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 2, 1, 0, 0, 0; 9],[0, 1, 0, 0, 0, 1; 10]) and value (1, 1, 10).
+memory usage 2.65Mb.
+
+max to over = 11, dp size = 331, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 1, 1, 0, 0, 0; 9],[0, 1, 0, 0, 0, 1; 10]) and value (0, 1, 11).
+memory usage 2.66Mb.
+
+max to over = 12, dp size = 334, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 1, 1, 0, 0, 0; 9],[1, 0, 0, 0, 0, 1; 10]) and value (0, 1, 12).
+memory usage 2.66Mb.
+
+max to over = 13, dp size = 335, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 1, 1, 0, 0, 2; 8],[0, 0, 0, 0, 0, 1; 10]) and value (5, 1, 13).
+memory usage 2.66Mb.
+
+max to over = 14, dp size = 346, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 1, 1, 0, 2, 1; 7],[0, 0, 0, 0, 0, 1; 10]) and value (4, 1, 14).
+memory usage 2.66Mb.
+
+max to over = 15, dp size = 347, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 1, 1, 0, 2, 1; 7],[0, 0, 0, 0, 1, 0; 10]) and value (4, 1, 15).
+memory usage 2.66Mb.
+
+max to over = 16, dp size = 470, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 0, 0, 1, 0, 1; 9],[0, 0, 0, 1, 0, 2; 10]) and value (3, 1, 16).
+memory usage 2.67Mb.
+
+max to over = 17, dp size = 484, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 0, 0, 1, 0, 1; 9],[0, 0, 1, 0, 0, 2; 10]) and value (2, 1, 17).
+memory usage 2.67Mb.
+
+max to over = 18, dp size = 485, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 0, 0, 1, 1, 0; 9],[0, 0, 1, 0, 0, 2; 10]) and value (4, 1, 18).
+memory usage 2.67Mb.
+
+max to over = 19, dp size = 493, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 0, 0, 1, 1, 0; 9],[0, 1, 0, 0, 0, 2; 10]) and value (1, 1, 19).
+memory usage 2.67Mb.
+
+max to over = 20, dp size = 494, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 0, 2, 0, 0, 0; 9],[0, 1, 0, 0, 0, 2; 10]) and value (2, 1, 20).
+memory usage 2.67Mb.
+
+max to over = 21, dp size = 504, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 0, 2, 0, 0, 0; 9],[1, 0, 0, 0, 0, 2; 10]) and value (0, 1, 21).
+memory usage 2.67Mb.
+
+max to over = 22, dp size = 505, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 0, 2, 0, 0, 2; 8],[0, 0, 0, 0, 0, 2; 10]) and value (5, 1, 22).
+memory usage 2.67Mb.
+
+max to over = 23, dp size = 527, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 0, 2, 0, 0, 2; 8],[0, 0, 0, 0, 1, 1; 10]) and value (4, 1, 23).
+memory usage 2.67Mb.
+
+max to over = 24, dp size = 1291, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 1, 1, 1, 0, 2; 7],[0, 0, 0, 0, 0, 1; 10]) and value (5, 1, 24).
+memory usage 2.72Mb.
+
+max to over = 25, dp size = 1292, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 1, 1, 1, 0, 2; 7],[0, 0, 0, 0, 1, 0; 10]) and value (4, 1, 25).
+memory usage 2.72Mb.
+
+max to over = 26, dp size = 1766, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 1, 1, 0, 0, 2; 7],[0, 0, 0, 0, 1, 1; 10]) and value (4, 0, 26).
+memory usage 2.75Mb.
+
+max to over = 27, dp size = 1767, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 1, 1, 0, 0, 2; 7],[0, 0, 0, 3, 0, 0; 9]) and value (3, 0, 27).
+memory usage 2.75Mb.
+
+max to over = 28, dp size = 1782, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 1, 1, 0, 1, 1; 7],[0, 0, 0, 3, 0, 0; 9]) and value (4, 0, 28).
+memory usage 2.75Mb.
+
+max to over = 29, dp size = 1783, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 0, 0, 0, 1, 1; 7],[0, 0, 0, 3, 0, 4; 8]) and value (5, 0, 29).
+memory usage 2.75Mb.
+
+max to over = 30, dp size = 1784, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 0, 0, 2, 0, 0; 7],[0, 0, 0, 3, 0, 4; 8]) and value (3, 0, 30).
+memory usage 2.75Mb.
+
+max to over = 31, dp size = 10335, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 0, 0, 1, 1, 0; 8],[0, 0, 1, 1, 0, 2; 9]) and value (4, 0, 31).
+memory usage 3.29Mb.
+
+max to over = 32, dp size = 10339, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 0, 0, 1, 1, 0; 8],[0, 2, 0, 0, 0, 2; 9]) and value (1, 0, 32).
+memory usage 3.29Mb.
+
+max to over = 33, dp size = 10340, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 0, 2, 0, 0, 0; 8],[0, 2, 0, 0, 0, 2; 9]) and value (2, 0, 33).
+memory usage 3.29Mb.
+
+max to over = 34, dp size = 10538, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 0, 2, 0, 0, 0; 8],[1, 1, 0, 0, 0, 2; 9]) and value (0, 0, 34).
+memory usage 3.30Mb.
+
+max to over = 35, dp size = 10539, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 0, 2, 0, 0, 3; 7],[0, 0, 0, 0, 0, 2; 9]) and value (5, 0, 35).
+memory usage 3.30Mb.
+
+max to over = 36, dp size = 10612, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 0, 2, 0, 0, 3; 7],[0, 0, 0, 0, 1, 1; 9]) and value (4, 0, 36).
+memory usage 3.30Mb.
+
+max to over = 37, dp size = 13309, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 0, 1, 0, 1, 0; 8],[0, 1, 1, 1, 0, 2; 9]) and value (3, 1, 37).
+memory usage 3.46Mb.
+
+max to over = 38, dp size = 13698, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 1, 1, 0, 0, 0; 8],[0, 1, 1, 1, 0, 2; 9]) and value (1, 1, 38).
+memory usage 3.48Mb.
+
+max to over = 39, dp size = 17548, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 1, 1, 0, 0, 0; 8],[0, 1, 0, 1, 1, 1; 9]) and value (2, 0, 39).
+memory usage 3.70Mb.
+
+max to over = 40, dp size = 19245, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 1, 1, 1, 0, 3; 7],[0, 0, 0, 0, 0, 1; 9]) and value (5, 1, 40).
+memory usage 3.80Mb.
+
+max to over = 41, dp size = 19246, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 1, 1, 1, 0, 3; 7],[0, 0, 0, 0, 1, 0; 9]) and value (4, 1, 41).
+memory usage 3.80Mb.
+
+max to over = 42, dp size = 26279, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 1, 0, 0, 1, 3; 7],[0, 0, 0, 1, 1, 0; 9]) and value (1, 0, 42).
+memory usage 4.32Mb.
+
+max to over = 43, dp size = 26328, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 1, 0, 0, 1, 3; 7],[0, 0, 1, 0, 1, 0; 9]) and value (2, 0, 43).
+memory usage 4.32Mb.
+
+max to over = 44, dp size = 41980, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 1, 0, 1, 0, 0; 7],[0, 1, 2, 1, 0, 3; 8]) and value (1, 0, 44).
+memory usage 5.21Mb.
+
+max to over = 45, dp size = 44492, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 1, 0, 2, 0, 2; 7],[1, 0, 0, 1, 0, 0; 9]) and value (0, 0, 45).
+memory usage 5.61Mb.
+
+max to over = 46, dp size = 44537, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 1, 1, 0, 0, 3; 7],[0, 0, 1, 1, 0, 0; 9]) and value (2, 0, 46).
+memory usage 5.61Mb.
+
+max to over = 47, dp size = 44539, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 1, 1, 0, 0, 3; 7],[0, 1, 0, 1, 0, 0; 9]) and value (1, 0, 47).
+memory usage 5.61Mb.
+
+max to over = 48, dp size = 46505, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 1, 0, 1, 0, 0; 7],[1, 0, 2, 1, 0, 3; 8]) and value (5, 1, 48).
+memory usage 5.72Mb.
+
+max to over = 49, dp size = 49488, signature = [7, 4, 1, 1]
+key Board2p(1, [1, 1, 2, 1, 0, 1; 7],[1, 1, 0, 0, 0, 0; 9]) and value (1, 0, 49).
+memory usage 5.89Mb.
+
+max to over = 50, dp size = 49489, signature = [7, 4, 1, 1]
+key Board2p(0, [1, 1, 2, 1, 1, 0; 7],[1, 1, 0, 0, 0, 0; 9]) and value (4, 0, 50).
+memory usage 5.89Mb.
+
+max to over = 51, dp size = 49490, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 0, 1, 0, 1, 0; 7],[1, 1, 0, 0, 0, 5; 8]) and value (5, 0, 51).
+memory usage 5.89Mb.
+
+max to over = 52, dp size = 49491, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 0, 1, 1, 0, 0; 7],[1, 1, 0, 0, 0, 5; 8]) and value (3, 0, 52).
+memory usage 5.89Mb.
+
+max to over = 53, dp size = 51054, signature = [7, 4, 1, 1]
+key Board2p(1, [0, 1, 0, 0, 1, 0; 7],[1, 1, 0, 0, 1, 4; 8]) and value (4, 0, 53).
+memory usage 5.98Mb.
+
+max to over = 54, dp size = 51055, signature = [7, 4, 1, 1]
+key Board2p(0, [0, 1, 0, 1, 0, 0; 7],[1, 1, 0, 0, 1, 4; 8]) and value (3, 0, 54).
+memory usage 5.98Mb.
+
+max to over = 54, dp size = 115414, signature = [8, 2]
+key Board2p(1, [0, 0, 0, 0, 0, 2; 7],[0, 0, 0, 0, 0, 8; 7]) and value (5, 0, 0).
+memory usage 10.13Mb.
+
+max to over = 55, dp size = 124043, signature = [8, 2]
+key Board2p(0, [2, 0, 1, 0, 0, 2; 7],[0, 2, 0, 0, 1, 1; 8]) and value (2, 0, 55).
+memory usage 10.62Mb.
+
+max to over = 56, dp size = 127979, signature = [8, 2]
+key Board2p(1, [0, 0, 0, 0, 1, 1; 7],[0, 1, 0, 1, 1, 5; 7]) and value (5, 0, 56).
+memory usage 10.85Mb.
+
+max to over = 57, dp size = 127982, signature = [8, 2]
+key Board2p(0, [0, 0, 0, 1, 0, 1; 7],[0, 1, 0, 1, 1, 5; 7]) and value (3, 0, 57).
+memory usage 10.85Mb.
+
+max to over = 58, dp size = 128060, signature = [8, 2]
+key Board2p(1, [0, 0, 0, 1, 0, 1; 7],[0, 1, 2, 0, 0, 5; 7]) and value (2, 0, 58).
+memory usage 10.85Mb.
+
+max to over = 59, dp size = 128061, signature = [8, 2]
+key Board2p(0, [0, 0, 0, 1, 1, 0; 7],[0, 1, 2, 0, 0, 5; 7]) and value (4, 0, 59).
+memory usage 10.85Mb.
+
+max to over = 60, dp size = 131051, signature = [8, 2]
+key Board2p(1, [0, 0, 0, 1, 1, 0; 7],[1, 0, 2, 0, 0, 5; 7]) and value (0, 0, 60).
+memory usage 11.02Mb.
+
+max to over = 61, dp size = 131246, signature = [8, 2]
+key Board2p(0, [0, 0, 1, 0, 1, 0; 7],[1, 0, 2, 0, 0, 5; 7]) and value (2, 0, 61).
+memory usage 11.03Mb.
+
+max to over = 62, dp size = 131390, signature = [8, 2]
+key Board2p(1, [0, 0, 1, 0, 1, 0; 7],[1, 0, 2, 0, 1, 4; 7]) and value (4, 0, 62).
+memory usage 11.04Mb.
+
+max to over = 63, dp size = 131391, signature = [8, 2]
+key Board2p(0, [0, 0, 1, 1, 0, 0; 7],[1, 0, 2, 0, 1, 4; 7]) and value (3, 0, 63).
+memory usage 11.04Mb.
+
+max to over = 63, dp size = 156914, signature = [9, 1]
+key Board2p(0, [0, 0, 0, 0, 0, 1; 7],[0, 0, 0, 0, 9, 0; 7]) and value (5, 1, 0).
+memory usage 12.49Mb.
+
+max to over = 64, dp size = 175643, signature = [9, 1]
+key Board2p(0, [1, 0, 1, 0, 1, 0; 7],[1, 1, 1, 0, 1, 3; 7]) and value (0, 1, 64).
+memory usage 14.55Mb.
+
+max to over = 65, dp size = 175713, signature = [9, 1]
+key Board2p(1, [1, 0, 1, 0, 1, 0; 7],[1, 1, 1, 1, 0, 3; 7]) and value (3, 1, 65).
+memory usage 14.55Mb.
+
+max to over = 66, dp size = 175869, signature = [9, 1]
+key Board2p(0, [1, 1, 0, 0, 1, 0; 7],[1, 1, 1, 1, 0, 3; 7]) and value (1, 1, 66).
+memory usage 14.56Mb.
+
+max to over = 67, dp size = 176325, signature = [9, 1]
+key Board2p(1, [0, 0, 0, 0, 1, 0; 7],[1, 1, 1, 1, 4, 2; 6]) and value (4, 1, 67).
+memory usage 14.59Mb.
+
+max to over = 68, dp size = 176326, signature = [9, 1]
+key Board2p(0, [0, 0, 0, 0, 1, 5; 6],[0, 0, 0, 0, 4, 2; 6]) and value (5, 1, 68).
+memory usage 14.59Mb.
+
+max to over = 68, dp size = 248492, signature = [9, 2]
+key Board2p(0, [0, 0, 0, 0, 0, 9; 6],[0, 0, 0, 0, 0, 2; 7]) and value (5, 0, 51).
+memory usage 18.68Mb.
+
+max to over = 69, dp size = 255657, signature = [9, 2]
+key Board2p(0, [1, 1, 0, 0, 1, 0; 7],[1, 3, 0, 1, 1, 1; 7]) and value (1, 1, 69).
+memory usage 19.09Mb.
+
+max to over = 70, dp size = 287922, signature = [9, 2]
+key Board2p(1, [1, 1, 0, 0, 1, 0; 7],[1, 3, 2, 0, 0, 1; 7]) and value (2, 1, 70).
+memory usage 20.92Mb.
+
+max to over = 71, dp size = 287923, signature = [9, 2]
+key Board2p(0, [1, 1, 0, 1, 0, 0; 7],[1, 3, 2, 0, 0, 1; 7]) and value (3, 1, 71).
+memory usage 20.92Mb.
+
+max to over = 72, dp size = 287924, signature = [9, 2]
+key Board2p(1, [1, 1, 0, 1, 0, 0; 7],[1, 3, 2, 0, 1, 0; 7]) and value (4, 1, 72).
+memory usage 20.92Mb.
+
+max to over = 73, dp size = 287925, signature = [9, 2]
+key Board2p(0, [1, 1, 1, 0, 0, 0; 7],[1, 3, 2, 0, 1, 0; 7]) and value (2, 1, 73).
+memory usage 20.92Mb.
+
+max to over = 74, dp size = 287926, signature = [9, 2]
+key Board2p(1, [0, 0, 1, 0, 0, 0; 7],[1, 3, 2, 0, 1, 3; 6]) and value (5, 1, 74).
+memory usage 20.92Mb.
+
+max to over = 75, dp size = 287927, signature = [9, 2]
+key Board2p(0, [0, 1, 0, 0, 0, 0; 7],[1, 3, 2, 0, 1, 3; 6]) and value (1, 1, 75).
+memory usage 20.92Mb.
+
+max to over = 75, dp size = 467861, signature = [10, 1]
+key Board2p(1, [0, 0, 0, 0, 0, 10; 6],[0, 0, 0, 0, 0, 1; 7]) and value (5, 0, 0).
+memory usage 33.12Mb.
+
+max to over = 76, dp size = 616651, signature = [10, 1]
+key Board2p(1, [0, 0, 1, 2, 1, 5; 6],[0, 0, 1, 0, 0, 2; 6]) and value (2, 0, 76).
+memory usage 41.56Mb.
+
+max to over = 77, dp size = 639815, signature = [10, 1]
+key Board2p(0, [0, 1, 0, 2, 1, 5; 6],[0, 0, 1, 0, 0, 2; 6]) and value (1, 0, 77).
+memory usage 42.87Mb.
+
+max to over = 77, dp size = 690542, signature = [10, 2]
+key Board2p(1, [0, 0, 0, 0, 0, 10; 6],[0, 0, 0, 0, 0, 2; 6]) and value (5, 0, 0).
+memory usage 45.75Mb.
+
+max to over = 78, dp size = 695841, signature = [10, 2]
+key Board2p(1, [0, 1, 1, 1, 1, 0; 7],[1, 1, 2, 1, 0, 2; 6]) and value (3, 1, 78).
+memory usage 46.05Mb.
+
+max to over = 79, dp size = 695842, signature = [10, 2]
+key Board2p(0, [0, 1, 1, 1, 1, 5; 6],[0, 0, 1, 0, 0, 2; 6]) and value (5, 1, 79).
+memory usage 46.05Mb.
+
+max to over = 80, dp size = 755147, signature = [10, 2]
+key Board2p(0, [0, 0, 0, 1, 1, 4; 6],[1, 0, 1, 0, 5, 0; 5]) and value (4, 1, 80).
+memory usage 53.41Mb.
+
+max to over = 81, dp size = 755203, signature = [10, 2]
+key Board2p(1, [0, 0, 0, 1, 1, 4; 6],[1, 0, 1, 1, 4, 0; 5]) and value (3, 1, 81).
+memory usage 53.41Mb.
+
+max to over = 82, dp size = 755268, signature = [10, 2]
+key Board2p(0, [0, 0, 1, 0, 1, 4; 6],[1, 0, 1, 1, 4, 0; 5]) and value (2, 1, 82).
+memory usage 53.41Mb.
+
+max to over = 83, dp size = 756320, signature = [10, 2]
+key Board2p(1, [0, 0, 1, 0, 1, 4; 6],[1, 1, 0, 1, 4, 0; 5]) and value (1, 1, 83).
+memory usage 53.48Mb.
+
+max to over = 84, dp size = 756397, signature = [10, 2]
+key Board2p(0, [0, 0, 1, 1, 0, 4; 6],[1, 1, 0, 1, 4, 0; 5]) and value (3, 1, 84).
+memory usage 53.48Mb.
+
+max to over = 85, dp size = 756798, signature = [10, 2]
+key Board2p(1, [0, 0, 1, 1, 0, 4; 6],[1, 1, 1, 0, 4, 0; 5]) and value (2, 1, 85).
+memory usage 53.50Mb.
+
+max to over = 86, dp size = 759376, signature = [10, 2]
+key Board2p(0, [0, 2, 0, 0, 0, 4; 6],[1, 1, 1, 0, 4, 0; 5]) and value (1, 1, 86).
+memory usage 53.65Mb.
+
+max to over = 86, dp size = 903919, signature = [11, 1]
+key Board2p(0, [0, 0, 0, 0, 0, 1; 7],[0, 0, 0, 0, 11, 0; 5]) and value (5, 1, 0).
+memory usage 61.85Mb.
+
+max to over = 87, dp size = 1287705, signature = [11, 1]
+key Board2p(0, [0, 2, 0, 0, 3, 0; 7],[0, 1, 1, 5, 1, 0; 4]) and value (1, 0, 87).
+memory usage 83.61Mb.
+
+max to over = 88, dp size = 1531474, signature = [11, 1]
+key Board2p(1, [0, 1, 1, 1, 2, 0; 7],[1, 1, 2, 4, 0, 0; 4]) and value (2, 1, 88).
+memory usage 105.43Mb.
+
+max to over = 89, dp size = 1762612, signature = [11, 1]
+key Board2p(0, [1, 0, 0, 0, 3, 5; 6],[0, 0, 1, 4, 0, 0; 4]) and value (5, 1, 89).
+memory usage 118.53Mb.
+
+max to over = 89, dp size = 1894099, signature = [11, 1, 1]
+key Board2p(0, [0, 0, 0, 0, 0, 1; 7],[0, 0, 0, 11, 0, 1; 4]) and value (5, 1, 0).
+memory usage 125.99Mb.
+
+max to over = 89, dp size = 2050135, signature = [11, 2]
+key Board2p(1, [0, 0, 0, 0, 0, 11; 6],[0, 0, 0, 0, 0, 2; 5]) and value (5, 0, 0).
+memory usage 134.84Mb.
+
+max to over = 90, dp size = 2100578, signature = [11, 2]
+key Board2p(0, [0, 2, 1, 0, 0, 7; 5],[0, 1, 0, 1, 1, 1; 5]) and value (5, 0, 90).
+memory usage 137.70Mb.
+
+max to over = 90, dp size = 2104055, signature = [12, 1]
+key Board2p(1, [0, 0, 0, 0, 0, 12; 5],[0, 0, 0, 0, 0, 1; 6]) and value (5, 0, 0).
+memory usage 137.90Mb.
+
+max to over = 91, dp size = 2259190, signature = [12, 1]
+key Board2p(0, [0, 1, 1, 0, 0, 0; 6],[1, 3, 1, 0, 0, 6; 5]) and value (2, 0, 91).
+memory usage 146.69Mb.
+
+max to over = 92, dp size = 2462606, signature = [12, 1]
+key Board2p(0, [0, 2, 1, 0, 1, 5; 5],[1, 0, 0, 1, 1, 2; 5]) and value (4, 0, 92).
+memory usage 158.23Mb.
+
+max to over = 93, dp size = 2462629, signature = [12, 1]
+key Board2p(1, [0, 2, 1, 0, 1, 5; 5],[1, 0, 2, 0, 0, 2; 5]) and value (2, 0, 93).
+memory usage 158.23Mb.
+
+max to over = 94, dp size = 2462722, signature = [12, 1]
+key Board2p(0, [0, 2, 1, 2, 0, 4; 5],[1, 0, 2, 0, 0, 2; 5]) and value (3, 0, 94).
+memory usage 158.23Mb.
+
+max to over = 95, dp size = 2466391, signature = [12, 1]
+key Board2p(1, [0, 2, 1, 2, 0, 4; 5],[1, 1, 1, 0, 0, 2; 5]) and value (1, 0, 95).
+memory usage 158.44Mb.
+
+max to over = 96, dp size = 2468324, signature = [12, 1]
+key Board2p(0, [0, 2, 1, 2, 5, 3; 4],[0, 0, 0, 0, 0, 2; 5]) and value (4, 0, 96).
+memory usage 158.55Mb.
+
+max to over = 97, dp size = 2499694, signature = [12, 1]
+key Board2p(1, [1, 1, 1, 0, 6, 4; 4],[0, 0, 0, 0, 1, 1; 5]) and value (4, 0, 97).
+memory usage 160.33Mb.
+
+max to over = 98, dp size = 2499695, signature = [12, 1]
+key Board2p(1, [1, 1, 1, 0, 6, 4; 4],[0, 0, 0, 3, 0, 0; 4]) and value (3, 0, 98).
+memory usage 160.33Mb.
+
+max to over = 99, dp size = 3053180, signature = [12, 1]
+key Board2p(0, [1, 1, 1, 2, 5, 3; 4],[0, 0, 0, 3, 0, 0; 4]) and value (3, 0, 99).
+memory usage 207.71Mb.
+
+max to over = 100, dp size = 3053181, signature = [12, 1]
+key Board2p(1, [0, 0, 0, 1, 4, 3; 4],[0, 0, 0, 3, 0, 6; 3]) and value (5, 0, 100).
+memory usage 207.71Mb.
+
+max to over = 100, dp size = 3062329, signature = [12, 1, 1]
+key Board2p(0, [0, 0, 0, 0, 0, 1; 6],[1, 0, 0, 0, 0, 12; 4]) and value (5, 1, 0).
+memory usage 208.23Mb.
+
+max to over = 100, dp size = 3793653, signature = [12, 2]
+key Board2p(0, [0, 0, 0, 0, 0, 2; 6],[0, 0, 0, 0, 12, 0; 4]) and value (5, 1, 0).
+memory usage 249.71Mb.
+
+max to over = 101, dp size = 4073607, signature = [12, 2]
+key Board2p(1, [0, 1, 2, 0, 0, 5; 5],[1, 1, 0, 1, 4, 0; 4]) and value (3, 0, 101).
+memory usage 265.58Mb.
+
+max to over = 101, dp size = 4273133, signature = [13, 1]
+key Board2p(0, [0, 0, 0, 0, 13, 0; 5],[0, 0, 0, 0, 0, 1; 5]) and value (4, 0, 54).
+memory usage 276.90Mb.
+
+max to over = 102, dp size = 4420101, signature = [13, 1]
+key Board2p(0, [1, 0, 1, 0, 7, 5; 4],[0, 0, 0, 0, 0, 2; 4]) and value (4, 0, 102).
+memory usage 285.23Mb.
+
+max to over = 103, dp size = 4420188, signature = [13, 1]
+key Board2p(1, [1, 0, 1, 0, 7, 5; 4],[0, 0, 0, 0, 1, 1; 4]) and value (4, 0, 103).
+memory usage 285.23Mb.
+
+max to over = 104, dp size = 4515654, signature = [13, 1]
+key Board2p(1, [1, 1, 0, 2, 0, 5; 5],[1, 1, 1, 0, 2, 1; 4]) and value (2, 0, 104).
+memory usage 290.65Mb.
+
+max to over = 104, dp size = 5829778, signature = [13, 1, 1]
+key Board2p(0, [0, 0, 0, 0, 0, 1; 6],[1, 0, 0, 0, 0, 13; 3]) and value (5, 1, 0).
+memory usage 397.15Mb.
+
+max to over = 104, dp size = 5833853, signature = [13, 3]
+key Board2p(0, [0, 0, 0, 0, 0, 3; 5],[0, 0, 0, 0, 0, 13; 3]) and value (5, 1, 0).
+memory usage 397.38Mb.
+
+max to over = 105, dp size = 6094254, signature = [13, 3]
+key Board2p(1, [1, 0, 1, 1, 6, 5; 4],[0, 0, 0, 2, 0, 0; 4]) and value (3, 0, 105).
+memory usage 412.15Mb.
+
+max to over = 106, dp size = 6901677, signature = [13, 3]
+key Board2p(1, [0, 0, 0, 1, 5, 2; 4],[0, 0, 0, 0, 4, 5; 3]) and value (5, 1, 106).
+memory usage 457.93Mb.
+
+max to over = 107, dp size = 7271047, signature = [13, 3]
+key Board2p(0, [1, 1, 2, 1, 4, 4; 4],[0, 0, 0, 2, 1, 0; 4]) and value (2, 0, 107).
+memory usage 478.88Mb.
+
+max to over = 108, dp size = 7271048, signature = [13, 3]
+key Board2p(1, [0, 0, 1, 0, 3, 4; 4],[0, 0, 0, 2, 1, 6; 3]) and value (5, 0, 108).
+memory usage 478.88Mb.
+
+max to over = 109, dp size = 7895129, signature = [13, 3]
+key Board2p(0, [2, 0, 1, 2, 5, 2; 4],[0, 0, 1, 0, 1, 2; 4]) and value (4, 0, 109).
+memory usage 514.27Mb.
+
+max to over = 110, dp size = 7895138, signature = [13, 3]
+key Board2p(1, [2, 0, 1, 2, 5, 2; 4],[0, 0, 1, 2, 0, 1; 4]) and value (3, 0, 110).
+memory usage 514.27Mb.
+
+max to over = 110, dp size = 8023659, signature = [14, 1]
+key Board2p(0, [0, 0, 0, 0, 0, 1; 6],[0, 0, 0, 0, 0, 14; 3]) and value (5, 1, 0).
+memory usage 521.55Mb.
+
+max to over = 111, dp size = 8772968, signature = [14, 1]
+key Board2p(0, [2, 4, 0, 0, 0, 2; 5],[1, 1, 2, 2, 0, 1; 4]) and value (1, 0, 111).
+memory usage 564.04Mb.
+
+max to over = 111, dp size = 8797015, signature = [14, 2]
+key Board2p(0, [0, 0, 0, 0, 0, 2; 5],[0, 0, 0, 0, 0, 14; 3]) and value (5, 1, 0).
+memory usage 565.41Mb.
+
+max to over = 112, dp size = 9051572, signature = [14, 2]
+key Board2p(0, [2, 4, 0, 2, 1, 5; 4],[0, 0, 1, 0, 1, 0; 4]) and value (3, 0, 112).
+memory usage 579.84Mb.
+
+max to over = 113, dp size = 9051573, signature = [14, 2]
+key Board2p(1, [2, 4, 0, 2, 1, 5; 4],[0, 0, 1, 1, 0, 0; 4]) and value (3, 0, 113).
+memory usage 579.84Mb.
+
+max to over = 114, dp size = 10088550, signature = [14, 2]
+key Board2p(0, [2, 4, 3, 1, 0, 3; 4],[1, 0, 0, 0, 1, 1; 4]) and value (2, 0, 114).
+memory usage 638.64Mb.
+
+max to over = 115, dp size = 10088551, signature = [14, 2]
+key Board2p(1, [2, 4, 3, 1, 0, 3; 4],[1, 0, 0, 2, 0, 0; 4]) and value (3, 0, 115).
+memory usage 638.64Mb.
+
+max to over = 116, dp size = 10853761, signature = [14, 2]
+key Board2p(0, [2, 4, 1, 1, 0, 6; 4],[0, 2, 0, 0, 0, 0; 4]) and value (3, 0, 116).
+memory usage 682.03Mb.
+
+max to over = 117, dp size = 10884961, signature = [14, 2]
+key Board2p(1, [2, 4, 1, 2, 0, 5; 4],[1, 1, 0, 0, 0, 0; 4]) and value (0, 0, 117).
+memory usage 683.80Mb.
+
+max to over = 118, dp size = 10885025, signature = [14, 2]
+key Board2p(0, [2, 4, 1, 2, 1, 4; 4],[1, 1, 0, 0, 0, 0; 4]) and value (4, 0, 118).
+memory usage 683.80Mb.
+
+max to over = 118, dp size = 11071197, signature = [15, 1]
+key Board2p(0, [0, 0, 0, 0, 0, 1; 5],[0, 0, 0, 0, 15, 0; 3]) and value (5, 1, 0).
+memory usage 694.36Mb.
+
+max to over = 119, dp size = 16579968, signature = [15, 1]
+key Board2p(1, [0, 1, 1, 1, 0, 2; 4],[1, 0, 0, 0, 7, 5; 2]) and value (0, 0, 119).
+memory usage 1070.70Mb.
+
+max to over = 120, dp size = 16581659, signature = [15, 1]
+key Board2p(0, [1, 1, 0, 0, 1, 2; 4],[1, 0, 0, 0, 7, 5; 2]) and value (1, 0, 120).
+memory usage 1070.80Mb.
+
+max to over = 120, dp size = 20089487, signature = [15, 2]
+key Board2p(0, [0, 0, 0, 0, 0, 2; 4],[0, 0, 0, 0, 0, 15; 3]) and value (5, 1, 0).
+memory usage 1166.14Mb.
+
+max to over = 121, dp size = 21113376, signature = [15, 2]
+key Board2p(1, [1, 1, 0, 0, 1, 2; 4],[1, 0, 0, 1, 6, 5; 2]) and value (3, 0, 121).
+memory usage 1262.38Mb.
+
+max to over = 122, dp size = 21113379, signature = [15, 2]
+key Board2p(0, [1, 1, 0, 2, 0, 1; 4],[1, 0, 0, 1, 6, 5; 2]) and value (3, 0, 122).
+memory usage 1262.38Mb.
+
+max to over = 123, dp size = 21113439, signature = [15, 2]
+key Board2p(1, [1, 1, 0, 2, 0, 1; 4],[1, 0, 1, 0, 6, 5; 2]) and value (2, 0, 123).
+memory usage 1262.38Mb.
+
+max to over = 124, dp size = 21113445, signature = [15, 2]
+key Board2p(0, [1, 1, 1, 1, 0, 1; 4],[1, 0, 1, 0, 6, 5; 2]) and value (2, 0, 124).
+memory usage 1262.38Mb.
+
+max to over = 125, dp size = 21115769, signature = [15, 2]
+key Board2p(1, [1, 1, 1, 1, 0, 1; 4],[1, 1, 0, 0, 6, 5; 2]) and value (1, 0, 125).
+memory usage 1262.52Mb.
+
+max to over = 126, dp size = 21115770, signature = [15, 2]
+key Board2p(0, [1, 1, 1, 1, 1, 0; 4],[1, 1, 0, 0, 6, 5; 2]) and value (4, 0, 126).
+memory usage 1262.52Mb.
+
+max to over = 126, dp size = 27489540, signature = [16, 1]
+key Board2p(1, [0, 0, 0, 0, 16, 0; 3],[0, 0, 0, 0, 0, 1; 4]) and value (5, 0, 0).
+memory usage 1690.77Mb.
+
+max to over = 126, dp size = 35248287, signature = [16, 2]
+key Board2p(0, [0, 0, 0, 0, 0, 2; 4],[0, 0, 0, 0, 0, 16; 2]) and value (5, 1, 0).
+memory usage 1543.32Mb.
+
+max to over = 127, dp size = 39482306, signature = [16, 2]
+key Board2p(1, [0, 1, 0, 1, 0, 5; 3],[2, 0, 1, 5, 1, 4; 1]) and value (4, 1, 127).
+memory usage 1360.27Mb.
+
+max to over = 128, dp size = 39580281, signature = [16, 2]
+key Board2p(0, [1, 0, 0, 1, 0, 5; 3],[2, 0, 1, 5, 1, 4; 1]) and value (0, 1, 128).
+memory usage 1604.78Mb.
+
+max to over = 129, dp size = 39609286, signature = [16, 2]
+key Board2p(1, [1, 0, 0, 1, 0, 5; 3],[2, 1, 0, 5, 1, 4; 1]) and value (1, 1, 129).
+memory usage 1567.78Mb.
+
+max to over = 130, dp size = 39617700, signature = [16, 2]
+key Board2p(0, [1, 0, 1, 0, 0, 5; 3],[2, 1, 0, 5, 1, 4; 1]) and value (2, 1, 130).
+memory usage 1497.59Mb.
+
+max to over = 131, dp size = 48193481, signature = [16, 2]
+key Board2p(1, [1, 0, 2, 6, 1, 1; 3],[2, 0, 1, 0, 0, 5; 2]) and value (2, 1, 131).
+memory usage 1250.60Mb.
+
+max to over = 131, dp size = 56681039, signature = [17, 1]
+key Board2p(1, [0, 0, 0, 0, 17, 0; 3],[0, 0, 0, 0, 0, 1; 3]) and value (5, 0, 0).
+memory usage 1108.45Mb.
+
+max to over = 131, dp size = 62581398, signature = [17, 2]
+key Board2p(1, [0, 0, 0, 0, 0, 17; 3],[0, 0, 0, 0, 0, 2; 2]) and value (5, 0, 0).
+memory usage 1010.51Mb.
+
+max to over = 132, dp size = 65260785, signature = [17, 2]
+key Board2p(1, [0, 0, 6, 0, 1, 1; 3],[0, 1, 3, 0, 6, 2; 1]) and value (2, 1, 132).
+memory usage 979.74Mb.
+
+max to over = 133, dp size = 76329976, signature = [17, 2]
+key Board2p(0, [0, 2, 1, 0, 6, 5; 1],[0, 1, 0, 0, 6, 0; 2]) and value (2, 0, 133).
+memory usage 746.72Mb.
+
+max to over = 134, dp size = 76485061, signature = [17, 2]
+key Board2p(1, [0, 2, 1, 0, 6, 5; 1],[1, 0, 0, 0, 6, 0; 2]) and value (0, 0, 134).
+memory usage 856.80Mb.
+
+max to over = 135, dp size = 76486801, signature = [17, 2]
+key Board2p(0, [1, 1, 1, 0, 6, 5; 1],[1, 0, 0, 0, 6, 0; 2]) and value (0, 0, 135).
+memory usage 801.35Mb.
+
+max to over = 136, dp size = 77128875, signature = [17, 2]
+key Board2p(1, [1, 0, 0, 1, 5, 0; 2],[0, 0, 3, 1, 6, 4; 1]) and value (3, 1, 136).
+memory usage 871.00Mb.
+
+max to over = 137, dp size = 77128921, signature = [17, 2]
+key Board2p(0, [1, 0, 1, 0, 5, 0; 2],[0, 0, 3, 1, 6, 4; 1]) and value (2, 1, 137).
+memory usage 821.82Mb.
+
+max to over = 138, dp size = 77130568, signature = [17, 2]
+key Board2p(1, [1, 0, 1, 0, 5, 0; 2],[0, 3, 2, 0, 5, 4; 1]) and value (1, 1, 138).
+memory usage 814.58Mb.
+
+max to over = 138, dp size = 81900621, signature = [18, 1]
+key Board2p(1, [0, 0, 0, 0, 18, 0; 2],[0, 0, 0, 0, 0, 1; 3]) and value (5, 0, 0).
+memory usage 749.22Mb.
+
+max to over = 138, dp size = 93268176, signature = [18, 2]
+key Board2p(1, [0, 0, 0, 0, 0, 2; 3],[0, 0, 0, 0, 0, 18; 1]) and value (5, 1, 96).
+memory usage 779.12Mb.
+
+max to over = 139, dp size = 111502915, signature = [18, 2]
+key Board2p(1, [1, 0, 3, 0, 10, 4; 1],[0, 0, 2, 0, 1, 0; 2]) and value (4, 1, 139).
+memory usage 739.94Mb.
+
+max to over = 140, dp size = 119931312, signature = [18, 2]
+key Board2p(1, [1, 1, 0, 2, 6, 4; 0],[0, 0, 0, 0, 5, 4; 1]) and value (4, 1, 140).
+memory usage 737.75Mb.
+
+max to over = 141, dp size = 120026808, signature = [18, 2]
+key Board2p(0, [1, 1, 1, 1, 6, 4; 0],[0, 0, 0, 0, 5, 4; 1]) and value (2, 1, 141).
+memory usage 735.73Mb.
+
+max to over = 142, dp size = 120162314, signature = [18, 2]
+key Board2p(1, [0, 0, 1, 1, 6, 4; 0],[0, 0, 0, 5, 4, 3; 0]) and value (3, 1, 142).
+memory usage 745.34Mb.
+
+max to over = 143, dp size = 120375381, signature = [18, 2]
+key Board2p(0, [0, 3, 0, 0, 5, 4; 0],[0, 0, 0, 5, 4, 3; 0]) and value (1, 1, 143).
+memory usage 729.50Mb.
+
+max to over = 144, dp size = 120541410, signature = [18, 2]
+key Board2p(1, [0, 3, 0, 0, 5, 4; 0],[0, 0, 1, 4, 4, 3; 0]) and value (2, 1, 144).
+memory usage 733.99Mb.
+
+max to over = 144, dp size = 126050202, signature = [18, 3]
+key Board2p(1, [0, 0, 0, 0, 0, 18; 1],[0, 0, 0, 0, 0, 3; 2]) and value (5, 0, 0).
+memory usage 746.60Mb.
+
+max to over = 144, dp size = 126183939, signature = [19, 1]
+key Board2p(1, [0, 0, 0, 0, 0, 19; 1],[0, 0, 0, 0, 0, 1; 3]) and value (5, 0, 0).
+memory usage 730.40Mb.
+
+max to over = 145, dp size = 132684554, signature = [19, 1]
+key Board2p(1, [1, 0, 2, 0, 1, 8; 1],[1, 1, 0, 2, 0, 6; 1]) and value (3, 1, 145).
+memory usage 803.26Mb.
+
+max to over = 146, dp size = 132684555, signature = [19, 1]
+key Board2p(0, [1, 0, 2, 2, 0, 7; 1],[1, 1, 0, 2, 0, 6; 1]) and value (3, 1, 146).
+memory usage 799.19Mb.
+
+max to over = 146, dp size = 136320288, signature = [19, 2]
+key Board2p(0, [0, 0, 0, 0, 0, 2; 2],[0, 0, 0, 0, 0, 19; 1]) and value (5, 1, 0).
+memory usage 774.43Mb.
+
+max to over = 147, dp size = 194749992, signature = [19, 2]
+key Board2p(1, [0, 1, 1, 0, 1, 5; 1],[3, 1, 0, 2, 5, 4; 0]) and value (1, 0, 147).
+memory usage 775.68Mb.
+
+max to over = 148, dp size = 194750023, signature = [19, 2]
+key Board2p(0, [0, 1, 1, 1, 0, 5; 1],[3, 1, 0, 2, 5, 4; 0]) and value (3, 0, 148).
+memory usage 771.01Mb.
+
+Move: 5 Evaluation: 1
+
 Turn 2
-[0, 4, 4, 4][0, 0][0, 4, 4, 4][0, 0]
-Player 0
-Evaluation: -1
-Action 1
-Evaluation: -1
-Action 2
-[0, 0, 0, 6][2, 2][1, 5, 4, 4][0, 0]
 Player 1
-Evaluation: 1
-Action 7
+Board2p(1, [2, 2, 2, 2, 2, 0; 1],[3, 2, 2, 2, 2, 2; 0])
+Move: 4 Evaluation: 1
+
+Board2p(1, [2, 2, 2, 2, 2, 0; 1],[3, 2, 2, 2, 0, 3; 1])
+Move: 3 Evaluation: 1
+
 Turn 3
-[1, 0, 0, 6][2, 2][1, 0, 5, 5][1, 1]
 Player 0
-Evaluation: -1
-Action 0
-[0, 1, 0, 6][2, 2][1, 0, 5, 5][1, 1]
-Player 1
-Evaluation: 1
-Action 6
+Board2p(0, [2, 2, 2, 2, 2, 0; 1],[3, 2, 2, 0, 1, 4; 1])
+Move: 4 Evaluation: 1
+
+Board2p(0, [2, 2, 2, 2, 0, 1; 2],[3, 2, 2, 0, 1, 4; 1])
+Move: 5 Evaluation: 1
+
+Board2p(0, [2, 2, 2, 2, 0, 0; 3],[3, 2, 2, 0, 1, 4; 1])
+Move: 2 Evaluation: 1
+
 Turn 4
-[0, 1, 0, 6][2, 2][0, 1, 5, 5][1, 1]
-Player 0
-Evaluation: -1
-Action 1
-[0, 0, 1, 6][2, 2][0, 1, 5, 5][1, 1]
 Player 1
-Evaluation: 1
-Action 7
+Board2p(1, [2, 2, 0, 3, 1, 0; 3],[3, 2, 2, 0, 1, 4; 1])
+Move: 2 Evaluation: 1
+
 Turn 5
-[0, 0, 1, 6][2, 2][0, 0, 6, 5][1, 1]
 Player 0
-Evaluation: -1
-Action 2
-[0, 0, 0, 7][2, 2][0, 0, 6, 5][1, 1]
-Player 1
-Evaluation: 1
-Action 8
+Board2p(0, [2, 2, 0, 3, 1, 0; 3],[3, 2, 0, 1, 2, 4; 1])
+Move: 1 Evaluation: 1
+
 Turn 6
-[1, 1, 1, 7][2, 2][0, 0, 0, 6][2, 2]
-Player 0
-Evaluation: -1
-Action 0
-[0, 2, 1, 7][2, 2][0, 0, 0, 6][2, 2]
 Player 1
-Evaluation: 1
-Action 9
-Player 1 wins!
-[1, 3, 2, 8][2, 2][0, 0, 0, 0][3, 3]
-winner: 1
-86.8887197971344
+Board2p(1, [2, 0, 1, 4, 1, 0; 3],[3, 2, 0, 1, 2, 4; 1])
+Move: 3 Evaluation: 1
 
+Turn 7
+Player 0
+Board2p(0, [2, 0, 1, 4, 1, 0; 3],[3, 2, 0, 0, 3, 4; 1])
+Move: 0 Evaluation: 1
 
-2025-02-02 02:25:24.001517
-Turn 1
-[1, 1, 1, 1, 1][0][1, 1, 1, 1, 1][0]
-Player 0
-Evaluation: 1
-Action 1
-[1, 0, 2, 1, 1][0][1, 1, 1, 1, 1][0]
+Turn 8
 Player 1
-Evaluation: -1
-Action 6
-Turn 2
-[1, 0, 2, 1, 1][0][0, 2, 1, 1, 1][0]
+Board2p(1, [0, 1, 2, 4, 1, 0; 3],[3, 2, 0, 0, 3, 4; 1])
+Move: 4 Evaluation: 1
+
+Turn 9
 Player 0
-Evaluation: 1
-Action 0
-[0, 1, 2, 1, 1][0][0, 2, 1, 1, 1][0]
+Board2p(0, [1, 1, 2, 4, 1, 0; 3],[3, 2, 0, 0, 0, 5; 2])
+Move: 4 Evaluation: 1
+
+Turn 10
 Player 1
-Evaluation: -1
-Action 7
-Turn 3
-[0, 1, 2, 1, 1][0][0, 0, 2, 2, 1][0]
+Board2p(1, [1, 1, 2, 4, 0, 1; 3],[3, 2, 0, 0, 0, 5; 2])
+Move: 5 Evaluation: 1
+
+Turn 11
 Player 0
-Evaluation: 1
-Action 1
-[0, 0, 3, 1, 1][0][0, 0, 2, 2, 1][0]
+Board2p(0, [2, 2, 3, 5, 0, 1; 3],[3, 2, 0, 0, 0, 0; 3])
+Move: 3 Evaluation: 1
+
+Turn 12
 Player 1
-Evaluation: -1
-Action 8
-Turn 4
-[0, 0, 3, 1, 1][0][0, 0, 0, 3, 2][0]
+Board2p(1, [2, 2, 3, 0, 1, 2; 4],[4, 3, 0, 0, 0, 0; 3])
+Move: 1 Evaluation: 1
+
+Turn 13
 Player 0
-Evaluation: 1
-Action 2
-Evaluation: 1
-Action 3
-Evaluation: 1
-Action 4
+Board2p(0, [2, 2, 3, 0, 1, 2; 4],[4, 0, 1, 1, 1, 0; 3])
+Move: 2 Evaluation: 1
+
+Turn 14
+Player 1
+Board2p(1, [2, 2, 0, 1, 2, 3; 4],[4, 0, 1, 1, 1, 0; 3])
+Move: 2 Evaluation: 1
+
+Turn 15
+Player 0
+Board2p(0, [2, 2, 0, 1, 2, 3; 4],[4, 0, 0, 2, 1, 0; 3])
+Move: 1 Evaluation: 1
+
+Turn 16
+Player 1
+Board2p(1, [2, 0, 1, 2, 2, 3; 4],[4, 0, 0, 2, 1, 0; 3])
+Move: 4 Evaluation: 1
+
+Turn 17
+Player 0
+Board2p(0, [2, 0, 1, 2, 2, 3; 4],[4, 0, 0, 2, 0, 1; 3])
+Move: 3 Evaluation: 1
+
+Turn 18
+Player 1
+Board2p(1, [2, 0, 1, 0, 3, 4; 4],[4, 0, 0, 2, 0, 1; 3])
+Move: 3 Evaluation: 1
+
+Turn 19
+Player 0
+Board2p(0, [2, 0, 1, 0, 3, 4; 4],[4, 0, 0, 0, 1, 2; 3])
+Move: 4 Evaluation: 1
+
+Turn 20
+Player 1
+Board2p(1, [2, 0, 1, 0, 0, 5; 5],[5, 0, 0, 0, 1, 2; 3])
+Move: 4 Evaluation: 1
+
+Turn 21
+Player 0
+Board2p(0, [2, 0, 1, 0, 0, 5; 5],[5, 0, 0, 0, 0, 3; 3])
+Move: 0 Evaluation: 1
+
+Turn 22
+Player 1
+Board2p(1, [0, 1, 2, 0, 0, 5; 5],[5, 0, 0, 0, 0, 3; 3])
+Move: 0 Evaluation: 1
+
+Turn 23
+Player 0
+Board2p(0, [0, 1, 2, 0, 0, 5; 5],[0, 1, 1, 1, 1, 4; 3])
+Move: 2 Evaluation: 1
+
+Turn 24
+Player 1
+Board2p(1, [0, 1, 0, 1, 1, 5; 5],[0, 1, 1, 1, 1, 4; 3])
+Move: 4 Evaluation: 1
+
+Turn 25
+Player 0
+Board2p(0, [0, 1, 0, 1, 1, 5; 5],[0, 1, 1, 1, 0, 5; 3])
+Move: 3 Evaluation: 1
+
+Turn 26
+Player 1
+Board2p(1, [0, 1, 0, 0, 2, 5; 5],[0, 1, 1, 1, 0, 5; 3])
+Move: 5 Evaluation: 1
+
+Turn 27
+Player 0
+Board2p(0, [1, 2, 1, 1, 2, 5; 5],[0, 1, 1, 1, 0, 0; 4])
+Move: 3 Evaluation: 1
+
+Turn 28
+Player 1
+Board2p(1, [1, 2, 1, 0, 3, 5; 5],[0, 1, 1, 1, 0, 0; 4])
+Move: 2 Evaluation: 1
+
+Turn 29
+Player 0
+Board2p(0, [1, 2, 1, 0, 3, 5; 5],[0, 1, 0, 2, 0, 0; 4])
+Move: 2 Evaluation: 1
+
+Turn 30
+Player 1
+Board2p(1, [1, 2, 0, 1, 3, 5; 5],[0, 1, 0, 2, 0, 0; 4])
+Move: 1 Evaluation: 1
+
+Turn 31
+Player 0
+Board2p(0, [1, 2, 0, 1, 3, 5; 5],[0, 0, 1, 2, 0, 0; 4])
+Move: 4 Evaluation: 1
+
+Turn 32
+Player 1
+Board2p(1, [1, 2, 0, 1, 0, 6; 6],[1, 0, 1, 2, 0, 0; 4])
+Move: 3 Evaluation: 1
+
+Turn 33
+Player 0
+Board2p(0, [1, 2, 0, 1, 0, 6; 6],[1, 0, 1, 0, 1, 1; 4])
+Move: 3 Evaluation: 1
+
+Turn 34
+Player 1
+Board2p(1, [1, 2, 0, 0, 1, 6; 6],[1, 0, 1, 0, 1, 1; 4])
+Move: 4 Evaluation: 1
+
+Turn 35
+Player 0
+Board2p(0, [1, 2, 0, 0, 1, 6; 6],[1, 0, 1, 0, 0, 2; 4])
+Move: 5 Evaluation: 1
+
+Turn 36
+Player 1
+Board2p(1, [1, 2, 0, 0, 1, 0; 7],[2, 1, 2, 1, 1, 2; 4])
+Move: 4 Evaluation: 1
+
+Turn 37
+Player 0
+Board2p(0, [1, 2, 0, 0, 1, 0; 7],[2, 1, 2, 1, 0, 3; 4])
+Move: 4 Evaluation: 1
+
+Turn 38
+Player 1
+Board2p(1, [1, 2, 0, 0, 0, 1; 7],[2, 1, 2, 1, 0, 3; 4])
+Move: 3 Evaluation: 1
+
+Turn 39
+Player 0
+Board2p(0, [1, 2, 0, 0, 0, 1; 7],[2, 1, 2, 0, 1, 3; 4])
+Move: 1 Evaluation: 1
+
+Turn 40
+Player 1
+Board2p(1, [1, 0, 1, 1, 0, 1; 7],[2, 1, 2, 0, 1, 3; 4])
+Move: 4 Evaluation: 1
+
+Turn 41
+Player 0
+Board2p(0, [1, 0, 1, 1, 0, 1; 7],[2, 1, 2, 0, 0, 4; 4])
+Move: 5 Evaluation: 1
+
+Board2p(0, [1, 0, 1, 1, 0, 0; 8],[2, 1, 2, 0, 0, 4; 4])
+Move: 3 Evaluation: 1
+
+Turn 42
+Player 1
+Board2p(1, [1, 0, 1, 0, 1, 0; 8],[2, 1, 2, 0, 0, 4; 4])
+Move: 1 Evaluation: 1
+
+Turn 43
+Player 0
+Board2p(0, [1, 0, 1, 0, 1, 0; 8],[2, 0, 3, 0, 0, 4; 4])
+Move: 0 Evaluation: 1
+
+Turn 44
+Player 1
+Board2p(1, [0, 1, 1, 0, 1, 0; 8],[2, 0, 3, 0, 0, 4; 4])
+Move: 2 Evaluation: 1
+
+Turn 45
+Player 0
+Board2p(0, [0, 1, 1, 0, 1, 0; 8],[2, 0, 0, 1, 1, 5; 4])
+Move: 4 Evaluation: 1
+
+Turn 46
+Player 1
+Board2p(1, [0, 1, 1, 0, 0, 1; 8],[2, 0, 0, 1, 1, 5; 4])
+Move: 4 Evaluation: 1
+
+Turn 47
+Player 0
+Board2p(0, [0, 1, 1, 0, 0, 1; 8],[2, 0, 0, 1, 0, 6; 4])
+Move: 2 Evaluation: 1
+
+Turn 48
+Player 1
+Board2p(1, [0, 1, 0, 1, 0, 1; 8],[2, 0, 0, 1, 0, 6; 4])
+Move: 5 Evaluation: 1
+
+Turn 49
+Player 0
+Board2p(0, [1, 2, 1, 2, 1, 1; 8],[2, 0, 0, 1, 0, 0; 5])
+Move: 4 Evaluation: 1
+
+Turn 50
+Player 1
+Board2p(1, [1, 2, 1, 2, 0, 2; 8],[2, 0, 0, 1, 0, 0; 5])
+Move: 0 Evaluation: 1
+
+Turn 51
+Player 0
+Board2p(0, [1, 2, 1, 2, 0, 2; 8],[0, 1, 1, 1, 0, 0; 5])
+Move: 3 Evaluation: 1
+
+Turn 52
+Player 1
+Board2p(1, [1, 2, 1, 0, 1, 3; 8],[0, 1, 1, 1, 0, 0; 5])
+Move: 3 Evaluation: 1
+
+Turn 53
+Player 0
+Board2p(0, [1, 2, 1, 0, 1, 3; 8],[0, 1, 1, 0, 1, 0; 5])
+Move: 4 Evaluation: 1
+
+Turn 54
+Player 1
+Board2p(1, [1, 2, 1, 0, 0, 4; 8],[0, 1, 1, 0, 1, 0; 5])
+Move: 2 Evaluation: 1
+
+Turn 55
+Player 0
+Board2p(0, [1, 2, 1, 0, 0, 4; 8],[0, 1, 0, 1, 1, 0; 5])
+Move: 0 Evaluation: 1
+
+Turn 56
+Player 1
+Board2p(1, [0, 3, 1, 0, 0, 4; 8],[0, 1, 0, 1, 1, 0; 5])
+Move: 1 Evaluation: 1
+
+Turn 57
+Player 0
+Board2p(0, [0, 3, 1, 0, 0, 4; 8],[0, 0, 1, 1, 1, 0; 5])
+Move: 2 Evaluation: 1
+
+Turn 58
+Player 1
+Board2p(1, [0, 3, 0, 1, 0, 4; 8],[0, 0, 1, 1, 1, 0; 5])
+Move: 4 Evaluation: 1
+
+Turn 59
+Player 0
+Board2p(0, [0, 3, 0, 1, 0, 4; 8],[0, 0, 1, 1, 0, 1; 5])
+Move: 1 Evaluation: 1
+
+Turn 60
+Player 1
+Board2p(1, [0, 0, 1, 2, 1, 4; 8],[0, 0, 1, 1, 0, 1; 5])
+Move: 3 Evaluation: 1
+
+Turn 61
+Player 0
+Board2p(0, [0, 0, 1, 2, 1, 4; 8],[0, 0, 1, 0, 1, 1; 5])
+Move: 4 Evaluation: 1
+
+Turn 62
+Player 1
+Board2p(1, [0, 0, 1, 2, 0, 5; 8],[0, 0, 1, 0, 1, 1; 5])
+Move: 2 Evaluation: 1
+
+Turn 63
+Player 0
+Board2p(0, [0, 0, 1, 2, 0, 5; 8],[0, 0, 0, 1, 1, 1; 5])
+Move: 5 Evaluation: 1
+
+Turn 64
+Player 1
+Board2p(1, [0, 0, 1, 2, 0, 0; 9],[1, 1, 1, 2, 1, 1; 5])
+Move: 4 Evaluation: 1
+
+Turn 65
+Player 0
+Board2p(0, [0, 0, 1, 2, 0, 0; 9],[1, 1, 1, 2, 0, 2; 5])
+Move: 3 Evaluation: 1
+
+Turn 66
+Player 1
+Board2p(1, [0, 0, 1, 0, 1, 1; 9],[1, 1, 1, 2, 0, 2; 5])
+Move: 3 Evaluation: 1
+
+Turn 67
+Player 0
+Board2p(0, [0, 0, 1, 0, 1, 1; 9],[1, 1, 1, 0, 1, 3; 5])
+Move: 4 Evaluation: 1
+
+Turn 68
+Player 1
+Board2p(1, [0, 0, 1, 0, 0, 2; 9],[1, 1, 1, 0, 1, 3; 5])
+Move: 4 Evaluation: 1
+
+Turn 69
+Player 0
+Board2p(0, [0, 0, 1, 0, 0, 2; 9],[1, 1, 1, 0, 0, 4; 5])
+Move: 2 Evaluation: 1
+
+Turn 70
+Player 1
+Board2p(1, [0, 0, 0, 1, 0, 2; 9],[1, 1, 1, 0, 0, 4; 5])
+Move: 2 Evaluation: 1
+
+Turn 71
+Player 0
+Board2p(0, [0, 0, 0, 1, 0, 2; 9],[1, 1, 0, 1, 0, 4; 5])
+Move: 3 Evaluation: 1
+
+Turn 72
+Player 1
+Board2p(1, [0, 0, 0, 0, 1, 2; 9],[1, 1, 0, 1, 0, 4; 5])
+Move: 3 Evaluation: 1
+
+Turn 73
+Player 0
+Board2p(0, [0, 0, 0, 0, 1, 2; 9],[1, 1, 0, 0, 1, 4; 5])
+Move: 4 Evaluation: 1
+
+Turn 74
+Player 1
+Board2p(1, [0, 0, 0, 0, 0, 3; 9],[1, 1, 0, 0, 1, 4; 5])
+Move: 5 Evaluation: 1
+
+Turn 75
+Player 0
+Board2p(0, [1, 1, 1, 0, 0, 3; 9],[1, 1, 0, 0, 1, 0; 6])
+Move: 5 Evaluation: 1
+
+Turn 76
+Player 1
+Board2p(1, [1, 1, 1, 0, 0, 0; 10],[2, 2, 0, 0, 1, 0; 6])
+Move: 1 Evaluation: 1
+
+Turn 77
+Player 0
+Board2p(0, [1, 1, 1, 0, 0, 0; 10],[2, 0, 1, 1, 1, 0; 6])
+Move: 1 Evaluation: 1
+
+Turn 78
+Player 1
+Board2p(1, [1, 0, 2, 0, 0, 0; 10],[2, 0, 1, 1, 1, 0; 6])
+Move: 4 Evaluation: 1
+
+Turn 79
+Player 0
+Board2p(0, [1, 0, 2, 0, 0, 0; 10],[2, 0, 1, 1, 0, 1; 6])
+Move: 2 Evaluation: 1
+
+Turn 80
+Player 1
+Board2p(1, [1, 0, 0, 1, 1, 0; 10],[2, 0, 1, 1, 0, 1; 6])
+Move: 2 Evaluation: 1
+
+Turn 81
+Player 0
+Board2p(0, [1, 0, 0, 1, 1, 0; 10],[2, 0, 0, 2, 0, 1; 6])
+Move: 0 Evaluation: 1
+
+Turn 82
+Player 1
+Board2p(1, [0, 1, 0, 1, 1, 0; 10],[2, 0, 0, 2, 0, 1; 6])
+Move: 3 Evaluation: 1
+
+Turn 83
+Player 0
+Board2p(0, [0, 1, 0, 1, 1, 0; 10],[2, 0, 0, 0, 1, 2; 6])
+Move: 3 Evaluation: 1
+
+Turn 84
+Player 1
+Board2p(1, [0, 1, 0, 0, 2, 0; 10],[2, 0, 0, 0, 1, 2; 6])
+Move: 0 Evaluation: 1
+
+Turn 85
+Player 0
+Board2p(0, [0, 1, 0, 0, 2, 0; 10],[0, 1, 1, 0, 1, 2; 6])
+Move: 1 Evaluation: 1
+
+Turn 86
+Player 1
+Board2p(1, [0, 0, 1, 0, 2, 0; 10],[0, 1, 1, 0, 1, 2; 6])
+Move: 4 Evaluation: 1
+
+Turn 87
+Player 0
+Board2p(0, [0, 0, 1, 0, 2, 0; 10],[0, 1, 1, 0, 0, 3; 6])
+Move: 4 Evaluation: 1
+
+Board2p(0, [0, 0, 1, 0, 0, 1; 11],[0, 1, 1, 0, 0, 3; 6])
+Move: 2 Evaluation: 1
+
+Turn 88
+Player 1
+Board2p(1, [0, 0, 0, 1, 0, 1; 11],[0, 1, 1, 0, 0, 3; 6])
+Move: 1 Evaluation: 1
+
+Turn 89
+Player 0
+Board2p(0, [0, 0, 0, 1, 0, 1; 11],[0, 0, 2, 0, 0, 3; 6])
+Move: 3 Evaluation: 1
+
+Turn 90
+Player 1
+Board2p(1, [0, 0, 0, 0, 1, 1; 11],[0, 0, 2, 0, 0, 3; 6])
+Move: 2 Evaluation: 1
+
+Turn 91
+Player 0
+Board2p(0, [0, 0, 0, 0, 1, 1; 11],[0, 0, 0, 1, 1, 3; 6])
+Move: 4 Evaluation: 1
+
+Turn 92
+Player 1
+Board2p(1, [0, 0, 0, 0, 0, 2; 11],[0, 0, 0, 1, 1, 3; 6])
+Move: 5 Evaluation: 1
+
+Turn 93
+Player 0
+Board2p(0, [1, 1, 0, 0, 0, 2; 11],[0, 0, 0, 1, 1, 0; 7])
+Move: 1 Evaluation: 1
+
+Turn 94
+Player 1
+Board2p(1, [1, 0, 1, 0, 0, 2; 11],[0, 0, 0, 1, 1, 0; 7])
+Move: 4 Evaluation: 1
+
+Turn 95
+Player 0
+Board2p(0, [1, 0, 1, 0, 0, 2; 11],[0, 0, 0, 1, 0, 1; 7])
+Move: 0 Evaluation: 1
+
+Turn 96
+Player 1
+Board2p(1, [0, 1, 1, 0, 0, 2; 11],[0, 0, 0, 1, 0, 1; 7])
+Move: 3 Evaluation: 1
+
+Turn 97
+Player 0
+Board2p(0, [0, 1, 1, 0, 0, 2; 11],[0, 0, 0, 0, 1, 1; 7])
+Move: 1 Evaluation: 1
+
+Turn 98
+Player 1
+Board2p(1, [0, 0, 2, 0, 0, 2; 11],[0, 0, 0, 0, 1, 1; 7])
+Move: 4 Evaluation: 1
+
+Turn 99
+Player 0
+Board2p(0, [0, 0, 2, 0, 0, 2; 11],[0, 0, 0, 0, 0, 2; 7])
+Move: 5 Evaluation: 1
+
+Turn 100
+Player 1
+Board2p(1, [0, 0, 2, 0, 0, 0; 12],[1, 0, 0, 0, 0, 2; 7])
+Move: 0 Evaluation: 1
+
+Turn 101
+Player 0
+Board2p(0, [0, 0, 2, 0, 0, 0; 12],[0, 1, 0, 0, 0, 2; 7])
+Move: 2 Evaluation: 1
+
+Turn 102
+Player 1
+Board2p(1, [0, 0, 0, 1, 1, 0; 12],[0, 1, 0, 0, 0, 2; 7])
+Move: 1 Evaluation: 1
+
+Turn 103
+Player 0
+Board2p(0, [0, 0, 0, 1, 1, 0; 12],[0, 0, 1, 0, 0, 2; 7])
+Move: 4 Evaluation: 1
+
+Turn 104
+Player 1
+Board2p(1, [0, 0, 0, 1, 0, 1; 12],[0, 0, 1, 0, 0, 2; 7])
+Move: 2 Evaluation: 1
+
+Turn 105
+Player 0
+Board2p(0, [0, 0, 0, 1, 0, 1; 12],[0, 0, 0, 1, 0, 2; 7])
+Move: 3 Evaluation: 1
+
+Turn 106
+Player 1
+Board2p(1, [0, 0, 0, 0, 1, 1; 12],[0, 0, 0, 1, 0, 2; 7])
+Move: 3 Evaluation: 1
+
+Turn 107
+Player 0
+Board2p(0, [0, 0, 0, 0, 1, 1; 12],[0, 0, 0, 0, 1, 2; 7])
+Move: 4 Evaluation: 1
+
+Turn 108
+Player 1
+Board2p(1, [0, 0, 0, 0, 0, 2; 12],[0, 0, 0, 0, 1, 2; 7])
+Move: 5 Evaluation: 1
+
+Turn 109
+Player 0
+Board2p(0, [1, 0, 0, 0, 0, 2; 12],[0, 0, 0, 0, 1, 0; 8])
+Move: 0 Evaluation: 1
+
+Turn 110
+Player 1
+Board2p(1, [0, 1, 0, 0, 0, 2; 12],[0, 0, 0, 0, 1, 0; 8])
+Move: 4 Evaluation: 1
+
+Turn 111
+Player 0
+Board2p(0, [0, 1, 0, 0, 0, 2; 12],[0, 0, 0, 0, 0, 1; 8])
+Move: 5 Evaluation: 1
+
+Turn 112
+Player 1
+Board2p(1, [0, 1, 0, 0, 0, 0; 13],[1, 0, 0, 0, 0, 1; 8])
+Move: 0 Evaluation: 1
+
+Turn 113
+Player 0
+Board2p(0, [0, 1, 0, 0, 0, 0; 13],[0, 1, 0, 0, 0, 1; 8])
+Move: 1 Evaluation: 1
+
+Turn 114
+Player 1
+Board2p(1, [0, 0, 1, 0, 0, 0; 13],[0, 1, 0, 0, 0, 1; 8])
+Move: 1 Evaluation: 1
+
+Turn 115
+Player 0
+Board2p(0, [0, 0, 1, 0, 0, 0; 13],[0, 0, 1, 0, 0, 1; 8])
+Move: 2 Evaluation: 1
+
+Turn 116
+Player 1
+Board2p(1, [0, 0, 0, 1, 0, 0; 13],[0, 0, 1, 0, 0, 1; 8])
+Move: 2 Evaluation: 1
+
+Turn 117
+Player 0
+Board2p(0, [0, 0, 0, 1, 0, 0; 13],[0, 0, 0, 1, 0, 1; 8])
+Move: 3 Evaluation: 1
+
+Turn 118
+Player 1
+Board2p(1, [0, 0, 0, 0, 1, 0; 13],[0, 0, 0, 1, 0, 1; 8])
+Move: 3 Evaluation: 1
+
+Turn 119
+Player 0
+Board2p(0, [0, 0, 0, 0, 1, 0; 13],[0, 0, 0, 0, 1, 1; 8])
+Move: 4 Evaluation: 1
+
+Turn 120
+Player 1
+Board2p(1, [0, 0, 0, 0, 0, 1; 13],[0, 0, 0, 0, 1, 1; 8])
+Move: 4 Evaluation: 1
+
+Turn 121
+Player 0
+Board2p(0, [0, 0, 0, 0, 0, 1; 13],[0, 0, 0, 0, 0, 2; 8])
+Move: 5 Evaluation: 1
+
 Player 0 wins!
-[0, 0, 0, 0, 0][3][1, 1, 0, 3, 2][0]
-2025-02-02 02:35:47.955881
+Board2p(0, [0, 0, 0, 0, 0, 0; 14],[0, 0, 0, 0, 0, 2; 8])
+
+2025-03-19 10:56:21.550183
 winner: 0
-623.955
+63567.755586862564
+sin@alpheratz Mancala % 
