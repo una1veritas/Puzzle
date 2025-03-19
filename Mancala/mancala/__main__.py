@@ -3,13 +3,6 @@ from typing import List, Optional, Type
 from board import Board2p
 from player import Player
 
-import psutil
-import os
-
-def get_memory_usage():
-    process = psutil.Process(os.getpid())
-    memory_info = process.memory_info()
-    return memory_info.rss  # in bytes
 
 
 class Game:
@@ -48,7 +41,6 @@ class Game:
                 player = self.players[current_player_id]
                 index = player.act(self.board) if not isinstance(player, MinMaxPlayer) else player.act(self.board, hint_dp)
                 #print(f"Took action {index}")
-                mem_usa = get_memory_usage()
                 #print(f'memory usage {mem_usa/10245/1024:.2f}Mb.')
                 # if index == -1 :
                 #     break

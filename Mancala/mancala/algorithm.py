@@ -3,6 +3,13 @@ from typing import Dict, Tuple, List, Any
 import gc, json
 
 from board import Board2p
+import psutil
+import os
+
+def get_memory_usage():
+    process = psutil.Process(os.getpid())
+    memory_info = process.memory_info()
+    return memory_info.rss  # in bytes
 
 def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int, int]:
     # if player_id != board.current_player() :
@@ -49,6 +56,7 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
                 search_with_min_max.max_to_go = to_go
             print(f'max to over = {search_with_min_max.max_to_go}, dp size = {len(dp)}, signature = {search_with_min_max.max_sig}')
             print(f"key {str(board)} and value {result}.")
+            print(f'mem usage: {get_memory_usage()//1024//1024} mb')
             print()
             gc.collect()
         dp[board] = result

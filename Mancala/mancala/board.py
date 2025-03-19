@@ -45,16 +45,16 @@ class Board2p:
         return self.board[self.current_player()][:self.num_of_pits]
     
     def _pits_of_next(self) -> list:
-        return self.board[self.next_turn_player()][:self.num_of_pits]
+        return self.board[self.next_player()][:self.num_of_pits]
     
     def current_player(self):
         return self.player_in_turn 
     
-    def next_turn_player(self):
+    def next_player(self):
         return (self.player_in_turn + 1) % self.NUMBER_OF_PLAYERS
     
     def switch_turn(self):
-        self.player_in_turn = self.next_turn_player()
+        self.player_in_turn = self.next_player()
     
         '''手を打つ．石を動かさず、勝利の場合 True を返し．そうでない場合 False を返す．エラーチェックしない．'''
     def winning_move(self, index: int) -> bool:
