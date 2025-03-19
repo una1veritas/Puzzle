@@ -3,8 +3,8 @@ from numpy import ix_
 from pickle import TRUE, FALSE
 
 class Board2p:
-    INITIAL_STONES_IN_SOTRE = 0
-    NUMBER_OF_PLAYERS: int = 2
+    INITIAL_STONES_IN_STORE : int = 0
+    NUMBER_OF_PLAYERS : int = 2
     STORES_PER_PLAYER : int = 1
 
     def __init__(
@@ -14,10 +14,8 @@ class Board2p:
     ):
         self.initial_pieces = init_pieces_per_grid
         self.num_of_pits = grids_per_player
-        self.board = list()
-        for _ in range(self.NUMBER_OF_PLAYERS) :
-            self.board.append([init_pieces_per_grid] * self.num_of_pits + 
-                              [self.INITIAL_STONES_IN_SOTRE] * self.STORES_PER_PLAYER)
+        self.board = tuple(([init_pieces_per_grid] * self.num_of_pits + 
+                            [self.INITIAL_STONES_IN_STORE] * self.STORES_PER_PLAYER)* self.NUMBER_OF_PLAYERS)
         self.player_in_turn = 0
     
     def __eq__(self, other):
@@ -35,11 +33,19 @@ class Board2p:
         hash_codes.append(hash(tuple(self._pits_of_next())))
         return hash(tuple(hash_codes))
     
+    '''the index of the first pit of player'''
+    def start_index(self, player_id : int) -> int:
+        return (player_id % self.NUMBER_OF_PLAYERS) * (self.num_of_pits + self.STORES_PER_PLAYER)
+    
+    '''the index of the last store of player'''    
+    def end_index(self, player_id : int) -> int:
+        return (player_id % self.NUMBER_OF_PLAYERS) * (self.num_of_pits + self.STORES_PER_PLAYER) + (self.num_of_pits + self.STORES_PER_PLAYER)
+    
     def _pits_of(self, player_id : int) -> list:
-        return self.board[player_id % self.NUMBER_OF_PLAYERS][:self.num_of_pits]
+        return self.board[self.start_index(player_id) : self.start_index(player_id) + self.num_of_pits]
 
     def _stores_of(self, player_id : int) -> list:
-        return self.board[player_id % self.NUMBER_OF_PLAYERS][self.num_of_pits:]
+        return self.board[self.start_index(player_id) + self.num_of_pits : self.end_index(player_id)]
 
     def _pits_of_current(self) -> list:
         return self.board[self.current_player()][:self.num_of_pits]
@@ -91,10 +97,9 @@ class Board2p:
         if pieces == 0:
             print(self, index)
             raise ValueError(f"The pit of player {self.player_in_turn} index={index} has no pieces.")
-        
-        player = self.player_in_turn
-        pit_index = index
-        self.board[player][pit_index] = 0
+        new_board = list(self.board)
+        position = [self.player_in_turn, index]
+        new_board[position[0]][position[1]] = 0
         '''となりの穴から'''
         for _ in range(0, pieces):
             pit_index += 1
@@ -130,10 +135,11 @@ class Board2p:
         return distribution
 
     def __str__(self):
+        print(self.board)
         pit_strs = list()
-        for plid in range(self.NUMBER_OF_PLAYERS) :
+        for player_id in range(self.NUMBER_OF_PLAYERS) :
             t = '[' 
-            t += ', '.join([str(i) for i in self._pits_of(plid)])
+            t += ', '.join([str(i) for i in self._pits_of(player_id)])
             t += '; ' + ', '.join([str(i) for i in self._stores_of(plid)])
             t += ']'
             pit_strs.append(t)
