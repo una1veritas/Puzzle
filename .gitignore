@@ -34,3 +34,6 @@
 *.app
 /.metadata/
 *.pkl
+
+__pycache__/
+*.pyc

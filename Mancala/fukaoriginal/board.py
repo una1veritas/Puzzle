@@ -12,8 +12,8 @@ class Board:
         grids_between_players: int = 1,
     ):
         self.players_num = players_num
-        self.init_pieces_per_grid = init_pieces_per_grid
-        self.grids_per_player = grids_per_player
+        self.initial_pieces = init_pieces_per_grid
+        self.nuber_of_pits = grids_per_player
         self.grids_between_players = grids_between_players
         self.data = (
             [init_pieces_per_grid] * grids_per_player
@@ -51,14 +51,14 @@ class Board:
         return (index + diff) % len(self.data)
 
     def _is_grid_between_players(self, index: int):
-        return index % (self.grids_per_player + self.grids_between_players) >= self.grids_per_player
+        return index % (self.nuber_of_pits + self.grids_between_players) >= self.nuber_of_pits
 
     def get_players_grids(self, player_id: int) -> Dict[int, int]:
         start_index = self.get_player_start_index(player_id=player_id)
-        return {index: self.data[index] for index in range(start_index, start_index + self.grids_per_player)}
+        return {index: self.data[index] for index in range(start_index, start_index + self.nuber_of_pits)}
 
     def get_player_start_index(self, player_id: int) -> int:
-        return player_id * (self.grids_per_player + self.grids_between_players)
+        return player_id * (self.nuber_of_pits + self.grids_between_players)
 
     def get_players_movable_grids(self, player_id: int) -> Dict[int, int]:
         players_grids = self.get_players_grids(player_id=player_id)
@@ -71,6 +71,6 @@ class Board:
     def print_board(self):
         for i in range(self.players_num):
             player_start_grid = self.get_player_start_index(i)
-            player_last_grid = player_start_grid + self.grids_per_player
+            player_last_grid = player_start_grid + self.nuber_of_pits
             print(self.data[player_start_grid:player_last_grid])
             print(self.data[player_last_grid : player_last_grid + self.grids_between_players])
