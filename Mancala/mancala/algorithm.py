@@ -1,5 +1,4 @@
-from copy import deepcopy
-from typing import Dict, Tuple, List, Any
+import copy
 import gc, json
 import psutil, os
 
@@ -10,31 +9,32 @@ def get_memory_usage():
     memory_info = process.memory_info()
     return memory_info.rss  # in bytes
 
-def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int, int]:
+def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> tuple:
     # if player_id != board.current_player() :
     #     raise ValueError('Error!')
     if dp == None :
         search_with_min_max.dp = {}
     search_with_min_max.original_player_id = board.current_player() #player_id
     search_with_min_max.max_to_go = 0
-    search_with_min_max.max_sig = []
     
     '''Returns a pair (action, value) where action is the choice as a move, and value is its evaluation '''
-    def _evaluate(board: Board2p) -> Tuple[int, int, int]:
+    def _evaluate(board: Board2p) -> tuple:
         #print('_evaluate', board)
         result = dp.get(board) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
         if result is not None:
             return result
         for a_move in board.possible_moves():
-            tmp_board = deepcopy(board)
-            won_by_current = tmp_board.move(a_move)
-            if won_by_current :
+            tmp_board = copy.copy(board)
+            tmp_board.move(a_move)
+            if tmp_board.game_won_by(tmp_board.current_player()) :
                 if tmp_board.current_player() == search_with_min_max.original_player_id :
                     result = (a_move, 1, 0)
                 else:
                     result = (a_move, 0, 0)
+                del tmp_board
                 break
             r = _evaluate(tmp_board)
+            del tmp_board
             if result == None :
                 '''a_move という手を打った move の結果その r[2] 手先でおきた勝敗'''
                 result = (a_move, r[1], r[2] + 1) 
@@ -47,13 +47,10 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
                         result = (a_move, r[1], r[2] + 1)
         #print(f'board = {board} result = {result}')
         to_go = result[2]
-        sig = board.signature()
-        if to_go > search_with_min_max.max_to_go or sig > search_with_min_max.max_sig :
-            if sig > search_with_min_max.max_sig :
-                search_with_min_max.max_sig = sig
+        if to_go > search_with_min_max.max_to_go :
             if to_go > search_with_min_max.max_to_go :
                 search_with_min_max.max_to_go = to_go
-            print(f'max to over = {search_with_min_max.max_to_go}, dp size = {len(dp)}, signature = {search_with_min_max.max_sig}')
+            print(f'max to over = {search_with_min_max.max_to_go}, dp size = {len(dp)}')
             print(f"key {str(board)} and value {result}.")
             mem_usa = get_memory_usage()
             print(f'memory usage {mem_usa/10245/1024:.2f}Mb.')

@@ -8,13 +8,13 @@ class Board2p:
 
     def __init__(
         self,
-        init_pieces_per_grid : int = 3,
+        init_pieces_in_pit : int = 3,
         grids_per_player : int = 3
     ):
-        self.initial_pieces = init_pieces_per_grid
+        self.initial_pieces = init_pieces_in_pit
         self.nuber_of_pits = grids_per_player
         self.data = (
-            [init_pieces_per_grid] * grids_per_player
+            [init_pieces_in_pit] * grids_per_player
             + [self.INITIAL_STONES_IN_SOTRE] * self.STORES_PER_PLAYER
         ) * self.NUMBER_OF_PLAYERS
     
@@ -81,8 +81,8 @@ class Board2p:
         return False
         
     def get_players_grids(self, player_id: int) -> Dict[int, int]:
-        start_index = self.get_player_start_index(player_id=player_id)
-        return {index: self.data[index] for index in range(start_index, start_index + self.nuber_of_pits)}
+        starts = self.get_player_start_index(player_id=player_id)
+        return {index: self.data[index] for index in range(starts, starts + self.nuber_of_pits)}
 
     def get_player_start_index(self, player_id: int) -> int:
         return player_id * (self.nuber_of_pits + self.STORES_PER_PLAYER)

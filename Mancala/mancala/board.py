@@ -1,66 +1,62 @@
-from typing import Dict
-from numpy import ix_
-from pickle import TRUE, FALSE
+import array
 
 class Board2p:
-    INITIAL_STONES_IN_STORE : int = 0
     NUMBER_OF_PLAYERS : int = 2
-    STORES_PER_PLAYER : int = 1
 
     def __init__(
         self,
-        init_pieces_per_grid : int = 3,
-        grids_per_player : int = 3
+        init_pieces_per_pit : int = 3,
+        pits_per_player : int = 3,
+        board_array = None,
+        player_in_turn = 0
     ):
-        self.initial_pieces = init_pieces_per_grid
-        self.num_of_pits = grids_per_player
-        self.board = tuple(([init_pieces_per_grid] * self.num_of_pits + 
-                            [self.INITIAL_STONES_IN_STORE] * self.STORES_PER_PLAYER)* self.NUMBER_OF_PLAYERS)
-        self.player_in_turn = 0
+        self.initial_pieces = init_pieces_per_pit
+        self.num_of_pits = pits_per_player
+        row = [self.initial_pieces] * self.num_of_pits + [0]
+        if board_array != None :
+            self.board = [array.array('B', board_array[0]), array.array('B', board_array[1])]
+        else:
+            self.board = [array.array('B', row), array.array('B', row)]
+        self.player_in_turn = player_in_turn
     
     def __eq__(self, other):
         if not isinstance(other, type(self)) :
             return False
         if self.num_of_pits != other.num_of_pits :
             return False
-        if self._pits_of_current() + self._pits_of_next() != other._pits_of_current() + other._pits_of_next() :
+        if self.board[self.current_player()][:self.num_of_pits] != other.board[other.current_player()][:other.num_of_pits] :
+            return False
+        if self.board[self.next_player()][:self.num_of_pits] != other.board[other.next_player()][:other.num_of_pits] :
             return False
         return True
 
     def __hash__(self):
-        hash_codes = list()
-        hash_codes.append(hash(tuple(self._pits_of_current())))
-        hash_codes.append(hash(tuple(self._pits_of_next())))
-        return hash(tuple(hash_codes))
+        hash_elems = list()
+        hash_elems.append(self.player_in_turn)
+        hash_elems.append(tuple(self.board[self.player_in_turn][:self.num_of_pits]))
+        hash_elems.append(tuple(self.board[self.player_in_turn][:self.num_of_pits]))
+        return hash(tuple(hash_elems))
     
-    '''the index of the first pit of player'''
-    def start_index(self, player_id : int) -> int:
-        return (player_id % self.NUMBER_OF_PLAYERS) * (self.num_of_pits + self.STORES_PER_PLAYER)
+    def __copy__(self):
+        mycopy = Board2p(
+            init_pieces_per_pit = self.initial_pieces,
+            pits_per_player = self.num_of_pits,
+            board_array = self.board,
+            player_in_turn = self.player_in_turn
+            )
+        return mycopy
     
-    '''the index of the last store of player'''    
-    def end_index(self, player_id : int) -> int:
-        return (player_id % self.NUMBER_OF_PLAYERS) * (self.num_of_pits + self.STORES_PER_PLAYER) + (self.num_of_pits + self.STORES_PER_PLAYER)
-    
-    def _pits_of(self, player_id : int) -> list:
-        return self.board[self.start_index(player_id) : self.start_index(player_id) + self.num_of_pits]
-
-    def _stores_of(self, player_id : int) -> list:
-        return self.board[self.start_index(player_id) + self.num_of_pits : self.end_index(player_id)]
-
-    def _pits_of_current(self) -> list:
-        return self.board[self.current_player()][:self.num_of_pits]
-    
-    def _pits_of_next(self) -> list:
-        return self.board[self.next_turn_player()][:self.num_of_pits]
+    def index_is_store(self, index : int) -> bool :
+        return index == self.num_of_pits
     
     def current_player(self):
         return self.player_in_turn 
     
-    def next_turn_player(self):
+    def next_player(self):
         return (self.player_in_turn + 1) % self.NUMBER_OF_PLAYERS
     
     def switch_turn(self):
-        self.player_in_turn = self.next_turn_player()
+        self.player_in_turn = self.next_player()
     
         '''手を打つ．石を動かさず、勝利の場合 True を返し．そうでない場合 False を返す．エラーチェックしない．'''
     def winning_move(self, index: int) -> bool:
@@ -71,15 +67,12 @@ class Board2p:
         whether you can move again or not.
         """
 
-        remain = (self.num_of_pits + self.STORES_PER_PLAYER) - (index % (self.num_of_pits + self.STORES_PER_PLAYER))
-        if remain > self.STORES_PER_PLAYER:
-            return False        
         pieces = self.board[self.player_in_turn][index]
-        if pieces == 0 :
-            return False
-        if pieces - self.STORES_PER_PLAYER > self.num_of_pits + self.STORES_PER_PLAYER :
-            return False
-        return sum(self._pits_of_current()) == pieces
+        if pieces > 0 and pieces < (self.num_of_pits + 1 - index) + self.num_of_pits + 1 \
+        and index == self.num_of_pits - 1 :
+            return True
+        return False
+        
         
     '''手を打つ．石を動かす．勝利の場合 True を返す．そうでない場合，必要ならターンを変えて False を返す．'''
     def move(self, index: int) -> bool:
@@ -89,58 +82,51 @@ class Board2p:
         :return
         whether you can move again or not.
         """
+        #print(f'before {self.board}, {self.player_in_turn}, {index}')
         
-        if not ( 0 <= index < self.num_of_pits ) :
-            raise ValueError(f"Invalid index: {index}. choice of move should be in from 0 to before {len(self.pit_array(self.player_in_turn))}")
+        if self.index_is_store(index) or index > self.num_of_pits:
+            raise ValueError(f"Invalid index: {index}. choice of move should be in range from 0 to before {len(self._pits_of(self.current_player()))}")
 
         pieces = self.board[self.player_in_turn][index]
         if pieces == 0:
-            print(self, index)
+            #print(self, index)
             raise ValueError(f"The pit of player {self.player_in_turn} index={index} has no pieces.")
-        new_board = list(self.board)
-        position = [self.player_in_turn, index]
-        new_board[position[0]][position[1]] = 0
-        '''となりの穴から'''
+        self.board[self.player_in_turn][index] = 0
+        '''となりの穴からまいていく'''
+        player_id = self.player_in_turn
         for _ in range(0, pieces):
-            pit_index += 1
-            if pit_index >= self.num_of_pits + self.STORES_PER_PLAYER :
-                player = (player + 1) % self.NUMBER_OF_PLAYERS
-                pit_index %= self.num_of_pits + self.STORES_PER_PLAYER
-            self.board[player][pit_index] += 1
+            index += 1
+            if index > self.num_of_pits :
+                player_id = (player_id + 1) % self.NUMBER_OF_PLAYERS
+                index = 0
+            #print(self, player_id, index)
+            self.board[player_id][index] += 1
         
-        #print(self.board, pit_index, self.num_of_pits)
-        
-        if sum(self._pits_of(self.player_in_turn)) == 0 :
+        #print(f'after {self.board}')
+        if sum(self.board[self.player_in_turn][:self.num_of_pits]) == 0 :
             return True
-        if pit_index < self.num_of_pits :
+        if not self.index_is_store(index) :
             self.switch_turn()
         return False
 
     def possible_moves(self, player_id = None):
         if player_id == None :
-            player_id = self.current_player()
-        for ix in range(self.num_of_pits) :
-            if self.board[player_id][ix] > 0 :
+            player_id = self.player_in_turn
+        for ix, value in enumerate(self.board[player_id][:self.num_of_pits]) :
+            #print(f'ix = {ix}, value = {value}')
+            if value > 0 :
                 yield ix
 
     def game_won_by(self, player_id):
         #print(self.pit_array(player_id))
-        return sum(self._pits_of(player_id)) == 0
+        return sum(self.board[player_id][:self.num_of_pits]) == 0
     
-    def signature(self):
-        distribution = list()
-        for i in range(self.NUMBER_OF_PLAYERS) :
-            distribution += [ c for c in self._pits_of(i) if c > 0]
-        distribution.sort(reverse=True)
-        return distribution
-
     def __str__(self):
-        print(self.board)
         pit_strs = list()
         for player_id in range(self.NUMBER_OF_PLAYERS) :
             t = '[' 
-            t += ', '.join([str(i) for i in self._pits_of(player_id)])
-            t += '; ' + ', '.join([str(i) for i in self._stores_of(plid)])
+            t += ', '.join([str(i) for i in self.board[player_id][:self.num_of_pits]])
+            t += '; ' + ', '.join([str(i) for i in self.board[player_id][self.num_of_pits:]])
             t += ']'
             pit_strs.append(t)
         return 'Board2p('+str(self.player_in_turn)+', ' + ','.join(pit_strs)+')'

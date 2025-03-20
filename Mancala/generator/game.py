@@ -11,7 +11,7 @@ class Game:
     def __init__(
         self,
         player_classes: List[Type[Player]],
-        init_pieces_per_grid: int = 3,
+        init_pieces_in_pit: int = 3,
         grids_per_player: int = 4,
         grids_between_players: int = 1,
         max_turns: int = 100,
@@ -21,12 +21,12 @@ class Game:
         players = [player_class(player_id=i) for i, player_class in enumerate(player_classes)]
         players_num = len(players)
         self.players_num = players_num
-        self.initial_pieces = init_pieces_per_grid
+        self.initial_pieces = init_pieces_in_pit
         self.nuber_of_pits = grids_per_player
         self.grids_between_players = grids_between_players
         self.max_turns = max_turns
         self.board = Board2p(
-            init_pieces_per_grid=init_pieces_per_grid,
+            init_pieces_in_pit=init_pieces_in_pit,
             grids_per_player=grids_per_player,
         )
         self.players = players

@@ -7,16 +7,16 @@ class Board:
     def __init__(
         self,
         players_num: int = 2,
-        init_pieces_per_grid: int = 3,
+        init_pieces_in_pit: int = 3,
         grids_per_player: int = 3,
         grids_between_players: int = 1,
     ):
         self.players_num = players_num
-        self.initial_pieces = init_pieces_per_grid
+        self.initial_pieces = init_pieces_in_pit
         self.nuber_of_pits = grids_per_player
         self.grids_between_players = grids_between_players
         self.data = (
-            [init_pieces_per_grid] * grids_per_player
+            [init_pieces_in_pit] * grids_per_player
             + [INITIAL_PIECES_FOR_GRIDS_BETWEEN_PLAYERS] * grids_between_players
         ) * players_num
 
@@ -54,8 +54,8 @@ class Board:
         return index % (self.nuber_of_pits + self.grids_between_players) >= self.nuber_of_pits
 
     def get_players_grids(self, player_id: int) -> Dict[int, int]:
-        start_index = self.get_player_start_index(player_id=player_id)
-        return {index: self.data[index] for index in range(start_index, start_index + self.nuber_of_pits)}
+        starts = self.get_player_start_index(player_id=player_id)
+        return {index: self.data[index] for index in range(starts, starts + self.nuber_of_pits)}
 
     def get_player_start_index(self, player_id: int) -> int:
         return player_id * (self.nuber_of_pits + self.grids_between_players)
