@@ -85,7 +85,7 @@ class Board2p:
             self.board[index] += 1
         
         #print(self.board[start_ix : start_ix + self.num_of_pits])
-        if sum(self.board[start_ix : start_ix + self.num_of_pits]) == 0 :
+        if sum(self.pits_of_player(self.current_player())) == 0 :
             return True
         if not self._index_is_store(index) :
             self.switch_turn()
@@ -101,10 +101,10 @@ class Board2p:
 
     def game_won_by(self, player_id):
         #print(self.pit_array(player_id))
-        return sum(self._pits_of(player_id)) == 0
+        return sum(self.pits_of_player(player_id)) == 0
     
     def signature(self):
-        distribution = [ c for c in self.pits_of_player(self.current_player()) if c > 0] + [ c for c in self.row_of_player(self.current_player())[:-1] if c > 0]
+        distribution = [ c for c in self.pits_of_player(self.current_player()) if c > 0] + [ c for c in self.pits_of_player(self.next_player()) if c > 0]
         distribution.sort(reverse=True)
         return distribution
 
