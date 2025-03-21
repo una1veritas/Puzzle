@@ -11,21 +11,19 @@ class Game:
     def __init__(
         self,
         player_classes: List[Type[Player]],
-        init_pieces_per_grid: int = 3,
-        grids_per_player: int = 4,
-        grids_between_players: int = 1,
+        init_pieces_per_pit: int = 3,
+        pits_per_player: int = 4,
         max_turns: int = 255,
     ):
         if not len(player_classes) > 1:
             raise ValueError("Players should be more than 2.")
         self.players = [player_class(player_id=i) for i, player_class in enumerate(player_classes)]
-        self.initial_pieces = init_pieces_per_grid
-        self.nuber_of_pits = grids_per_player
-        self.grids_between_players = grids_between_players
+        self.initial_pieces = init_pieces_per_pit
+        self.nuber_of_pits = pits_per_player
         self.max_turns = max_turns
         self.board = Board2p(
-            init_pieces_per_grid=init_pieces_per_grid,
-            grids_per_player=grids_per_player,
+            init_pieces_per_pit=init_pieces_per_pit,
+            pits_per_player=pits_per_player,
         )
     
     def number_of_players(self):
@@ -76,8 +74,8 @@ if __name__ == "__main__":
     print(datetime.now())
     swatch_start = time.time()
     game = Game(player_classes=[MinMaxPlayer, MinMaxPlayer], \
-                init_pieces_per_grid=2, \
-                grids_per_player=6
+                pits_per_player = 6, \
+                init_pieces_per_pit = 2, \
                 )
     winner = game.run()
     swatch_stop = time.time()

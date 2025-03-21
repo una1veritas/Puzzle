@@ -28,13 +28,16 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
         for a_move in board.possible_moves():
             tmp_board = deepcopy(board)
             won_by_current = tmp_board.move(a_move)
+            #print(f'move = {a_move}, tmp board = {tmp_board}')
             if won_by_current :
+                #print('won by current')
                 if tmp_board.current_player() == search_with_min_max.original_player_id :
                     result = (a_move, 1, 0)
                 else:
                     result = (a_move, 0, 0)
                 break
             r = _evaluate(tmp_board)
+            #print(f'r = {r}')
             if result == None :
                 '''a_move という手を打った move の結果その r[2] 手先でおきた勝敗'''
                 result = (a_move, r[1], r[2] + 1) 
