@@ -1,3 +1,4 @@
+import array 
 
 class Board2p:
     NUMBER_OF_PLAYERS : int = 2
@@ -8,7 +9,7 @@ class Board2p:
         init_pieces_per_pit : int = 3,
     ):
         self.num_of_pits = pits_per_player
-        self.board = ([init_pieces_per_pit] * self.num_of_pits + [0]) * self.NUMBER_OF_PLAYERS
+        self.board = array.array('B',([init_pieces_per_pit] * self.num_of_pits + [0]) * self.NUMBER_OF_PLAYERS)
         self.player_in_turn = 0
     
     def __eq__(self, other):
@@ -59,25 +60,6 @@ class Board2p:
     def switch_turn(self):
         self.player_in_turn = self.next_player()
     
-        '''手を打つ．石を動かさず、勝利の場合 True を返し．そうでない場合 False を返す．エラーチェックしない．'''
-    # def winning_move(self, index: int) -> bool:
-    #     """Move the pieces which are in the grid of the given index.
-    #     :params
-    #     index: int: which grid to be moved
-    #     :return
-    #     whether you can move again or not.
-    #     """
-    #
-    #     remain = (self.num_of_pits + self.STORES_PER_PLAYER) - (index % (self.num_of_pits + self.STORES_PER_PLAYER))
-    #     if remain > self.STORES_PER_PLAYER:
-    #         return False        
-    #     pieces = self.board[self.player_in_turn][index]
-    #     if pieces == 0 :
-    #         return False
-    #     if pieces - self.STORES_PER_PLAYER > self.num_of_pits + self.STORES_PER_PLAYER :
-    #         return False
-    #     return sum(self._pits_of_current()) == pieces
-        
     '''手を打つ．石を動かす．勝利の場合 True を返す．そうでない場合，必要ならターンを変えて False を返す．'''
     def move(self, index: int) -> bool:
         """Move the pieces which are in the grid of the given index.
@@ -122,7 +104,7 @@ class Board2p:
         return sum(self._pits_of(player_id)) == 0
     
     def signature(self):
-        distribution = [ c for c in self.row_of_player(self.current_player())[:-1] if c > 0] + [ c for c in self.row_of_player(self.current_player())[:-1] if c > 0]
+        distribution = [ c for c in self.pits_of_player(self.current_player()) if c > 0] + [ c for c in self.row_of_player(self.current_player())[:-1] if c > 0]
         distribution.sort(reverse=True)
         return distribution
 
@@ -131,7 +113,7 @@ class Board2p:
         pit_strs = list()
         for player_id in range(self.NUMBER_OF_PLAYERS) :
             t = '[' 
-            t += ', '.join([str(i) for i in self.row_of_player(player_id)][:-1])
+            t += ', '.join([str(i) for i in self.pits_of_player(player_id)])
             t += '; ' + str(self.row_of_player(player_id)[-1])
             t += ']'
             pit_strs.append(t)
