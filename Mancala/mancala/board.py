@@ -60,7 +60,7 @@ class Board2p:
     def switch_turn(self):
         self.player_in_turn = self.next_player()
     
-    '''手を打つ．石を動かす．勝利の場合 True を返す．そうでない場合，必要ならターンを変えて False を返す．'''
+    '''手を打つ．盤の石を動かし状態を変更する．勝利の場合 True を返す．そうでない場合，必要ならターンを変えて False を返す．'''
     def move(self, index: int) -> bool:
         """Move the pieces which are in the grid of the given index.
         :params
@@ -95,9 +95,9 @@ class Board2p:
         if player_id == None :
             player_id = self.current_player()
         pits = self.pits_of_player(player_id)
-        for ix in range(len(pits)) :
-            if pits[ix] > 0 :
-                yield ix
+        for ix in range(len(pits), 0, -1) :
+            if pits[ix - 1] > 0 :
+                yield ix - 1
 
     def game_won_by(self, player_id):
         #print(self.pit_array(player_id))
