@@ -4,7 +4,7 @@ from board import Board2p
 from player import Player
 
 import psutil
-import os
+import os, sys
 
 
 class Game:
@@ -70,12 +70,16 @@ if __name__ == "__main__":
     from player import Human, MinMaxPlayer, RandomPlayer
     import time
     from datetime import datetime
-    
+    ppp = 3
+    ipp = 3
+    if len(sys.argv) > 2 :
+        ppp = int(sys.argv[1])
+        ipp = int(sys.argv[2])
     print(datetime.now())
     swatch_start = time.time()
     game = Game(player_classes=[MinMaxPlayer, MinMaxPlayer], \
-                pits_per_player = 6, \
-                init_pieces_per_pit = 2, \
+                pits_per_player = ppp, \
+                init_pieces_per_pit = ipp, \
                 )
     winner = game.run()
     swatch_stop = time.time()

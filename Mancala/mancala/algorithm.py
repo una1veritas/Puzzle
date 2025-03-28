@@ -17,7 +17,7 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
         search_with_min_max.dp = {}
     search_with_min_max.original_player_id = board.current_player() #player_id
     search_with_min_max.max_to_go = 0
-    search_with_min_max.max_sig = []
+    search_with_min_max.max_sig = 0
     
     '''Returns a pair (action, value) where action is the choice as a move, and value is its evaluation '''
     def _evaluate(board: Board2p) -> Tuple[int, int, int]:
@@ -53,8 +53,9 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
                             result = (a_move, r[1], r[2] + 1)
         #print(f'board = {board} result = {result}')
         to_go = result[2]
-        sig = board.signature()
-        if to_go > search_with_min_max.max_to_go or sig > search_with_min_max.max_sig :
+        sig = board.in_stores()
+        #if to_go > search_with_min_max.max_to_go or sig > search_with_min_max.max_sig :
+        if to_go > search_with_min_max.max_to_go  :
             if sig > search_with_min_max.max_sig :
                 search_with_min_max.max_sig = sig
             if to_go > search_with_min_max.max_to_go :

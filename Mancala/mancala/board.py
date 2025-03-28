@@ -108,6 +108,12 @@ class Board2p:
         distribution.sort(reverse=True)
         return distribution
 
+    def in_stores(self):
+        total = 0
+        for ix in range(self.NUMBER_OF_PLAYERS) :
+            total += self.board[ix * (self.num_of_pits + 1) + self.num_of_pits]
+        return total
+
     def __str__(self):
         #print(self.board)
         pit_strs = list()
