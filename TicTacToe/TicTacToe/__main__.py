@@ -21,10 +21,11 @@ class TicTacToe:
             rows += '\n'
         return rows
     
-    def place(self,row, col, symbol = 'X'):
+    def place(self,row, col, symbol):
         self.board[3*row+col] = symbol
         
 if __name__ == '__main__':
     ttt = TicTacToe()
+    print(ttt)
     ttt.place(0,2,'X')
     print(ttt)
