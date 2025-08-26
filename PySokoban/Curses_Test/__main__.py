@@ -26,7 +26,7 @@ $   Gold or gems
 &   Multiple items
 /   A pole-arm
 |   An edged weapon
-\   A hafted weapon
+\\   A hafted weapon
 }   A sling, bow, or x-bow
 {   A shot, arrow, or bolt
 (   Soft armour
@@ -46,8 +46,8 @@ class Sokoban_map:
     def __init__(self, level : str):
         self.walls = set()
         self.player = (0,0)
-        self.boxes = dict()
-        self.destinations = set()
+        self.boxes = set()
+        self.goals = set()
         view = level.split('\n')
         self.size = (len(view), len(view[0]))
         for row in range(0, len(view)):
@@ -58,9 +58,9 @@ class Sokoban_map:
                 elif sym == self.SYMBOL_PLAYER: 
                     self.player = (row, col)
                 elif sym == self.SYMBOL_DESTINATION :
-                    self.destinations.add( (row, col) )
+                    self.goals.add( (row, col) )
                 elif sym == self.SYMBOL_BOX :
-                    self.boxes[ (row, col) ] = len(self.boxes)
+                    self.boxes.add( (row, col) )
     
     def view_row_strings(self):
         map_dict = dict()
@@ -76,7 +76,7 @@ class Sokoban_map:
                 if (row, col) in map_dict :
                     rows[row] = rows[row] + map_dict[(row, col)]
                 else:
-                    if (row, col) in self.destinations:
+                    if (row, col) in self.goals:
                         rows[row] = rows[row] + self.SYMBOL_DESTINATION
                     else:
                         rows[row] = rows[row] + self.SYMBOL_FLOOR
@@ -85,18 +85,31 @@ class Sokoban_map:
     def player_pos(self):
         return self.player
     
-    def player_collide(self, row, col):
+    def collides(self, row, col):
         pos = (row, col)
         return pos in self.walls or pos in self.boxes 
     
     def move(self, row_dir, col_dir):
         new_pos = (self.player[0] + row_dir, self.player[1] + col_dir)
-        if not self.player_collide(new_pos[0], new_pos[1]) :
+        if not self.collides(new_pos[0], new_pos[1]) :
             self.player = new_pos
             '''succeeded the move'''
             return True
-        '''the move is forbidden, map has not been changed'''
+        elif new_pos in self.boxes and not self.collides(new_pos[0]+row_dir, new_pos[1]+col_dir) :
+            self.player = new_pos
+            '''succeeded the move'''
+            self.boxes.remove(new_pos)
+            self.boxes.add( (new_pos[0]+row_dir, new_pos[1]+col_dir) )
+            return True
+            
+        '''the move is forbidden, floor_map has not been changed'''
         return False
+    
+    def check_finished(self):
+        for pos in self.boxes:
+            if pos not in self.goals :
+                return False
+        return True
 
 def main(stdscr):
     # Initialize curses settings
@@ -106,27 +119,30 @@ def main(stdscr):
     # keymap = {259: 'up', 258 : 'down', 261: 'right', 260: 'left', 81: 'Q', 113: 'q'}
     # Define game board (simplified example)
     level = \
-        "########\n" \
-        "#......#\n" \
-        "#..##..#\n" \
-        "#...#~.#\n" \
-        "#@X.#..#\n" \
-        "#......#\n" \
-        "#......#\n" \
-        "########"
+        "#########\n" \
+        "#.......#\n" \
+        "#.......#\n" \
+        "#..##~..#\n" \
+        "#@X.#...#\n" \
+        "#..X##.~#\n" \
+        "#.......#\n" \
+        "#.......#\n" \
+        "#########"
     
-    map = Sokoban_map(level)
+    floor_map = Sokoban_map(level)
             
     key = 0
     while True:
         stdscr.clear()
         # Draw the level
-        for y, rowstr in enumerate(map.view_row_strings()):
+        for y, rowstr in enumerate(floor_map.view_row_strings()):
             stdscr.addstr(y, 0, rowstr)
-        stdscr.addstr(11,0, f'{map.player_pos()}');
+        stdscr.addstr(11,0, f'{floor_map.player_pos()}');
 
+        if floor_map.check_finished() :
+            stdscr.addstr(12,0, f'Congratulations!!!');
         stdscr.refresh()
-
+        
         key = stdscr.getch()
 
         if key == ord('q'):
@@ -141,7 +157,7 @@ def main(stdscr):
             player_dir = [+1, 0]
         
         # check whether the player can move or not
-        if not map.move(player_dir[0], player_dir[1]) :
+        if not floor_map.move(player_dir[0], player_dir[1]) :
             curses.beep()
 
 # Run the curses application
