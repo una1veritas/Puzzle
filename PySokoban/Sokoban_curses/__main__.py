@@ -43,7 +43,7 @@ class Sokoban:
     SYMBOL_WALL = '#'
     SYMBOL_FLOOR = ' '
     SYMBOL_PLAYER = '@'
-    SYMBOL_BOX = '&'
+    SYMBOL_BOX = '$'
     SYMBOL_GOAL ='.'
     SYMBOL_PLAYER_ON_GOAL = '+'
     SYMBOL_BOX_ON_GOAL = '*'
@@ -150,9 +150,9 @@ class Sokoban:
                 return False
         return True
 
+
 logging.basicConfig(level=logging.INFO, filename='messages.log', format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
-
 globals = dict()
 
 def main(stdscr):
@@ -168,9 +168,9 @@ def main(stdscr):
     # Define game board (simplified example)
     sokoban_map = Sokoban(globals['levels'][globals['floor_no']])
     if sokoban_map.size[0] + 2 > scr_height or sokoban_map.size[1] > scr_width :
-        globals['err_msg'] = f'size {sokoban_map.size} of the floor exceeds screen size {(scr_height, scr_width)}'
-        return
-    # logger.info(f'{Sokoban.example()[1]}')
+        stdscr.addstr(scr_height-1,0,f'Error: size {sokoban_map.size} of the floor exceeds screen size {(scr_height, scr_width)}')
+        stdscr.refresh()
+        while True : pass
     # logger.info(f'{sokoban_map.size}')
     
     key = 0
@@ -182,12 +182,12 @@ def main(stdscr):
         for y, rowstr in enumerate(sokoban_map.get_row_strings()):
             #logger.info(f'{(y, rowstr)}')
             if updated[y] :
-                stdscr.addstr(y+3, 0, rowstr)
+                stdscr.addstr(y, 0, rowstr)
                 updated[y] = False
-        stdscr.addstr(0,0, f'Elapsed {time.time()-timer_started:5.1f}');
+        stdscr.addstr(scr_height-2,0, f'Elapsed {time.time()-timer_started:5.1f}');
 
         if sokoban_map.check_finished() :
-            stdscr.addstr(0,0, f'Congratulations!!!');
+            stdscr.addstr(scr_height-1,0, f'Congratulations!!!');
         
         stdscr.refresh()
         
@@ -223,6 +223,7 @@ def main(stdscr):
 
 # Run the curses application
 if __name__ == '__main__':
+    # read flooor maps (levels)
     levels = list()
     with open('floors.txt', 'r') as f :
         for a_line in f:
@@ -244,6 +245,4 @@ if __name__ == '__main__':
     #
     curses.wrapper(main)
     
-    if 'err_msg' in globals :
-        print(globals['err_msg'])
         
