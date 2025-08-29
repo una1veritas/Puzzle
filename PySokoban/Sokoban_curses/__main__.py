@@ -160,12 +160,16 @@ def main(stdscr):
     curses.curs_set(0)  # Hide cursor
     stdscr.nodelay(True)
     stdscr.clear()
+    scr_height, scr_width = stdscr.getmaxyx()
     
     timer_started = time.time()
     
     # keymap = {259: 'up', 258 : 'down', 261: 'right', 260: 'left', 81: 'Q', 113: 'q'}
     # Define game board (simplified example)
     sokoban_map = Sokoban(globals['levels'][globals['floor_no']])
+    if sokoban_map.size[0] + 2 > scr_height or sokoban_map.size[1] > scr_width :
+        globals['err_msg'] = f'size {sokoban_map.size} of the floor exceeds screen size {(scr_height, scr_width)}'
+        return
     # logger.info(f'{Sokoban.example()[1]}')
     # logger.info(f'{sokoban_map.size}')
     
@@ -240,3 +244,6 @@ if __name__ == '__main__':
     #
     curses.wrapper(main)
     
+    if 'err_msg' in globals :
+        print(globals['err_msg'])
+        
