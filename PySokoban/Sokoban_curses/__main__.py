@@ -38,10 +38,13 @@ import curses
 import sys
 import time
 import logging
+from collections import deque
+import pygame
 
 class Sokoban:
     SYMBOL_WALL = '#'
     SYMBOL_FLOOR = ' '
+    SYMBOL_WOOD_FLOORING = '-'
     SYMBOL_PLAYER = '@'
     SYMBOL_BOX = '$'
     SYMBOL_GOAL ='.'
@@ -49,12 +52,15 @@ class Sokoban:
     SYMBOL_BOX_ON_GOAL = '*'
     
     def __init__(self, level : str):
+        logger.info(f'level = {level}')
         self.walls = set()
         self.player_pos = (0,0)
         self.boxes = set()
         self.goals = set()
-        self.initial_map = [row for row in level.split('\n') if len(row)]
-        self.floor_size = (len(self.initial_map), len(self.initial_map[0]))
+        self.initial_map = [row for row in level.strip().split('\n') if len(row)]
+        max_width = max([len(row) for row in self.initial_map])
+        self.floor_size = (len(self.initial_map), max_width)
+        logger.info(f'{self.floor_size}')
         self.set_floor_by_row_strings(self.initial_map)
         self.motion_history = list()
 
@@ -67,8 +73,10 @@ class Sokoban:
         return self.player_pos
     
     def set_floor_by_row_strings(self, row_strings):
-        for row in range(self.floor_size[0]):
-            for col in range(self.floor_size[1]):
+        for row in range(self.size[0]):
+            for col in range(self.size[1]):
+                if not col < len(row_strings[row]) :
+                    continue
                 sym = row_strings[row][col]
                 if sym == self.SYMBOL_WALL :
                     self.walls.add( (row, col) )
@@ -84,6 +92,8 @@ class Sokoban:
                 elif sym == self.SYMBOL_PLAYER_ON_GOAL :
                     self.player_pos = (row, col)
                     self.goals.add( (row, col) )
+                elif sym == self.SYMBOL_FLOOR or sym == self.SYMBOL_WOOD_FLOORING :
+                    pass 
                     
         
     def get_row_strings(self):
@@ -103,9 +113,9 @@ class Sokoban:
             map_dict[self.player_pos] = self.SYMBOL_PLAYER 
         #
         rows = list()
-        for row in range(self.floor_size[0]):
+        for row in range(self.size[0]):
             rows.append('')
-            for col in range(self.floor_size[1]):
+            for col in range(self.size[1]):
                 if (row, col) in map_dict :
                     rows[row] = rows[row] + map_dict[(row, col)]
                 else:
@@ -134,15 +144,16 @@ class Sokoban:
         return None
     
     def undo_last_move(self):
-        while self.motion_history :
+        while len(self.motion_history) > 0 :
             last_move = self.motion_history.pop()
             if last_move[0] == self.SYMBOL_PLAYER :
                 self.player_pos = last_move[1]
-                return 
+                return True
             elif last_move[0] == self.SYMBOL_BOX :
                 self.boxes.remove(last_move[2])
                 self.boxes.add(last_move[1])
-        raise Exception('Motion history rewind Error!')
+        #raise Exception('Motion history rewind Error!')
+        return False
     
     def check_finished(self):
         for pos in self.boxes:
@@ -154,7 +165,11 @@ class Sokoban:
 logging.basicConfig(level=logging.INFO, filename='messages.log', format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 globals = dict()
-
+pygame.mixer.init()
+pygame.mixer.music.load('se_foot.wav')
+# play_obj = wave_obj.play()
+# play_obj.wait_done() # Waits until sound has finished playing
+    
 def main(stdscr):
     # Initialize curses settings
     curses.curs_set(0)  # Hide cursor
@@ -166,7 +181,8 @@ def main(stdscr):
     
     # keymap = {259: 'up', 258 : 'down', 261: 'right', 260: 'left', 81: 'Q', 113: 'q'}
     # Define game board (simplified example)
-    sokoban_map = Sokoban(globals['levels'][globals['floor_no']])
+    selected_level = globals['levels'][globals['floor_no']]
+    sokoban_map = Sokoban(selected_level[0])
     if sokoban_map.size[0] + 2 > scr_height or sokoban_map.size[1] > scr_width :
         stdscr.addstr(scr_height-1,0,f'Error: size {sokoban_map.size} of the floor exceeds screen size {(scr_height, scr_width)}')
         stdscr.refresh()
@@ -185,6 +201,7 @@ def main(stdscr):
                 stdscr.addstr(y, 0, rowstr)
                 updated[y] = False
         stdscr.addstr(scr_height-2,0, f'Elapsed {time.time()-timer_started:5.1f}');
+        stdscr.addstr(scr_height-3,0, f'size size {sokoban_map.size}');
 
         if sokoban_map.check_finished() :
             stdscr.addstr(scr_height-1,0, f'Congratulations!!!');
@@ -208,6 +225,7 @@ def main(stdscr):
         # if the player bumps
         if player_dir :
             if sokoban_map.move(player_dir[0], player_dir[1]) :
+                pygame.mixer.music.play() 
                 pos = sokoban_map.player
                 rmin = max(pos[0] - 1, 0)
                 rmax = min(pos[0] + 1, sokoban_map.size[0]+1 )
@@ -221,27 +239,62 @@ def main(stdscr):
             for r in range(sokoban_map.size[0]) :
                 updated[r] = True
 
+def load_levels(filename):
+    levels = list()
+    buffer = deque()
+    with open(filename, 'r') as file :
+        while (a_line := file.readline() ) != '' :
+            a_line = a_line.strip()
+            buffer.append(a_line)
+            items = a_line.split(':')
+            level_info = dict()
+            if items[0] == 'Title' :
+                buffer.pop()
+                level_info['Title'] = items[1].strip()
+                while (a_line := file.readline() ) != '' :
+                    if len(a_line.strip()) == 0 :
+                        break
+                    if ':' in a_line :
+                        items = a_line.split(':')
+                        level_info[items[0]] = ':'.join(items[1:])
+                    else:
+                        level_info[items[0]] += a_line.strip()
+                level_info['floor'] = list()
+                for l in reversed(buffer):
+                    if len(l) == 0 :
+                        break
+                    level_info['floor'].append(l)
+                if len(level_info['floor']) == 0 :
+                    print(level_info)
+                    raise Exception('format error!!')
+                level_info['floor'].reverse()
+                level_info['floor'] = '\n'.join(level_info['floor'])
+                buffer.clear()
+                levels.append( list() )
+                levels[-1].append( level_info['floor'] )
+                if 'Title' in level_info :
+                    levels[-1].append( level_info['Title'] )
+                if 'Comment' in level_info :
+                    levels[-1].append( level_info['Comment'] )
+    return levels
+
 # Run the curses application
 if __name__ == '__main__':
     # read flooor maps (levels)
-    levels = list()
-    with open('floors.txt', 'r') as f :
-        for a_line in f:
-            a_line = a_line.strip()
-            if len(levels) == 0 :
-                levels.append('')
-            if len(a_line) == 0 and len(levels[-1]) > 0 :
-                levels.append('')
-            else:
-                levels[-1] = levels[-1] + a_line + '\n'
+    if len(sys.argv) > 1 :
+        file_name = sys.argv[1]
+    else:
+        file_name = 'floor.txt'
+    levels = load_levels(file_name)
+    
     #logger.info(f'levels[-1] = {levels[-1]}')
     #logger.info(f'{levels[1]}')
-    #logger.info(f'len ={len(levels)}')
+    logger.info(f'{levels}')
     globals['levels'] = levels
     try:
-        globals['floor_no'] = int(sys.argv[1])
+        globals['floor_no'] = int(sys.argv[2])
     except:
-        globals['floor_no'] = 1
+        globals['floor_no'] = 0
     #
     curses.wrapper(main)
     
