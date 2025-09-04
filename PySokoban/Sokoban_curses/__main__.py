@@ -165,8 +165,8 @@ class Sokoban:
 logging.basicConfig(level=logging.INFO, filename='messages.log', format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 globals = dict()
-pygame.mixer.init()
-pygame.mixer.music.load('se_foot.wav')
+#pygame.mixer.init()
+#pygame.mixer.music.load('walk-steps.wav')
 # play_obj = wave_obj.play()
 # play_obj.wait_done() # Waits until sound has finished playing
     
@@ -225,7 +225,7 @@ def main(stdscr):
         # if the player bumps
         if player_dir :
             if sokoban_map.move(player_dir[0], player_dir[1]) :
-                pygame.mixer.music.play() 
+                #pygame.mixer.music.play() 
                 pos = sokoban_map.player
                 rmin = max(pos[0] - 1, 0)
                 rmax = min(pos[0] + 1, sokoban_map.size[0]+1 )
