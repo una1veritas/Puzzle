@@ -64,6 +64,13 @@ class Sokoban:
         self.set_floor_by_row_strings(self.initial_map)
         self.motion_history = list()
 
+    def restart(self):
+        self.walls.clear()
+        self.player_pos = (0,0)
+        self.boxes.clear()
+        self.goals.clear()
+        self.set_floor_by_row_strings(self.initial_map)
+
     @property
     def size(self):
         return self.floor_size
@@ -233,9 +240,14 @@ def main(stdscr):
                     updated[r] = True
             else:
                 curses.beep()
-        elif key == ord('r') :
+        elif key == ord('u') :
             curses.beep()
             sokoban_map.undo_last_move()
+            for r in range(sokoban_map.size[0]) :
+                updated[r] = True
+        elif key == ord('r') :
+            curses.beep()
+            sokoban_map.restart()
             for r in range(sokoban_map.size[0]) :
                 updated[r] = True
 
