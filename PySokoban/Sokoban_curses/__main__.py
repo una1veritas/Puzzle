@@ -184,72 +184,75 @@ def main(stdscr):
     stdscr.clear()
     scr_height, scr_width = stdscr.getmaxyx()
     
-    timer_started = time.time()
-    
-    # keymap = {259: 'up', 258 : 'down', 261: 'right', 260: 'left', 81: 'Q', 113: 'q'}
-    # Define game board (simplified example)
-    selected_level = globals['levels'][globals['floor_no']]
-    sokoban_map = Sokoban(selected_level[0])
-    if sokoban_map.size[0] + 2 > scr_height or sokoban_map.size[1] > scr_width :
-        stdscr.addstr(scr_height-1,0,f'Error: size {sokoban_map.size} of the floor exceeds screen size {(scr_height, scr_width)}')
-        stdscr.refresh()
-        while True : pass
-    # logger.info(f'{sokoban_map.size}')
-    
-    key = 0
-    updated = [True for _ in range(sokoban_map.size[0])]
-    # logger.info(f'{len(updated)} {updated}')
-    stdscr.clear()
     while True:
-        # Draw the level
-        for y, rowstr in enumerate(sokoban_map.get_row_strings()):
-            #logger.info(f'{(y, rowstr)}')
-            if updated[y] :
-                stdscr.addstr(y, 0, rowstr)
-                updated[y] = False
-        stdscr.addstr(scr_height-2,0, f'Elapsed {time.time()-timer_started:5.1f}');
-        stdscr.addstr(scr_height-3,0, f'size size {sokoban_map.size}');
-
-        if sokoban_map.check_finished() :
-            stdscr.addstr(scr_height-1,0, f'Congratulations!!!');
+        timer_started = time.time()
         
-        stdscr.refresh()
+        # keymap = {259: 'up', 258 : 'down', 261: 'right', 260: 'left', 81: 'Q', 113: 'q'}
+        # Define game board (simplified example)
+        selected_level = globals['levels'][globals['floor_no']]
+        sokoban_map = Sokoban(selected_level[0])
+        if sokoban_map.size[0] + 2 > scr_height or sokoban_map.size[1] > scr_width :
+            stdscr.addstr(scr_height-1,0,f'Error: size {sokoban_map.size} of the floor exceeds screen size {(scr_height, scr_width)}')
+            stdscr.refresh()
+            while True : pass
+        # logger.info(f'{sokoban_map.size}')
         
-        key = stdscr.getch()
-        if key == curses.ERR :
-            continue
-        player_dir = None
-        if key == ord('q'):
-            break  # Quit
-        elif key == curses.KEY_UP:
-            player_dir = [-1, 0]
-        elif key == curses.KEY_LEFT:
-            player_dir = [0, -1]
-        elif key == curses.KEY_RIGHT:
-            player_dir = [0, +1]
-        elif key == curses.KEY_DOWN:
-            player_dir = [+1, 0]
-        # if the player bumps
-        if player_dir :
-            if sokoban_map.move(player_dir[0], player_dir[1]) :
-                #pygame.mixer.music.play() 
-                pos = sokoban_map.player
-                rmin = max(pos[0] - 1, 0)
-                rmax = min(pos[0] + 1, sokoban_map.size[0]+1 )
-                for r in range(rmin, rmax + 1) :
-                    updated[r] = True
-            else:
+        key = 0
+        updated = [True for _ in range(sokoban_map.size[0])]
+        # logger.info(f'{len(updated)} {updated}')
+        stdscr.clear()
+        while True:
+            # Draw the level
+            for y, rowstr in enumerate(sokoban_map.get_row_strings()):
+                #logger.info(f'{(y, rowstr)}')
+                if updated[y] :
+                    stdscr.addstr(y, 0, rowstr)
+                    updated[y] = False
+            stdscr.addstr(scr_height-2,0, f'Elapsed {time.time()-timer_started:5.1f}');
+            stdscr.addstr(scr_height-3,0, f'size size {sokoban_map.size}');
+    
+            if sokoban_map.check_finished() :
+                stdscr.addstr(scr_height-1,0, f'Congratulations!!!');
+                break       
+            
+            stdscr.refresh()
+            
+            key = stdscr.getch()
+            if key == curses.ERR :
+                continue
+            player_dir = None
+            if key == ord('q'):
+                return  # Quit
+            elif key == curses.KEY_UP:
+                player_dir = [-1, 0]
+            elif key == curses.KEY_LEFT:
+                player_dir = [0, -1]
+            elif key == curses.KEY_RIGHT:
+                player_dir = [0, +1]
+            elif key == curses.KEY_DOWN:
+                player_dir = [+1, 0]
+            # if the player bumps
+            if player_dir :
+                if sokoban_map.move(player_dir[0], player_dir[1]) :
+                    #pygame.mixer.music.play() 
+                    pos = sokoban_map.player
+                    rmin = max(pos[0] - 1, 0)
+                    rmax = min(pos[0] + 1, sokoban_map.size[0]+1 )
+                    for r in range(rmin, rmax + 1) :
+                        updated[r] = True
+                else:
+                    curses.beep()
+            elif key == ord('u') :
                 curses.beep()
-        elif key == ord('u') :
-            curses.beep()
-            sokoban_map.undo_last_move()
-            for r in range(sokoban_map.size[0]) :
-                updated[r] = True
-        elif key == ord('r') :
-            curses.beep()
-            sokoban_map.restart()
-            for r in range(sokoban_map.size[0]) :
-                updated[r] = True
+                sokoban_map.undo_last_move()
+                for r in range(sokoban_map.size[0]) :
+                    updated[r] = True
+            elif key == ord('r') :
+                curses.beep()
+                sokoban_map.restart()
+                for r in range(sokoban_map.size[0]) :
+                    updated[r] = True
+        globals['floor_no'] += 1
 
 def load_levels(filename):
     levels = list()
