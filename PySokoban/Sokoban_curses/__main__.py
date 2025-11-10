@@ -213,7 +213,7 @@ def main(stdscr):
     
             if sokoban_map.check_finished() :
                 stdscr.addstr(scr_height-1,0, f'Congratulations!!!');
-                break       
+                break
             
             stdscr.refresh()
             
