@@ -1,14 +1,14 @@
 '''
-Created on 2025/04/16
+Created on 2026/01/18
 
 @author: sin
 '''
-class TicTacToe:
-    def __init__(self, board = None):
-        if board == None :
-            self.board = [' '] * 9
-        else:
-            self.board = board[:9]
+
+class GobletGobblers:
+    def __init__(self):
+        self.board = [0]*9
+        # each cell formed from 6 bit, 
+        # 1 in each 2 bits represents existence of either blue one or red one
     
     def __str__(self):
         rows = ''
@@ -21,12 +21,6 @@ class TicTacToe:
             rows += '\n'
         return rows
     
-    def place(self,row, col, ch):
-        self.board[3*row+col] = ch
-    
-    
 if __name__ == '__main__':
-    ttt = TicTacToe()
-    print(ttt)
-    ttt.place(0,2,'X')
-    print(ttt)
+    board = GobletGobblers()
+    print(board)
