@@ -1,4 +1,3 @@
-from copy import deepcopy
 from typing import Dict, Tuple, List, Any
 import gc, json
 import psutil, os
@@ -11,11 +10,11 @@ def get_memory_usage():
     return memory_info.rss  # in bytes
 
 def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int, int]:
-    # if player_id != board.current_player() :
+    # if player_id != board.player_in_turn() :
     #     raise ValueError('Error!')
     if dp == None :
         search_with_min_max.dp = {}
-    search_with_min_max.original_player_id = board.current_player() #player_id
+    search_with_min_max.original_player_id = board.player_in_turn() #player_id
     search_with_min_max.max_to_go = 0
     search_with_min_max.max_sig = 0
     
@@ -23,15 +22,15 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
     def _evaluate(board: Board2p) -> Tuple[int, int, int]:
         #print('_evaluate', board)
         result = dp.get(board) #"|".join([str(i) for i in board.data]) + f"_{player_id}")
-        if result is not None:
+        if result != None:
             return result
         for a_move in board.possible_moves():
-            tmp_board = deepcopy(board)
-            won_by_current = tmp_board.move(a_move)
+            tmp_board = Board2p(board)
+            tmp_board.move(a_move)
             #print(f'move = {a_move}, tmp board = {tmp_board}')
-            if won_by_current :
+            if tmp_board.game_settled_by(board.player_in_turn()) :
                 #print('won by current')
-                if tmp_board.current_player() == search_with_min_max.original_player_id :
+                if tmp_board.player_in_turn() == search_with_min_max.original_player_id :
                     result = (a_move, 1, 0)
                 else:
                     result = (a_move, 0, 0)
@@ -45,13 +44,16 @@ def search_with_min_max(player_id: int, board: Board2p, dp : dict) -> Tuple[int,
                     '''a_move という手を打った move の結果その r[2] 手先でおきた勝敗'''
                     result = (a_move, r[1], r[2] + 1) 
                 else:
-                    if board.current_player() == search_with_min_max.original_player_id:
+                    if board.player_in_turn() == search_with_min_max.original_player_id:
                         if r[1] > result[1] or (r[1] == 1 and r[2] + 1 < result[2]) or (r[1] == 0 and r[2] + 1 > result[2]) :
                             result = (a_move, r[1], r[2] + 1)
                     else:
                         if r[1] < result[1] or (r[1] == 1 and r[2] + 1 > result[2]) or (r[1] == 0 and r[2] + 1 < result[2]) :
                             result = (a_move, r[1], r[2] + 1)
-        #print(f'board = {board} result = {result}')
+        else:
+            #print('no possible moves!')
+            pass
+        #print(f'board = {board}, result = {result}')
         to_go = result[2]
         sig = board.in_stores()
         #if to_go > search_with_min_max.max_to_go or sig > search_with_min_max.max_sig :

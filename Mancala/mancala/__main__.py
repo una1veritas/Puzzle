@@ -22,7 +22,7 @@ class Game:
         self.nuber_of_pits = pits_per_player
         self.max_turns = max_turns
         self.board = Board2p(
-            init_pieces_per_pit=init_pieces_per_pit,
+            initial_pieces_in_pit=init_pieces_per_pit,
             pits_per_player=pits_per_player,
         )
     
@@ -34,9 +34,9 @@ class Game:
         turn_n = 1
         while True:
             print(f"Turn {turn_n}")
-            print(f"Player {self.board.current_player()}")
-            current_player_id = self.board.current_player()
-            while self.board.current_player() == current_player_id :
+            print(f"Player {self.board.player_in_turn()}")
+            current_player_id = self.board.player_in_turn()
+            while self.board.player_in_turn() == current_player_id :
                 print(self.board)
                 player = self.players[current_player_id]
                 index = player.act(self.board) if not isinstance(player, MinMaxPlayer) else player.act(self.board, hint_dp)
@@ -44,17 +44,19 @@ class Game:
                 # if index == -1 :
                 #     break
                 #print("before move", self.board)                
-                game_finished = self.board.move(index=index)
+                self.board.move(index)
+                game_finished = self.board.game_settled_by(self.board.player_in_turn())
                 #print("after move", self.board)
                 if game_finished:
                     break
                 print()
+            
             if game_finished :
                 print()
-                print(f"Player {self.board.current_player()} wins!")
+                print(f"Player {self.board.player_in_turn()} wins!")
                 print(self.board)
                 print()
-                return self.board.current_player()
+                return current_player_id
             
             turn_n += 1
             if turn_n >= self.max_turns:
@@ -70,7 +72,7 @@ if __name__ == "__main__":
     from player import Human, MinMaxPlayer, RandomPlayer
     import time
     from datetime import datetime
-    ppp = 3
+    ppp = 4
     ipp = 3
     if len(sys.argv) > 2 :
         ppp = int(sys.argv[1])

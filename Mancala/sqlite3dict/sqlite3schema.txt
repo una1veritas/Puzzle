@@ -1,0 +1,17 @@
+CREATE TABLE IF NOT EXISTS kv (
+  key   BLOB PRIMARY KEY,
+  value BLOB
+);
+-- For lower overhead and smaller storage when you don't need the implicit rowid:
+CREATE TABLE IF NOT EXISTS kv_no_rowid (
+  key   BLOB PRIMARY KEY,
+  value BLOB
+) WITHOUT ROWID;
+
+INSERT INTO kv(key, value) VALUES(?, ?)
+  ON CONFLICT(key) DO UPDATE SET value = excluded.value;
+
+SELECT value FROM kv WHERE key = ?;
+  
+DELETE FROM kv WHERE key = ?;
+
