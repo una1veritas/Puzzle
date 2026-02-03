@@ -7,6 +7,14 @@ import operator
 
 class bitarray:
     
+    def __init__(self, bitwidth, initlen, initval):
+        if isinstance(bitwidth, int) :
+            self._uwidth = bitwidth
+            self._size = initlen
+            self.bits = int(initval)
+        else:
+            raise NotImplementedError(f'{initval} is invalid initializer.')
+    
     ''' popcnt '''
     @staticmethod
     def bit1count(intval): 
@@ -27,15 +35,7 @@ class bitarray:
             counter += 1
         return counter
 
-    
-    def __init__(self, bitwidth, initlen, initval):
-        if isinstance(bitwidth, int) :
-            self._uwidth = bitwidth
-            self._size = initlen
-            self.bits = int(initval)
-        else:
-            raise NotImplementedError(f'{initval} is invalid initializer.')
-    
+
     def _bitmask(self):
         return (1 << self._uwidth) - 1
 
@@ -45,26 +45,37 @@ class bitarray:
     def __len__(self):
         return self._size
     
+    def __eq__(self, other):
+        if isinstance(other, bitarray) :
+            return self._size == other._size and self._uwidth == other._uwidth \
+                and self.bits == other.bits
+        return False
+    
+    def __hash__(self):
+        return hash(self.bits)
+    
+    def get(self, ix):
+        return self._bitmask() & (self.bits >> (self._uwidth * ix))
+    
     def __getitem__(self, index):
         if not isinstance(index, slice):
             ix = operator.index(index)  # accepts int-like objects
-            return self._bitmask() & (self.bits >> (self._uwidth * ix))
+            return self.get(ix)
         
         #raise NotImplementedError('get item with slice is not implemented')
         # slice index -> return same type (copy) for safety
         # slice.indices normalizes start/stop/step and handles negatives/out-of-range
         start, stop, step = index.indices(len(self))
-        
-        newbits = 0
+        newarray = bitarray(self._uwidth, stop - start, 0)
+        nix = 0
         for ix in range(start, stop, step) :
-            val = self._bitmask() & (self.bits >> (self._uwidth * ix))
-            newbits |= (val << (self._uwidth * ix))
-        return bitarray(self._uwidth, stop - start, newbits)
+            newarray[nix] = self.get(ix)
+        return newarray
     
     def set(self, ix, val):
         if ix >= self._size :
             self._size = ix + 1
-        print(ix, val, self._size, f'len = {len(self)}')
+        #print(ix, val, self._size, f'len = {len(self)}')
         val &= self._bitmask()
         self.bits &= ~(self._bitmask() << (self._uwidth * ix))
         self.bits |= (val << (self._uwidth * ix))
@@ -97,7 +108,7 @@ class bitarray:
         return bin(self.bits)
     
     def __str__(self):
-        print(f'len = {len(self)}')
+        #print(f'len = {len(self)}')
         return str(tuple([self[i] for i in range(len(self))]))
 
     def rotright(self, start, stop, moves):
