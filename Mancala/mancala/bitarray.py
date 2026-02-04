@@ -7,10 +7,14 @@ import operator
 
 class bitarray:
     
-    def __init__(self, bitwidth, initlen, initval):
-        if isinstance(bitwidth, int) :
-            self._uwidth = bitwidth
-            self._size = initlen
+    def __init__(self, initval, width = None, length = None):
+        if isinstance(initval, bitarray) :
+            self._uwidth = initval._uwidth
+            self._size = initval._size
+            self.bits = initval.bits
+        elif isinstance(width, int) and isinstance(length, int) :
+            self._uwidth = width
+            self._size = length
             self.bits = int(initval)
         else:
             raise NotImplementedError(f'{initval} is invalid initializer.')

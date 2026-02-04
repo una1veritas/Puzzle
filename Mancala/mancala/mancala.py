@@ -5,39 +5,46 @@ Created on 2026/02/01
 '''
 from collections import deque
 from bitarray import bitarray
+from math import log, ceil, floor
 
-class Mancala263():
+class Mancala():
     '''
     classdocs
     '''
 
     def __init__(self, initval = None):
         '''
-        Constructor
+        default setting
         '''
+        players = 2
+        num_of_pits = 6 # except one house (store) per player
+        initial_number = 3 # in pits
         if initval == None :
-            self.board = bitarray(6, 15, 0)
-            self.set_turn(0) # info, player id of the current turn 
-            for pix in range(14):
-                if pix % 7 < 6 :
-                    self.board[pix] = 3
+            self.board = bitarray(0, ceil(log(initial_number * num_of_pits * 2 + 1, 2)), (num_of_pits + 1) * 2 + 1) # + 1 for id of player in turn
+            self.set_turn(0) # info, player id of the current turn (id of player who moves the next move)
+            for pix in range((num_of_pits + 1) * 2):
+                if pix % (num_of_pits + 1) < num_of_pits :
+                    self.board[pix] = initial_number
                 else:
-                    self.board[pix] = 0
-        elif isinstance(initval, (bitarray, int, Mancala263) ) :
-            self.board = bitarray(6, 15, int(initval))
+                    self.board[pix] = 0  # since this is house (store)
         elif isinstance(initval, (list, tuple) ) :
-            self.board = bitarray(6, 15, 0)
-            for ix in range(0, min(len(initval), 15)) :
+            num_of_pits = len(initval) // 2 - 1
+            pieces = sum(initval[:num_of_pits*2])
+            bitw = ceil(log(pieces + 1, 2))
+            print(pieces, bitw, num_of_pits)
+            self.board = bitarray(0, bitw, (num_of_pits + 1) * 2 + 1)
+            for ix in range(len(initval)) :
                 self.board[ix] = initval[ix]
-            if len(initval) < 15 :
-                self.set_turn(0)
+        elif isinstance(initval, Mancala ) :
+            self.board = bitarray(initval.board)
         else:
             raise ValueError(f'Not implemented')
+        
     
     def __str__(self):
         outstr = 'Mancala( ('
-        outstr += ', '.join([str(self.board[ix]) for ix in range(6)]) + '; ' + str(self.board[7]) 
-        outstr += ' / ' + ', '.join( ([str(self.board[ix]) for ix in range(7,13)]) ) + '; ' + str(self.board[14])
+        outstr += ', '.join([str(self.board[ix]) for ix in range(self.number_of_pits())]) + '; ' + str(self.board[self.number_of_pits()]) 
+        outstr += ' / ' + ', '.join( ([str(self.board[ix]) for ix in range(self.number_of_pits()+1,self.number_of_pits()*2+1)]) ) + '; ' + str(self.board[(self.number_of_pits()+1)*2])
         outstr += '), ' + str(self.turn()) + ') '
         return outstr
     def __repr__(self):\
@@ -47,12 +54,15 @@ class Mancala263():
         return int(self.board)
     
     def __eq__(self, other):
-        if isinstance(other, Mancala263) :
+        if isinstance(other, Mancala) :
             return self.board == other.board
         else:
             return False
     def __hash__(self):
         return hash(self.board)
+    
+    def number_of_pits(self):
+        return (len(self.board) - 1) // 2 - 1
     
     def turn(self):
         return self.board[15]
@@ -101,7 +111,7 @@ class Mancala263():
         self.turnover()
         return True # turnover-ed
     
-def search_moves(mboard : Mancala263, settled : set):
+def search_moves(mboard : Mancala, settled : set):
     moves = deque() # board, the next move to try, expect min, expect max
     moves.append( [mboard, 0, 1, 0] )
     while len(moves) > 0 :
@@ -110,7 +120,7 @@ def search_moves(mboard : Mancala263, settled : set):
             moves[-1][3] = 0
             if moves[-1][0] not in settled :
                 settled.add( moves[-1][0] )
-                print(len(settled), moves[-1])
+                print(len(settled), moves)
             moves.pop()
             moves[-1][2] = min(moves[-1][2], 0)
         elif moves[-1][0].won_by(1) :
@@ -118,13 +128,13 @@ def search_moves(mboard : Mancala263, settled : set):
             moves[-1][3] = 1
             if moves[-1][0] not in settled :
                 settled.add( moves[-1][0] )
-                print(len(settled), moves[-1])
+                print(len(settled), moves)
             moves.pop()
             moves[-1][2] = max(moves[-1][3], 1)
         # dig
         currboard, nxstartmv, knownmin, knownmax = moves[-1]
         for mix in currboard.valid_moves(nxstartmv) :
-            newboard = Mancala263(currboard)
+            newboard = Mancala(currboard)
             newboard.move(mix)
             if newboard in settled :
                 continue
@@ -144,7 +154,7 @@ def search_moves(mboard : Mancala263, settled : set):
 
 
 if __name__ == "__main__":
-    mancalaboard = Mancala263([1,1,1,1,1,1,0,1,1,1,1,1,1,0])
+    mancalaboard = Mancala([1,1,1,0,1,1,1,0])
     print(mancalaboard)
     settled_games = set()
     search_moves(mancalaboard, settled_games)
