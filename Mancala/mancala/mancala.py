@@ -144,11 +144,16 @@ def search_moves(mboard : Mancala263, settled : set):
 
 
 if __name__ == "__main__":
-    mancalaboard = Mancala263([1,1,1,0,0,0,0,1,1,1,0,0,0,0])
+    mancalaboard = Mancala263([1,1,1,1,1,1,0,1,1,1,1,1,1,0])
     print(mancalaboard)
     settled_games = set()
     search_moves(mancalaboard, settled_games)
     #print('\nresult:')
+    with open('data.txt', 'w') as f:
+        for each in settled_games:
+            f.write(str(each))
+            f.write('\n')
     #for each in settled_games:
     #    print(each)
     #print(f'size = {len(settled_games)}')
+    print('finished.')
