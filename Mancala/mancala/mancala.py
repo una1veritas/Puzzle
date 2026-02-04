@@ -96,31 +96,49 @@ class Mancala263():
             return False # current player's turn continues
         
         if self.won_by(self.turn()) :
-            return False    # the has been settled so does ont switch the player
+            return False    # the game has been settled and so no more switches of turn 
         
         self.turnover()
         return True # turnover-ed
     
 def search_moves(mboard : Mancala263, settled : set):
-    moves = deque() # board, the next move to try
-    moves.append( (mboard, 0) )
+    moves = deque() # board, the next move to try, expect min, expect max
+    moves.append( [mboard, 0, 1, 0] )
     while len(moves) > 0 :
-        if  moves[-1][0].won_by(0) or moves[-1][0].won_by(1):
+        if  moves[-1][0].won_by(0) :
+            moves[-1][2] = 0
+            moves[-1][3] = 0
             if moves[-1][0] not in settled :
                 settled.add( moves[-1][0] )
-                print(f'{len(settled)}, {str(moves[-1][0])}, {hex(int(moves[-1][0]))}')
+                print(len(settled), moves[-1])
             moves.pop()
+            moves[-1][2] = min(moves[-1][2], 0)
+        elif moves[-1][0].won_by(1) :
+            moves[-1][2] = 1
+            moves[-1][3] = 1
+            if moves[-1][0] not in settled :
+                settled.add( moves[-1][0] )
+                print(len(settled), moves[-1])
+            moves.pop()
+            moves[-1][2] = max(moves[-1][3], 1)
         # dig
-        currboard, nxstartmv = moves[-1]
+        currboard, nxstartmv, knownmin, knownmax = moves[-1]
         for mix in currboard.valid_moves(nxstartmv) :
             newboard = Mancala263(currboard)
             newboard.move(mix)
-            moves[-1] = (currboard, mix + 1)
-            moves.append( (newboard, 0) )
+            if newboard in settled :
+                continue
+            moves[-1][1] = mix + 1
+            moves.append( [newboard, 0, 1, 0] )
             break
         else:
             # search within the children of currboard is exhausted.
-            moves.pop()
+            lastpopped = moves.pop()
+            if len(moves) > 0 :
+                moves[-1][2] = min(moves[-1][2], lastpopped[2])
+                moves[-1][3] = max(moves[-1][3], lastpopped[3])
+                if lastpopped[2] == lastpopped[3] :
+                    settled.add(lastpopped[0])
     
     return settled
 
@@ -130,7 +148,7 @@ if __name__ == "__main__":
     print(mancalaboard)
     settled_games = set()
     search_moves(mancalaboard, settled_games)
-    print('\nresult:')
-    for each in settled_games:
-        print(each)
-    print(f'size = {len(settled_games)}')
+    #print('\nresult:')
+    #for each in settled_games:
+    #    print(each)
+    #print(f'size = {len(settled_games)}')
