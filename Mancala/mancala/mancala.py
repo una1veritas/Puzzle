@@ -31,20 +31,25 @@ class Mancala():
             num_of_pits = len(initval) // 2 - 1
             pieces = sum(initval[:num_of_pits*2])
             bitw = ceil(log(pieces + 1, 2))
-            print(pieces, bitw, num_of_pits)
+            #print(pieces, bitw, num_of_pits)
             self.board = bitarray(0, bitw, (num_of_pits + 1) * 2 + 1)
             for ix in range(len(initval)) :
                 self.board[ix] = initval[ix]
         elif isinstance(initval, Mancala ) :
-            print(initval.board)
+            #print(initval.board)
             self.board = bitarray(initval.board)
         else:
             raise ValueError(f'Not implemented')
         
     
     def __str__(self):
-        outstr = 'Mancala( '
-        outstr += str(self.board)
+        outstr = 'Mancala('
+        p = self.number_of_pits()
+        outstr += '(' + ', '.join([str(self.board[i]) for i in range(p)])
+        outstr += '; ' + str(self.board[p]) + '), '
+        outstr += '(' + ', '.join([str(self.board[i]) for i in range(p+1, 2*p + 1)])
+        outstr += '; ' + str(self.board[2*p+1]) + '), '
+        outstr += str(self.turn())
         outstr += ') '
 
         return outstr
@@ -89,15 +94,18 @@ class Mancala():
         if not ( 0 <= pix <= self.number_of_pits() ) :
             raise ValueError(f'invalid pit index {pix}')
         
-        pix += self.turn() * (self.number_of_pits() + 1)
-        #print(f'self.board = {self.board}, pix = {pix}')
+        if self.turn() == 1 :
+            pix += self.number_of_pits() + 1
+        
         if self.board[pix] == 0 :
             raise ValueError(f'empty pit {pix} of player {self.turn()} selected.')
+        
         pieces = self.board[pix]
         self.board[pix] = 0
         ix = pix
         while pieces > 0 :
-            ix = (ix + 1) % (self.number_of_pits() + 1)
+            ix = ix + 1
+            ix %= 2*(self.number_of_pits() + 1)
             self.board[ix] += 1
             pieces -= 1
         
@@ -121,7 +129,7 @@ def search_moves(mboard : Mancala, settled : set):
             moves[-1][3] = 0
             if moves[-1][0] not in settled :
                 settled.add( moves[-1][0] )
-                print(len(settled), moves)
+                print(len(settled), moves[-1])
             moves.pop()
             moves[-1][2] = min(moves[-1][2], 0)
         elif moves[-1][0].won_by(1) :
@@ -129,7 +137,7 @@ def search_moves(mboard : Mancala, settled : set):
             moves[-1][3] = 1
             if moves[-1][0] not in settled :
                 settled.add( moves[-1][0] )
-                print(len(settled), moves)
+                print(len(settled), moves[-1])
             moves.pop()
             moves[-1][2] = max(moves[-1][3], 1)
         # dig
@@ -155,14 +163,14 @@ def search_moves(mboard : Mancala, settled : set):
 
 
 if __name__ == "__main__":
-    mancalaboard = Mancala([1,1,1,0,1,1,1,0])
+    mancalaboard = Mancala([3,3,3,3,0,3,3,3,3,0])
     print(mancalaboard)
     settled_games = set()
     search_moves(mancalaboard, settled_games)
     #print('\nresult:')
     with open('data.txt', 'w') as f:
         for each in settled_games:
-            f.write(str(each))
+            f.write(f'{each.board}')
             f.write('\n')
     #for each in settled_games:
     #    print(each)
