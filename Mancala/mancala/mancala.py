@@ -36,16 +36,16 @@ class Mancala():
             for ix in range(len(initval)) :
                 self.board[ix] = initval[ix]
         elif isinstance(initval, Mancala ) :
+            print(initval.board)
             self.board = bitarray(initval.board)
         else:
             raise ValueError(f'Not implemented')
         
     
     def __str__(self):
-        outstr = 'Mancala( ('
-        outstr += ', '.join([str(self.board[ix]) for ix in range(self.number_of_pits())]) + '; ' + str(self.board[self.number_of_pits()]) 
-        outstr += ' / ' + ', '.join( ([str(self.board[ix]) for ix in range(self.number_of_pits()+1,self.number_of_pits()*2+1)]) ) + '; ' + str(self.board[(self.number_of_pits()+1)*2])
-        outstr += '), ' + str(self.turn()) + ') '
+        outstr = 'Mancala( '
+        outstr += str(self.board)
+        outstr += ') '
         return outstr
     def __repr__(self):\
         return self.__str__()
@@ -74,35 +74,33 @@ class Mancala():
         self.set_turn( (self.turn() + 1 ) % 2)
     
     def valid_moves(self, startix = 0):
-        for pix in range(startix, 6):
-            if self.board[pix + self.turn() * 7] > 0 :
+        for pix in range(startix, self.number_of_pits()):
+            if self.board[pix + self.turn() * (self.number_of_pits() + 1)] > 0 :
                 yield pix
     
     def won_by(self, pid):
         total = 0
-        for ix in range(7*pid, 7*(pid + 1) - 1) :
+        for ix in range((self.number_of_pits() + 1)*pid, (self.number_of_pits() + 1)*(pid + 1) - 1) :
             total += self.board[ix]
         return total == 0
         
     def move(self, pix):
-        if 0 <= pix + self.turn() * 7 < 15 :
-            pix = pix + self.turn() * 7
-            if self.board[pix] == 0 :
-                raise ValueError(f'empty pit {pix} of player {self.turn()} selected.')
-            pieces = self.board[pix]
-            self.board[pix] = 0
-            ix = (pix + 1) % 14
-            while True :
-                self.board[ix] += 1
-                pieces -= 1
-                if pieces > 0 :
-                    ix = (ix + 1) % 14
-                else:
-                    break
-        else:
+        if not ( 0 <= pix <= self.number_of_pits() ) :
             raise ValueError(f'invalid pit index {pix}')
         
-        if ix % 7 == 6 :
+        pix += self.turn() * (self.number_of_pits() + 1)
+        print(f'pix = {pix}')
+        if self.board[pix] == 0 :
+            raise ValueError(f'empty pit {pix} of player {self.turn()} selected.')
+        pieces = self.board[pix]
+        self.board[pix] = 0
+        ix = pix
+        while pieces > 0 :
+            ix = (ix + 1) % (self.number_of_pits() + 1)
+            self.board[ix] += 1
+            pieces -= 1
+        
+        if ix % (self.number_of_pits() + 1) == self.number_of_pits() :
             return False # current player's turn continues
         
         if self.won_by(self.turn()) :
@@ -135,7 +133,9 @@ def search_moves(mboard : Mancala, settled : set):
         currboard, nxstartmv, knownmin, knownmax = moves[-1]
         for mix in currboard.valid_moves(nxstartmv) :
             newboard = Mancala(currboard)
+            print(f'newboard = {newboard}')
             newboard.move(mix)
+            print(f'newboard after move = {newboard}')
             if newboard in settled :
                 continue
             moves[-1][1] = mix + 1
