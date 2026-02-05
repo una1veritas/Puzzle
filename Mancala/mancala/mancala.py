@@ -46,6 +46,7 @@ class Mancala():
         outstr = 'Mancala( '
         outstr += str(self.board)
         outstr += ') '
+
         return outstr
     def __repr__(self):\
         return self.__str__()
@@ -65,10 +66,10 @@ class Mancala():
         return (len(self.board) - 1) // 2 - 1
     
     def turn(self):
-        return self.board[15]
+        return self.board[-1]
     
     def set_turn(self, val):
-        self.board[15] = val
+        self.board[-1] = val
     
     def turnover(self):
         self.set_turn( (self.turn() + 1 ) % 2)
@@ -89,7 +90,7 @@ class Mancala():
             raise ValueError(f'invalid pit index {pix}')
         
         pix += self.turn() * (self.number_of_pits() + 1)
-        print(f'pix = {pix}')
+        #print(f'self.board = {self.board}, pix = {pix}')
         if self.board[pix] == 0 :
             raise ValueError(f'empty pit {pix} of player {self.turn()} selected.')
         pieces = self.board[pix]
@@ -106,7 +107,9 @@ class Mancala():
         if self.won_by(self.turn()) :
             return False    # the game has been settled and so no more switches of turn 
         
+        #print(f'self.board = {self.board}')
         self.turnover()
+        #print(f'self.board after turnover = {self.board}')
         return True # turnover-ed
     
 def search_moves(mboard : Mancala, settled : set):
@@ -133,9 +136,7 @@ def search_moves(mboard : Mancala, settled : set):
         currboard, nxstartmv, knownmin, knownmax = moves[-1]
         for mix in currboard.valid_moves(nxstartmv) :
             newboard = Mancala(currboard)
-            print(f'newboard = {newboard}')
             newboard.move(mix)
-            print(f'newboard after move = {newboard}')
             if newboard in settled :
                 continue
             moves[-1][1] = mix + 1

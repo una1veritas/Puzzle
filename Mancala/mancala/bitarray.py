@@ -64,8 +64,10 @@ class bitarray:
     def __getitem__(self, index):
         if not isinstance(index, slice):
             ix = operator.index(index)  # accepts int-like objects
-            return self.get(ix)
-        
+            if ix >= 0 :
+                return self.get(ix)
+            else:
+                return self.get(len(self) + ix)
         #raise NotImplementedError('get item with slice is not implemented')
         # slice index -> return same type (copy) for safety
         # slice.indices normalizes start/stop/step and handles negatives/out-of-range
@@ -88,9 +90,12 @@ class bitarray:
         # validate values before storing
         if not isinstance(index, slice):
             ix = operator.index(index)
-            self.set(ix, value)
-            return
-        
+            if ix >= 0 :
+                self.set(ix, value)
+                return
+            else:
+                self.set(len(self) + ix, value)
+                return
         raise NotImplementedError('set item with slice is not implemented')
         # slice assignment
         start, stop, step = index.indices(len(self))
