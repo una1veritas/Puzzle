@@ -6,37 +6,58 @@ Created on 2026/02/01
 import sys
 import struct
 from collections import deque
-from bitarray import bitarray
-from array import array
+#from bitarray import bitarray
+#from array import array
 from math import log, ceil, floor
-from sqlite_int64pairs_set import Int64PairStorage
+from sqlite_intpair_dict import SQLiteDict
+from bitset import BitSet
 
 class Mancala():
     '''
     classdocs
     '''
-
-    def __init__(self, arg1 = None):
+    
+    def __init__(self, params = None):
         '''
         default setting
         '''
         num_of_pits = 6 # except one house (store) per player
         pieces_in_pit = 3    # in pits
         
-        if arg1 == None :
+        if params == None :
             self.board = [pieces_in_pit if pix % (num_of_pits + 1) < num_of_pits else 0 \
                           for pix in range( 2 * (num_of_pits + 1) )] + [0]
-        elif isinstance(arg1, (list, tuple) ) :
-            num_of_pits = (len(arg1)>>1) - 1
-            self.board = [arg1[pix] for pix in range((num_of_pits + 1)* 2)] + [0]
-            if len(arg1) > (num_of_pits+1) * 2 :
-                self.board[-1] = arg1[(num_of_pits + 1) * 2]
-        elif isinstance(arg1, Mancala ) :
-            #print(arg1.board)
-            self.board = [ea for ea in arg1.board]
+        elif isinstance(params, (list, tuple) ) and len(params) == 2 :
+            # the number of pits and intpair
+            lval, rval = params
+            llen = len(f'{lval:b}')
+            rlen = len(f'{rval:b}')
+            num_of_pits = (max(llen - 1, rlen - 1) - 1) // 6
+            print(hex(lval), llen, hex(rval), rlen, num_of_pits)
+            self.board = [0] * ( (num_of_pits + 1) * 2 + 1)
+            if bool(params[0]>>((num_of_pits + 1) * 6) & 1) :
+                self.board[-1] = 0
+            elif bool(params[1]>>((num_of_pits + 1) * 6) & 1) :
+                self.board[-1] = 1
+            else:
+                raise ValueError(f'turn is unknown.')
+            print(self)
+            for ix in range(num_of_pits,-1,-1) :
+                self.board[ix] = lval & 0x3f
+                lval >>= 6
+            for ix in range(num_of_pits, -1, -1) :
+                self.board[num_of_pits + 1 + ix] = rval & 0x3f
+                rval >>= 6
+        elif isinstance(params, (list, tuple) ) and len(params) > 3 :
+            num_of_pits = (len(params)>>1) - 1
+            self.board = [params[pix] for pix in range((num_of_pits + 1)* 2)] + [0]
+            if len(params) > (num_of_pits+1) * 2 :
+                self.board[-1] = params[(num_of_pits + 1) * 2]
+        elif isinstance(params, Mancala ) :
+            #print(params.board)
+            self.board = [ea for ea in params.board]
         else:
             raise ValueError(f'Not implemented')
-        
     
     def __str__(self):
         outstr = 'Mancala('
@@ -64,33 +85,30 @@ class Mancala():
         return hash(tuple(self.board) )
     
     def __bytes__(self):
-        mid = self.number_of_pits()+1
-        t = self.board[:mid]
-        t[mid-1] |= self.turn()<<7
-        t += self.board[mid:mid<<1]
-        return bytes(t)
+        return bytes(self.board)
     
     def __int__(self):
-        intval = self.turn()
-        for e in self.board :
-            intval <<= 6
-            intval += e & 0x3f
-        return intval
+        val = 1 if self.turn() == 0 else 0
+        for e in self.board[:self.number_of_pits()+1] :
+            val <<= 6
+            val += e & 0x3f
+        val <<= 1
+        val |= 1 if self.turn() == 1 else 0
+        for e in self.board[self.number_of_pits()+1:-1] :
+            val <<= 6
+            val += e & 0x3f
+        return val
     
     def intpair(self):
-        b = bytes(self)
-        mid = self.number_of_pits()+1
-        if mid > 8 :
-            raise ValueError(f'bit length for one player exceeded 64')
-        l = 0
-        for v in b[:mid] :
-            l <<= 8
-            l |= v
-        r = 0
-        for v in b[mid:] :
-            r <<= 8
-            r |= v
-        return (l,r)
+        lval = 1 if self.turn() == 0 else 0
+        for e in self.board[:self.number_of_pits()+1] :
+            lval <<= 6
+            lval += e & 0x3f
+        rval = 1 if self.turn() == 1 else 0
+        for e in self.board[self.number_of_pits()+1:-1] :
+            rval <<= 6
+            rval += e & 0x3f
+        return (lval,rval)
         
     def turn(self):
         return self.board[-1]
@@ -142,47 +160,64 @@ class Mancala():
         #print(f'self.board after turnover = {self.board}')
         return True # turnover-ed
     
-def search_moves(mboard : Mancala, pairdb : set):
+def search_moves(mboard : Mancala, db : dict):
     moves = deque() # board, the next move to try, expect min, expect max
-    moves.append( [mboard, 0] )
+    moves.append( [mboard, 0, BitSet()] ) # board, next move, the empty set {} for player 0
     while len(moves) > 0 :
         last = moves[-1]
+        
         intpair = last[0].intpair()
-        if  last[0].won_by(0) :
-            if intpair not in pairdb :
-                pairdb.add(intpair[0], intpair[1])
-                print(len(pairdb), [hex(v) for v in intpair], 0)
-            moves.pop() 
+        if last[0].won_by(0) :
+            if intpair not in db :
+                db[intpair] = int(BitSet({0}))
+                print(len(db), [hex(v) for v in intpair], {0})
+                #print(moves)
+            moves.pop()
         elif last[0].won_by(1) :
-            if intpair not in pairdb :
-                pairdb.add(intpair[0], intpair[1])
-                print(len(pairdb), [hex(v) for v in intpair], 1)
+            if intpair not in db :
+                db[intpair] = int(BitSet({1}))
+                print(len(db), [hex(v) for v in intpair], {1})
+                #print(moves)
             moves.pop()
         # dig
-        currboard, restartix = last
-        for mix in currboard.valid_moves(restartix) :
+        currboard, restartix, mmset = last
+        for mvix in currboard.valid_moves(restartix) :
             newboard = Mancala(currboard)
-            newboard.move(mix)
-            if newboard.intpair() in pairdb :
+            newboard.move(mvix)
+            est = db.get(newboard.intpair())
+            if est is None :
+                last[1] = mvix + 1   #register the next (?) index as a restart index
+                moves.append( [newboard, 0, BitSet(0)] )
+                break
+            else:
+                moves[-1][2] |= BitSet(est) 
                 continue
-            last[1] = mix + 1
-            moves.append( [newboard, 0] )
-            break
         else:
-            # search within the children of currboard is exhausted.
-            last = moves.pop()
+            # exhausted the searches within the children of current board
+            prevboard, restartix, mmset = moves.pop()
+            if len(mmset) == 1 :
+                if prevboard.intpair() not in db:
+                    db[ prevboard.intpair()] = int(mmset)
+                    #print(prevboard, mmset)
+            if len(moves) != 0 :
+                moves[-1][2] |= mmset
+            
     return
 
 
 if __name__ == "__main__":
-    mancalaboard = Mancala([3,3,3,3,0,3,3,3,3,0, 0])
+    mancalaboard = Mancala([3, 3, 3, 3, 0, 3, 3, 3, 3, 0, 0])
     print(mancalaboard)
     print(bytes(mancalaboard))
-    
-    with Int64PairStorage() as db :
+    print(int(mancalaboard))
+    print(mancalaboard.intpair())
+    db = dict()
+    #search_moves(mancalaboard, db)
+    with SQLiteDict('/Volumes/SSD256G/pairdict.db') as db :
         search_moves(mancalaboard, db)
     
-    #print('\nresult:')
+    print('\nresult:')
+    #print(db)
     # with open('data.txt', 'w') as f:
     #     for each in games:
     #         f.write(f'{each.board}')
