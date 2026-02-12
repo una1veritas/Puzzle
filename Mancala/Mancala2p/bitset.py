@@ -3,7 +3,6 @@ Created on 2026/02/11
 
 @author: sin
 '''
-from pandas._typing import Self
 
 class BitSet:
     '''

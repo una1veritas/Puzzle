@@ -7,10 +7,10 @@ import sys
 import struct
 from collections import deque
 #from bitarray import bitarray
-#from array import array
+from array import array
 from math import log, ceil, floor
 from sqlite_intpair_dict import SQLiteDict
-from bitset import BitSet
+#from bitset import BitSet
 
 class Mancala():
     '''
@@ -162,35 +162,37 @@ class Mancala():
     
 def search_moves(mboard : Mancala, db : dict):
     moves = deque() # board, the next move to try, expect min, expect max
-    moves.append( [mboard, 0, BitSet()] ) # board, next move, the empty set {} for player 0
+    moves.append( [mboard, 0, 0] ) # board, next move, the empty set {} for player 0
     while len(moves) > 0 :
         last = moves[-1]
         
         intpair = last[0].intpair()
         if last[0].won_by(0) :
             if intpair not in db :
-                db[intpair] = int(BitSet({0}))
-                print(len(db), [hex(v) for v in intpair], {0})
+                db[intpair] = (len(moves)<<8) | 1
+                print(len(db), [hex(v) for v in intpair], len(moves), 1)
                 #print(moves)
             moves.pop()
+            continue
         elif last[0].won_by(1) :
             if intpair not in db :
-                db[intpair] = int(BitSet({1}))
-                print(len(db), [hex(v) for v in intpair], {1})
+                db[intpair] = (len(moves)<<8) | 2
+                print(len(db), [hex(v) for v in intpair], len(moves), 2)
                 #print(moves)
             moves.pop()
+            continue
         # dig
-        currboard, restartix, mmset = last
+        currboard, restartix, mmset = moves[-1]
         for mvix in currboard.valid_moves(restartix) :
             newboard = Mancala(currboard)
             newboard.move(mvix)
             est = db.get(newboard.intpair())
             if est is None :
-                last[1] = mvix + 1   #register the next (?) index as a restart index
-                moves.append( [newboard, 0, BitSet(0)] )
+                moves[-1][1] = mvix + 1   #register the next (?) index as a restart index
+                moves.append( [newboard, 0, 0] )
                 break
             else:
-                moves[-1][2] |= BitSet(est) 
+                moves[-1][2] |= est 
                 continue
         else:
             # exhausted the searches within the children of current board
@@ -201,7 +203,6 @@ def search_moves(mboard : Mancala, db : dict):
                     #print(prevboard, mmset)
             if len(moves) != 0 :
                 moves[-1][2] |= mmset
-            
     return
 
 
@@ -211,9 +212,9 @@ if __name__ == "__main__":
     print(bytes(mancalaboard))
     print(int(mancalaboard))
     print(mancalaboard.intpair())
-    db = dict()
+    #db = dict()
     #search_moves(mancalaboard, db)
-    with SQLiteDict('/Volumes/SSD256G/pairdict.db') as db :
+    with SQLiteDict(':mem:') as db: #/Volumes/SSD256G/pairdict.db') as db :
         search_moves(mancalaboard, db)
     
     print('\nresult:')
