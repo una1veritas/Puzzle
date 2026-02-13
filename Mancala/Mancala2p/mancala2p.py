@@ -177,7 +177,7 @@ def search_moves(mboard : Mancala, db : dict):
                 print(len(db), moves[-1][0], [hex(v) for v in intpair], len(moves), 2)
                 #print(moves)
             moves.pop()
-        # dig
+        # dig the tree
         currboard, restartix, winner = moves[-1]
         for mvix in currboard.valid_moves(restartix) :
             newboard = Mancala(currboard)
