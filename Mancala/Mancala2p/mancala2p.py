@@ -163,46 +163,44 @@ class Mancala():
 def search_moves(mboard : Mancala, db : dict):
     moves = deque() # board, the next move to try, expect min, expect max
     moves.append( [mboard, 0, 0] ) # board, next move, the empty set {} for player 0
-    while len(moves) > 0 :
-        last = moves[-1]
-        
-        intpair = last[0].intpair()
-        if last[0].won_by(0) :
+    while len(moves) > 0 :        
+        intpair = moves[-1][0].intpair()
+        if moves[-1][0].won_by(0) :
             if intpair not in db :
                 db[intpair] = (len(moves)<<8) | 1
-                print(len(db), [hex(v) for v in intpair], len(moves), 1)
+                print(len(db), moves[-1][0], [hex(v) for v in intpair], len(moves), 1)
                 #print(moves)
             moves.pop()
-            continue
-        elif last[0].won_by(1) :
+        elif moves[-1][0].won_by(1) :
             if intpair not in db :
                 db[intpair] = (len(moves)<<8) | 2
-                print(len(db), [hex(v) for v in intpair], len(moves), 2)
+                print(len(db), moves[-1][0], [hex(v) for v in intpair], len(moves), 2)
                 #print(moves)
             moves.pop()
-            continue
         # dig
-        currboard, restartix, mmset = moves[-1]
+        currboard, restartix, winner = moves[-1]
         for mvix in currboard.valid_moves(restartix) :
             newboard = Mancala(currboard)
             newboard.move(mvix)
-            est = db.get(newboard.intpair())
-            if est is None :
+            mw = db.get(newboard.intpair())
+            if mw is None :
                 moves[-1][1] = mvix + 1   #register the next (?) index as a restart index
                 moves.append( [newboard, 0, 0] )
                 break
             else:
-                moves[-1][2] |= est 
+                winnerbit = mw & 0xff
+                moves[-1][2] |= winnerbit
                 continue
         else:
             # exhausted the searches within the children of current board
-            prevboard, restartix, mmset = moves.pop()
-            if len(mmset) == 1 :
+            prevboard, restartix, winnerbit = moves.pop()
+            if winnerbit in (1,2) :
                 if prevboard.intpair() not in db:
-                    db[ prevboard.intpair()] = int(mmset)
+                    db[ prevboard.intpair()] = (len(moves)<<8) | winnerbit
+                    print(len(db), moves[-1], [hex(v) for v in intpair], len(moves), winnerbit)
                     #print(prevboard, mmset)
             if len(moves) != 0 :
-                moves[-1][2] |= mmset
+                moves[-1][2] |= winnerbit
     return
 
 
@@ -214,7 +212,7 @@ if __name__ == "__main__":
     print(mancalaboard.intpair())
     #db = dict()
     #search_moves(mancalaboard, db)
-    with SQLiteDict(':mem:') as db: #/Volumes/SSD256G/pairdict.db') as db :
+    with SQLiteDict('/Volumes/SSD256G/pairdict.db') as db :
         search_moves(mancalaboard, db)
     
     print('\nresult:')
