@@ -33,37 +33,37 @@ class BitSet:
     def __int__(self):
         return self.value
     
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return bool(self.value)
     
-    def __len__(self):
+    def __len__(self) -> int:
         # the number of 1 elements
-        return bin(self.value).count('1')
+        return self.value.bit_count()
+
+    def bit_length(self) -> int:
+        # the number of 1 elements
+        return self.value.bit_length()
     
     def add(self, elem: int) -> None:
+        if not isinstance(elem, int) or elem < 0 :
+            raise TypeError("Element must be a non-neggative integer")
         self.value |= (1 << elem)
     
+    #this raises error if elem is abcent.
     def remove(self, elem: int) -> None:
-        if not isinstance(elem, int):
-            raise TypeError("Element must be an integer")
-        if elem < 0:
-            raise ValueError("Element must be non-negative")
+        if not isinstance(elem, int) or elem < 0 :
+            raise TypeError("Element must be a non-neggative integer")
         if elem not in self:
             raise ValueError(f"{elem} not in bitset")
-        self.value &= ~(1 << elem)
+        self.value &= ((1<<self.value.bit_length()) - 1) ^ (1 << elem)
     
     def discard(self, elem: int) -> None:
         if not isinstance(elem, int) or elem < 0:
             return
-        self.value &= ~(1 << elem)
+        self.value &= ((1<<self.value.bit_length()) - 1) ^ (1 << elem)
 
     def __contains__(self, elem: int) -> bool:
         return bool(self.value & (1 << elem))
-    
-    def bitlength(self):
-        if self.value == 0 :
-            return 0
-        return len(bin(self.value)) - 2
     
     def __iter__(self):
         self._iter_pos = 0
@@ -79,14 +79,11 @@ class BitSet:
         raise StopIteration
     
     def __list__(self):
-        bits = bin(self.value)[2:]
+        bits = f'{self.value:b}'
         return [(1<<bpos) for bpos in range(len(bits)) if bits[bpos] == '1']
     
     def __repr__(self) -> str:
-        outstr = 'BitSet('
-        outstr += str(set(self))
-        outstr += ') '
-        return outstr
+        return f'BitSet({str(self)})'
     
     def __str__(self):
         outstr = '{'
@@ -166,5 +163,7 @@ if __name__ == "__main__":
     print(bset)
     bset2 = BitSet({7,88})
     bset |= bset2
+    print(bset)
+    bset.discard(7)
     print(bset)
     

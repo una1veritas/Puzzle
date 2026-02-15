@@ -2,7 +2,7 @@ import sqlite3
 from typing import Any, Iterator, Tuple
 
 
-class SQLiteDict:
+class SQLiteBlobDict:
     """
     A dictionary-like class that maps pairs of integers (as keys) to integer values,
     storing data in an SQLite database.
@@ -10,7 +10,7 @@ class SQLiteDict:
     
     def __init__(self, db_path: str = ":memory:"):
         """
-        Initialize the SQLiteDict.
+        Initialize the SQLiteBlobDict.
         
         Args:
             db_path: Path to the SQLite database file. 
@@ -152,9 +152,9 @@ class SQLiteDict:
             yield tuple(row)
     
     def __repr__(self) -> str:
-        """Get a string representation of the SQLiteDict."""
+        """Get a string representation of the SQLiteBlobDict."""
         items = {key: self[key] for key in self}
-        return f"SQLiteDict({items})"
+        return f"SQLiteBlobDict({items})"
     
     def keys(self) -> Iterator[Tuple[int, int]]:
         """
@@ -250,7 +250,7 @@ class SQLiteDict:
 # Example usage
 if __name__ == "__main__":
     # Create an in-memory database
-    d = SQLiteDict()
+    d = SQLiteBlobDict()
     
     # Set values
     d[(1, 2)] = 100
@@ -277,7 +277,7 @@ if __name__ == "__main__":
     print(f"After deleting (3, 4), len(d) = {len(d)}")  # Output: 2
     
     # Use context manager
-    with SQLiteDict("example.db") as db:
+    with SQLiteBlobDict("example.db") as db:
         db[(10, 20)] = 1000
         print(f"db[(10, 20)] = {db[(10, 20)]}")
     

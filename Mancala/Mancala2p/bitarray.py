@@ -29,24 +29,8 @@ class bitarray:
     
     ''' popcnt '''
     @staticmethod
-    def bit1count(intval): 
-        BITS_COUNT_TABLE = [ 0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4, ]
-        cnt = 0
-        while intval > 0 :
-            cnt += BITS_COUNT_TABLE[intval & 0x0f]
-            intval >> 4
-            cnt += BITS_COUNT_TABLE[intval & 0x0f]
-            intval >> 4
-        return cnt
-    
-    @staticmethod
-    def bit_length(val, bwidth):
-        counter = 0
-        while val > 0 :
-            val >>= bwidth
-            counter += 1
-        return counter
-
+    def bit_count(intval): 
+        return self.bits.bit_count()
 
     def _bitmask(self):
         return (1 << self._uwidth) - 1
@@ -119,7 +103,7 @@ class bitarray:
         return
     
     def __repr__(self):
-        return 'bitarray(' + str(self)
+        return 'bitarray(' + str(self) + ') '
     
     def __bin__(self):
         return bin(self.bits)

@@ -9,7 +9,7 @@ from collections import deque
 #from bitarray import bitarray
 from array import array
 from math import log, ceil, floor
-from sqlite_intpair_dict import SQLiteDict
+from sqlite_blobkeydict import SQLiteBlobDict
 #from bitset import BitSet
 
 class Mancala():
@@ -25,30 +25,9 @@ class Mancala():
         pieces_in_pit = 3    # in pits
         
         if params == None :
-            self.board = [pieces_in_pit if pix % (num_of_pits + 1) < num_of_pits else 0 \
-                          for pix in range( 2 * (num_of_pits + 1) )] + [0]
-        elif isinstance(params, (list, tuple) ) and len(params) == 2 :
-            # the number of pits and intpair
-            lval, rval = params
-            llen = len(f'{lval:b}')
-            rlen = len(f'{rval:b}')
-            num_of_pits = (max(llen - 1, rlen - 1) - 1) // 6
-            print(hex(lval), llen, hex(rval), rlen, num_of_pits)
-            self.board = [0] * ( (num_of_pits + 1) * 2 + 1)
-            if bool(params[0]>>((num_of_pits + 1) * 6) & 1) :
-                self.board[-1] = 0
-            elif bool(params[1]>>((num_of_pits + 1) * 6) & 1) :
-                self.board[-1] = 1
-            else:
-                raise ValueError(f'turn is unknown.')
-            print(self)
-            for ix in range(num_of_pits,-1,-1) :
-                self.board[ix] = lval & 0x3f
-                lval >>= 6
-            for ix in range(num_of_pits, -1, -1) :
-                self.board[num_of_pits + 1 + ix] = rval & 0x3f
-                rval >>= 6
-        elif isinstance(params, (list, tuple) ) and len(params) > 3 :
+            self.board = [pieces_in_pit] * num_of_pits + [0] \
+            + [pieces_in_pit] * num_of_pits + [0] + [0]
+        elif isinstance(params, (list, tuple, bytes) ) and len(params) > 3 :
             num_of_pits = (len(params)>>1) - 1
             self.board = [params[pix] for pix in range((num_of_pits + 1)* 2)] + [0]
             if len(params) > (num_of_pits+1) * 2 :
@@ -61,7 +40,7 @@ class Mancala():
     
     def __str__(self):
         outstr = 'Mancala('
-        num = self.number_of_pits() + 1
+        num = len(self.board)>>1
         outstr += '(' + ', '.join([str(v) for v in self.board[:num-1]])
         outstr += '; ' + str(self.board[num-1]) + '), '
         outstr += '(' + ', '.join([str(v) for v in self.board[num:2*num-1]])
@@ -88,27 +67,13 @@ class Mancala():
         return bytes(self.board)
     
     def __int__(self):
-        val = 1 if self.turn() == 0 else 0
-        for e in self.board[:self.number_of_pits()+1] :
-            val <<= 6
-            val += e & 0x3f
-        val <<= 1
-        val |= 1 if self.turn() == 1 else 0
-        for e in self.board[self.number_of_pits()+1:-1] :
-            val <<= 6
-            val += e & 0x3f
+        n = sum(self.board[:-1])
+        bw = n.bit_length()
+        val = 0
+        for e in self.board :
+            val <<= bw
+            val |= e
         return val
-    
-    def intpair(self):
-        lval = 1 if self.turn() == 0 else 0
-        for e in self.board[:self.number_of_pits()+1] :
-            lval <<= 6
-            lval += e & 0x3f
-        rval = 1 if self.turn() == 1 else 0
-        for e in self.board[self.number_of_pits()+1:-1] :
-            rval <<= 6
-            rval += e & 0x3f
-        return (lval,rval)
         
     def turn(self):
         return self.board[-1]
@@ -163,65 +128,84 @@ class Mancala():
 def search_moves(mboard : Mancala, db : dict):
     moves = deque() # board, the next move to try, expect min, expect max
     moves.append( [mboard, 0, 0] ) # board, next move, the empty set {} for player 0
-    while len(moves) > 0 :        
-        intpair = moves[-1][0].intpair()
-        if moves[-1][0].won_by(0) :
-            if intpair not in db :
-                db[intpair] = (len(moves)<<8) | 1
-                print(len(db), moves[-1][0], [hex(v) for v in intpair], len(moves), 1)
+    while len(moves) > 0 :
+        if moves[-1][0].won_by(0) or moves[-1][0].won_by(1) :
+            wonby = 1 if moves[-1][0].won_by(0) else 2
+            if bytes(moves[-1][0]) not in db :
+                db[bytes(moves[-1][0])] = (len(moves)<<8) | wonby
+                print(len(db), moves[-1][0], bytes(moves[-1][0]), len(moves), wonby)
                 #print(moves)
             moves.pop()
-        elif moves[-1][0].won_by(1) :
-            if intpair not in db :
-                db[intpair] = (len(moves)<<8) | 2
-                print(len(db), moves[-1][0], [hex(v) for v in intpair], len(moves), 2)
-                #print(moves)
-            moves.pop()
+        
         # dig the tree
-        currboard, restartix, winner = moves[-1]
+        currboard, restartix, wonby = moves[-1]
         for mvix in currboard.valid_moves(restartix) :
             newboard = Mancala(currboard)
             newboard.move(mvix)
-            mw = db.get(newboard.intpair())
+            mw = db.get(bytes(newboard))
             if mw is None :
                 moves[-1][1] = mvix + 1   #register the next (?) index as a restart index
                 moves.append( [newboard, 0, 0] )
                 break
             else:
-                winnerbit = mw & 0xff
-                moves[-1][2] |= winnerbit
+                moves[-1][2] |= mw & 0xff
                 continue
         else:
             # exhausted the searches within the children of current board
-            prevboard, restartix, winnerbit = moves.pop()
-            if winnerbit in (1,2) :
-                if prevboard.intpair() not in db:
-                    db[ prevboard.intpair()] = (len(moves)<<8) | winnerbit
-                    print(len(db), moves[-1], [hex(v) for v in intpair], len(moves), winnerbit)
-                    #print(prevboard, mmset)
+            prevboard, restartix, wonby = moves.pop()
+            val = db.get(bytes(prevboard))
+            if val is None:
+                db[bytes(prevboard)] = ((len(moves) + 1)<<8) | wonby
+                if wonby in (1,2) :
+                    print(len(db), moves[-1], bytes(prevboard), len(moves), wonby)
+            elif len(moves) + 1 < (val >> 8) :
+                db[bytes(prevboard)] = ((len(moves)+1) << 8) | ((val & 0x0f) | wonby)
+                # print(len(db), moves[-1], bytes(prevboard), len(moves), winnerbit)
             if len(moves) != 0 :
-                moves[-1][2] |= winnerbit
+                moves[-1][2] |= wonby
     return
 
 
 if __name__ == "__main__":
-    mancalaboard = Mancala([3, 3, 3, 3, 0, 3, 3, 3, 3, 0, 0])
-    print(mancalaboard)
-    print(bytes(mancalaboard))
-    print(int(mancalaboard))
-    print(mancalaboard.intpair())
-    #db = dict()
-    #search_moves(mancalaboard, db)
-    with SQLiteDict('/Volumes/SSD256G/pairdict.db') as db :
-        search_moves(mancalaboard, db)
+    # interpret command-line arguments 
+    params = dict()
+    # params['db'] = '/Volumes/SSD256G/blobkeydict.db'
+    if len(sys.argv) > 1 :
+        argix = 1
+        while argix < len(sys.argv) :
+            arg = sys.argv[argix]
+            if arg.startswith( '--' ) :
+                params[arg[2:]] = True
+                argix += 1
+            elif arg.startswith( '-' ) :
+                values = sys.argv[argix][1:].split('=')
+                params[values[0]] = values[1]
+                argix += 1
+    print(params)
+    mancalaboard = Mancala([3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 0, 0])
+    if 'test' in params :
+        print(mancalaboard)
+        print(bytes(mancalaboard))
+        print(int(mancalaboard))
     
-    print('\nresult:')
-    #print(db)
-    # with open('data.txt', 'w') as f:
-    #     for each in games:
-    #         f.write(f'{each.board}')
-    #         f.write('\n')
-    #for each in settled_games:
-    #    print(each)
-    #print(f'size = {len(settled_games)}')
+        db = dict()
+        search_moves(mancalaboard, db)
+        print('finished search.')
+    #exit()
+    
+    if 'search' in params and 'f' in params:
+        with SQLiteBlobDict(params['f']) as db :
+            search_moves(mancalaboard, db)
+    
+    if 'forcedwin' in params :
+        print('\nresult:')
+        count = 0
+        with SQLiteBlobDict(params['f']) as db :
+            for key, value in db.items() :
+                if (value & 0x03).bit_count() == 1 and (value>>8) < 16 :
+                    print(Mancala(key), value & 3, value>>8)
+                    count += 1
+                    if count > 100 :
+                        break
+
     print('finished.')
