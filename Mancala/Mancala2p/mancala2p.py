@@ -128,12 +128,15 @@ class Mancala():
 def search_moves(mboard : Mancala, db : dict):
     moves = deque() # board, the next move to try, expect min, expect max
     moves.append( [mboard, 0, 0] ) # board, next move, the empty set {} for player 0
+    lvl = None
     while len(moves) > 0 :
         if moves[-1][0].won_by(0) or moves[-1][0].won_by(1) :
             wonby = 1 if moves[-1][0].won_by(0) else 2
             if bytes(moves[-1][0]) not in db :
                 db[bytes(moves[-1][0])] = (len(moves)<<8) | wonby
-                print(len(db), moves[-1][0], bytes(moves[-1][0]), len(moves), wonby)
+                if lvl == None or len(moves) < lvl :
+                    print(len(db), moves[-1][0], len(moves), wonby)
+                    lvl = len(moves)
                 #print(moves)
             moves.pop()
         
@@ -157,10 +160,15 @@ def search_moves(mboard : Mancala, db : dict):
             if val is None:
                 db[bytes(prevboard)] = ((len(moves) + 1)<<8) | wonby
                 if wonby in (1,2) :
-                    print(len(db), moves[-1][0], bytes(prevboard), len(moves), wonby)
+                    if lvl == None or len(moves) < lvl :
+                        print(len(db), moves[-1][0], len(moves), wonby)
+                        lvl = len(moves)
             elif len(moves) + 1 < (val >> 8) :
-                db[bytes(prevboard)] = ((len(moves)+1) << 8) | ((val & 0x0f) | wonby)
-                # print(len(db), moves[-1], bytes(prevboard), len(moves), winnerbit)
+                wonby = (val & 0x0f)
+                db[bytes(prevboard)] = ((len(moves)+1) << 8) | wonby
+                if lvl == None or len(moves) < lvl :
+                    print(len(db), moves[-1][0], len(moves), wonby)
+                    lvl = len(moves)
             if len(moves) != 0 :
                 moves[-1][2] |= wonby
     return
@@ -193,8 +201,8 @@ if __name__ == "__main__":
         print('finished search.')
     #exit()
     
-    if 'search' in params and 'f' in params:
-        with SQLiteBlobDict(params['f']) as db :
+    if 'search' in params and 'file' in params:
+        with SQLiteBlobDict(params['file']) as db :
             search_moves(mancalaboard, db)
     
     if 'forcedwin' in params :
