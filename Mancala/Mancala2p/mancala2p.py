@@ -4,11 +4,11 @@ Created on 2026/02/01
 @author: sin
 '''
 import sys
-import struct
+#import struct
 from collections import deque
 #from bitarray import bitarray
-from array import array
-from math import log, ceil, floor
+#from array import array
+#from math import log, ceil, floor
 from sqlite_blobkeydict import SQLiteBlobDict
 #from bitset import BitSet
 
@@ -157,7 +157,7 @@ def search_moves(mboard : Mancala, db : dict):
             if val is None:
                 db[bytes(prevboard)] = ((len(moves) + 1)<<8) | wonby
                 if wonby in (1,2) :
-                    print(len(db), moves[-1], bytes(prevboard), len(moves), wonby)
+                    print(len(db), moves[-1][0], bytes(prevboard), len(moves), wonby)
             elif len(moves) + 1 < (val >> 8) :
                 db[bytes(prevboard)] = ((len(moves)+1) << 8) | ((val & 0x0f) | wonby)
                 # print(len(db), moves[-1], bytes(prevboard), len(moves), winnerbit)
