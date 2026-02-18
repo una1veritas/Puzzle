@@ -80,6 +80,7 @@ class bitarray:
         # slice index -> return same type (copy) for safety
         # slice.indices normalizes start/stop/step and handles negatives/out-of-range
         start, stop, step = index.indices(len(self))
+        print(start, stop, step)
         newarray = bitarray(self.bitwidth, stop - start, 0)
         nix = 0
         for ix in range(start, stop, step) :

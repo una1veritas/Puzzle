@@ -7,13 +7,13 @@ import operator
 
 class bitarray:
     
-    def __init__(self, arg1, arg2 = None, arg3 = None):
-        if isinstance(arg1, bitarray) :
+    def __init__(self, arg1, arg2 = None):
+        if isinstance(arg1, bitarray) and arg2 == None:
             #ignore arg2 and arg3
             self.bitwidth = arg1.bitwidth
-            self.mask = (1<<self.bitwidth) - 1
+            self.mask = arg1.mask
             self.bits = arg1.bits
-        elif isinstance(arg1, int) :
+        elif isinstance(arg1, int):
             self.bitwidth = int(arg1)
             self.mask = (1<<self.bitwidth) - 1
             if isinstance(arg2, int) :
@@ -24,27 +24,21 @@ class bitarray:
                     self[i] = arg2[i]
         else:
             raise NotImplementedError(f'{arg1} is invalid initializer.')
-    
-    ''' popcnt '''
-    @staticmethod
-    def bit_count(intval): 
-        return self.bits.bit_count()
 
-    def __int__(self):
+    def __int__(self) -> int:
         return self.bits
     
-    def __len__(self):
-        return self.bits.bit_length() // self.bitwidth + \
-            (1 if self.bits.bit_length() % self.bitwidth > 0 else 0)
+    def __len__(self) -> int:
+        return (self.bits.bit_length() + self.bitwidth - 1) // self.bitwidth if self.bits else 1
     
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         if isinstance(other, bitarray) :
             return self.bits == other.bits and self.bitwidth == other.bitwidth
         elif hasattr(other, '__getitem__') and len(self) == len(other) :
             return all([self[i] == other[i] for i in range(len(self))])
         return False
     
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(self.bits)
 
     def __getitem__(self, index):
@@ -52,44 +46,43 @@ class bitarray:
             ix = operator.index(index)  # accepts int-like objects=
             return (self.bits >> (self.bitwidth * ix)) & self.mask
         
-        raise NotImplementedError('get item with slice is not implemented')
+        # raise NotImplementedError('get item with slice is not implemented')
         # slice index -> return same type (copy) for safety
         # slice.indices normalizes start/stop/step and handles negatives/out-of-range
-        # start, stop, step = index.indices(len(self))
-        # newarray = bitarray(self.bitwidth, stop - start, 0)
-        # nix = 0
-        # for ix in range(start, stop, step) :
-        #     newarray[nix] = self.get(ix)
-        # return newarray
+        start, stop, step = index.indices(len(self))
+        intval = 0
+        iy = 0
+        for ix in range(start, stop, step) :
+            intval |= self[ix] << (iy * self.bitwidth)
+            iy += 1
+        return bitarray(self.bitwidth, intval)
     
     def __setitem__(self, index, value):
         # validate values before storing        
         # if value.bit_length() > self.bitwidth :
         #     raise ValueError(f'value {value} exceeds limit {(1<<self.bitwidth)-1}.')
-        if value > self.mask :
-            raise ValueError(f'value {value} exceeds limit {self.mask}.')
         if not isinstance(index, slice):
             ix = operator.index(index)
             #print(index, value)
+            if value > self.mask :
+                raise ValueError(f'value {value} exceeds limit {self.mask}.')
             windowbits = self.bits & (self.mask << (ix * self.bitwidth))
             self.bits ^= windowbits
             self.bits |= value  << (self.bitwidth * ix)
-            if self.bits == 0 :
-                print(ix, value, windowbits)
-        else:
-            raise NotImplementedError('set item with slice is not implemented')
+            return
         # slice assignment
-        # start, stop, step = index.indices(len(self))
-        # indices = list(range(start, stop, step))
-        # vals = list(value)  # materialize the RHS
-        # if len(vals) != len(indices):
-        #     raise ValueError(
-        #         f"attempt to assign sequence of size {len(vals)} "
-        #         f"to extended slice of size {len(indices)}"
-        #     )
-        # for i, v in zip(indices, vals):
-        #     self.set(i, v)
-        # return
+        start, stop, step = index.indices(len(self))
+        indices = list(range(start, stop, step))
+        vals = list(value)  # materialize the RHS
+        if len(vals) != len(indices):
+            raise ValueError(f"attempt to assign sequence of size {len(vals)} " \
+                             f"to extended slice of size {len(indices)}" \
+                             )
+        for i, v in zip(indices, vals):
+            if v > self.mask :
+                raise ValueError(f'value {v} exceeds limit {self.mask}.')
+            self[i] = v
+        return
         
     class bitarray_iterator:
         def __init__(self, barray):
@@ -110,18 +103,18 @@ class bitarray:
     
     def __iter__(self):
         return self.bitarray_iterator(self)
-            
+
     
     def __repr__(self):
         return 'bitarray(' + str(self) + ') '
-    
-    def __bin__(self):
-        return bin(self.bits)
     
     def __str__(self):
         #print(f'len = {len(self)}')
         return '(' + ', '.join([str(e) for e in self]) + ')'
 
+    def __bin__(self):
+        return bin(self.bits)
+    
     def rotright(self, start, stop, moves):
         part = [self[i] for i in range(start, stop)]
         #print(start, stop, moves,part)
@@ -149,11 +142,16 @@ class bitarray:
 if __name__ == "__main__":
     import random
     bw = 11
-    n = 27
+    n = 17
     l = [random.randint(0,(1<<bw) - 1) for _ in range(n)]
     print(l)
     ba = bitarray(bw, l)
-    print('bitarray =', ba)
+    print(f'bitarray = {ba}')
+    print(f'len = {len(ba)}')
+    print(f'by slice 3:-1 {ba[3:-1]}')
+    ba[3:7:2] = [18, 22]
+    print(ba)
+    ba = bitarray(bw, l)
     
     for i in range(10000):
         ix = random.randint(0, n - 1)
@@ -161,7 +159,7 @@ if __name__ == "__main__":
         t = l[ix]
         l[ix] = l[iy]
         l[iy] = t
-        print(l)
+        #print(l)
         t = ba[ix]
         ba[ix] = ba[iy]
         ba[iy] = t

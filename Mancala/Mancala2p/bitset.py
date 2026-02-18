@@ -30,7 +30,7 @@ class BitSet:
                 raise ValueError(f'{params} cannot interpreted as int.')
         return
     
-    def __int__(self):
+    def __int__(self) -> int:
         return self.value
     
     def __bool__(self) -> bool:
