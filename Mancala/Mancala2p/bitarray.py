@@ -11,9 +11,11 @@ class bitarray:
         if isinstance(arg1, bitarray) :
             #ignore arg2 and arg3
             self.bitwidth = arg1.bitwidth
+            self.mask = (1<<self.bitwidth) - 1
             self.bits = arg1.bits
         elif isinstance(arg1, int) :
             self.bitwidth = int(arg1)
+            self.mask = (1<<self.bitwidth) - 1
             if isinstance(arg2, int) :
                 self.bits = arg2
             elif isinstance(arg2, (tuple, list, str)) :
@@ -28,9 +30,6 @@ class bitarray:
     def bit_count(intval): 
         return self.bits.bit_count()
 
-    def _mask(self):
-        return (1 << self.bitwidth) - 1
-
     def __int__(self):
         return self.bits
     
@@ -41,6 +40,8 @@ class bitarray:
     def __eq__(self, other):
         if isinstance(other, bitarray) :
             return self.bits == other.bits and self.bitwidth == other.bitwidth
+        elif hasattr(other, '__getitem__') and len(self) == len(other) :
+            return all([self[i] == other[i] for i in range(len(self))])
         return False
     
     def __hash__(self):
@@ -49,7 +50,7 @@ class bitarray:
     def __getitem__(self, index):
         if not isinstance(index, slice):
             ix = operator.index(index)  # accepts int-like objects=
-            return (self.bits >> (self.bitwidth * ix)) & self._mask()
+            return (self.bits >> (self.bitwidth * ix)) & self.mask
         
         raise NotImplementedError('get item with slice is not implemented')
         # slice index -> return same type (copy) for safety
@@ -65,16 +66,16 @@ class bitarray:
         # validate values before storing        
         # if value.bit_length() > self.bitwidth :
         #     raise ValueError(f'value {value} exceeds limit {(1<<self.bitwidth)-1}.')
-        if value > self._mask() :
-            raise ValueError(f'value {value} exceeds limit {self._mask()}.')
+        if value > self.mask :
+            raise ValueError(f'value {value} exceeds limit {self.mask}.')
         if not isinstance(index, slice):
             ix = operator.index(index)
             #print(index, value)
-            windowed = self.bits & (self._mask() << (ix * self.bitwidth))
-            self.bits ^= windowed
+            windowbits = self.bits & (self.mask << (ix * self.bitwidth))
+            self.bits ^= windowbits
             self.bits |= value  << (self.bitwidth * ix)
             if self.bits == 0 :
-                print(ix, value, windowed)
+                print(ix, value, windowbits)
         else:
             raise NotImplementedError('set item with slice is not implemented')
         # slice assignment
@@ -89,6 +90,27 @@ class bitarray:
         # for i, v in zip(indices, vals):
         #     self.set(i, v)
         # return
+        
+    class bitarray_iterator:
+        def __init__(self, barray):
+            self.array = barray
+            self.index = 0
+        
+        def __iter__(self):
+            return self
+        
+        def __next__(self):
+            if self.index < len(self.array) :
+                result = self.array[self.index]
+                self.index += 1
+                return result
+            else:
+                raise StopIteration            
+        
+    
+    def __iter__(self):
+        return self.bitarray_iterator(self)
+            
     
     def __repr__(self):
         return 'bitarray(' + str(self) + ') '
@@ -98,7 +120,7 @@ class bitarray:
     
     def __str__(self):
         #print(f'len = {len(self)}')
-        return str([self[i] for i in range(len(self))])
+        return '(' + ', '.join([str(e) for e in self]) + ')'
 
     def rotright(self, start, stop, moves):
         part = [self[i] for i in range(start, stop)]
@@ -126,21 +148,24 @@ class bitarray:
 
 if __name__ == "__main__":
     import random
-    l = [random.randint(0,511) for _ in range(20)]
+    bw = 11
+    n = 27
+    l = [random.randint(0,(1<<bw) - 1) for _ in range(n)]
     print(l)
-    ba = bitarray(9, l)
+    ba = bitarray(bw, l)
     print('bitarray =', ba)
     
     for i in range(10000):
-        ix = random.randint(0,20 - 1)
-        iy = (ix + random.randint(0,20)) % 20
+        ix = random.randint(0, n - 1)
+        iy = (ix + random.randint(0,n)) % n
         t = l[ix]
         l[ix] = l[iy]
         l[iy] = t
+        print(l)
         t = ba[ix]
         ba[ix] = ba[iy]
         ba[iy] = t
-        if all([ba[i] == l[i] for i in range(20)]) :
+        if ba == l :
             pass
         else:
             raise ValueError('differ!!')
