@@ -10,20 +10,20 @@ class bitarray:
     def __init__(self, arg1, arg2 = None, arg3 = None):
         if isinstance(arg1, bitarray) :
             #ignore arg2 and arg3
-            self._uwidth = arg1._uwidth
-            self._size = arg1._size
+            self.bitwidth = arg1.bitwidth
+            self.size = arg1.size
             self.bits = arg1.bits
         elif isinstance(arg2, int) and isinstance(arg3, int) :
             #arg2 as uwidth, arg3 as length
-            self._uwidth = arg2
-            self._size = arg3
+            self.bitwidth = arg2
+            self.size = arg3
             self.bits = int(arg1)
         elif isinstance(arg1, int) and isinstance(arg2, (tuple, list)) :
-            self._uwidth = arg1
-            self._size = len(arg2)
+            self.bitwidth = arg1
+            self.size = len(arg2)
             self.bits = 0
             for i in range(len(arg2)) :
-                self.set(i, arg2[i] & ((1<<self._uwidth) - 1) )
+                self.set(i, arg2[i] & ((1<<self.bitwidth) - 1) )
         else:
             raise NotImplementedError(f'{arg1} is invalid initializer.')
     
@@ -48,18 +48,18 @@ class bitarray:
         return counter
 
 
-    def _bitmask(self):
-        return (1 << self._uwidth) - 1
+    def _mask(self):
+        return (1 << self.bitwidth) - 1
 
     def __int__(self):
         return self.bits
     
     def __len__(self):
-        return self._size
+        return self.size
     
     def __eq__(self, other):
         if isinstance(other, bitarray) :
-            return self._size == other._size and self._uwidth == other._uwidth \
+            return self.size == other.size and self.bitwidth == other.bitwidth \
                 and self.bits == other.bits
         return False
     
@@ -67,7 +67,7 @@ class bitarray:
         return hash(self.bits)
     
     def get(self, ix):
-        return self._bitmask() & (self.bits >> (self._uwidth * ix))
+        return self._mask() & (self.bits >> (self.bitwidth * ix))
     
     def __getitem__(self, index):
         if not isinstance(index, slice):
@@ -80,19 +80,19 @@ class bitarray:
         # slice index -> return same type (copy) for safety
         # slice.indices normalizes start/stop/step and handles negatives/out-of-range
         start, stop, step = index.indices(len(self))
-        newarray = bitarray(self._uwidth, stop - start, 0)
+        newarray = bitarray(self.bitwidth, stop - start, 0)
         nix = 0
         for ix in range(start, stop, step) :
             newarray[nix] = self.get(ix)
         return newarray
     
     def set(self, ix, val):
-        if ix >= self._size :
-            self._size = ix + 1
-        #print(ix, val, self._size, f'len = {len(self)}')
-        val &= self._bitmask()
-        self.bits &= ~(self._bitmask() << (self._uwidth * ix))
-        self.bits |= (val << (self._uwidth * ix))
+        if ix >= self.size :
+            self.size = ix + 1
+        #print(ix, val, self.size, f'len = {len(self)}')
+        val &= self._mask()
+        self.bits &= ~(self._mask() << (self.bitwidth * ix))
+        self.bits |= (val << (self.bitwidth * ix))
         
     def __setitem__(self, index, value):
         # validate values before storing
