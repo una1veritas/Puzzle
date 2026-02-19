@@ -21,7 +21,7 @@ class Mancala():
         '''
         default setting
         '''
-        num_of_pits = 6 # except one house (store) per player
+        num_of_pits = 6 # except a house (store) per player
         pieces_in_pit = 3    # in pits
         
         if params == None :
