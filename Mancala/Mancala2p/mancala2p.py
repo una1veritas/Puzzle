@@ -135,7 +135,7 @@ def search_moves(mboard : Mancala, db : dict):
             if bytes(moves[-1][0]) not in db :
                 db[bytes(moves[-1][0])] = (len(moves)<<8) | wonby
                 if lvl[wonby-1] == None or len(moves) < lvl[wonby-1] :
-                    print(len(db), moves[-1][0], len(moves), wonby)
+                    print(len(db), moves[-1][0], lvl, wonby)
                     lvl = (len(moves), lvl[1]) if wonby == 0 else (lvl[0], len(moves))
                 #print(moves)
             moves.pop()
@@ -160,15 +160,15 @@ def search_moves(mboard : Mancala, db : dict):
             if val is None:
                 db[bytes(prevboard)] = ((len(moves) + 1)<<8) | wonby
                 if wonby in (1,2) :
-                    if lvl == None or len(moves) < lvl :
-                        print(len(db), moves[-1][0], len(moves), wonby)
-                        lvl = len(moves)
+                    if lvl[wonby - 1] == None or len(moves) < lvl[wonby -1] :
+                        print(len(db), moves[-1][0], lvl, wonby)
+                        lvl = (len(moves), lvl[1]) if wonby == 0 else (lvl[0], len(moves))
             elif len(moves) + 1 < (val >> 8) :
                 wonby = (val & 0x0f)
                 db[bytes(prevboard)] = ((len(moves)+1) << 8) | wonby
-                if lvl == None or len(moves) < lvl :
-                    print(len(db), moves[-1][0], len(moves), wonby)
-                    lvl = len(moves)
+                if lvl[wonby - 1] == None or len(moves) < lvl[wonby - 1] :
+                    print(len(db), moves[-1][0], lvl, wonby)
+                    lvl = (len(moves), lvl[1]) if wonby == 0 else (lvl[0], len(moves))
             if len(moves) != 0 :
                 moves[-1][2] |= wonby
     return
