@@ -21,7 +21,7 @@ class Mancala():
         '''
         default setting
         '''
-        num_of_pits = 6 # except one house (store) per player
+        num_of_pits = 6 # except a house (store) per player
         pieces_in_pit = 3    # in pits
         
         if params == None :
@@ -128,15 +128,15 @@ class Mancala():
 def search_moves(mboard : Mancala, db : dict):
     moves = deque() # board, the next move to try, expect min, expect max
     moves.append( [mboard, 0, 0] ) # board, next move, the empty set {} for player 0
-    lvl = None
+    lvl = (None, None)
     while len(moves) > 0 :
         if moves[-1][0].won_by(0) or moves[-1][0].won_by(1) :
             wonby = 1 if moves[-1][0].won_by(0) else 2
             if bytes(moves[-1][0]) not in db :
                 db[bytes(moves[-1][0])] = (len(moves)<<8) | wonby
-                if lvl == None or len(moves) < lvl :
+                if lvl[wonby-1] == None or len(moves) < lvl[wonby-1] :
                     print(len(db), moves[-1][0], len(moves), wonby)
-                    lvl = len(moves)
+                    lvl = (len(moves), lvl[1]) if wonby == 0 else (lvl[0], len(moves))
                 #print(moves)
             moves.pop()
         
