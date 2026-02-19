@@ -111,9 +111,15 @@ class bitarray:
     def __str__(self):
         #print(f'len = {len(self)}')
         return '(' + ', '.join([str(e) for e in self]) + ')'
-
-    def __bin__(self):
-        return bin(self.bits)
+    
+    def __bytes__(self):
+        seq = b''
+        val = self.bits
+        for i in range(len(self)-1, -1, -1):
+            print(hex(val))
+            seq += bytes([val & 0xff])
+            val >>= 8
+        return seq
     
     def rotright(self, start, stop, moves):
         part = [self[i] for i in range(start, stop)]
@@ -134,7 +140,7 @@ class bitarray:
         
     def hex(self):
         return hex(self.bits)
-    
+
     def bin(self):
         return bin(self.bits)
     
@@ -151,6 +157,7 @@ if __name__ == "__main__":
     print(f'by slice 3:-1 {ba[3:-1]}')
     ba[3:7:2] = [18, 22]
     print(ba)
+    print(bytes(ba))
     ba = bitarray(bw, l)
     
     for i in range(10000):
