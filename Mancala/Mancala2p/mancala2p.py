@@ -79,14 +79,14 @@ class Mancala():
         val |= self.turn() & 1
         return val
     
-    def packed_bytes(self):
+    def packed_bytes(self, bitwidth = 6):
         num = self.number_of_pits()
         val = 0
         for c in self.board[:num] :
-            val <<= 6
+            val <<= bitwidth
             val |= c
         for c in self.board[num+1:2*num+1] :
-            val <<= 6
+            val <<= bitwidth
             val |= c
         val <<= 1
         val |= self.turn() & 1
