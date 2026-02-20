@@ -116,7 +116,7 @@ class bitarray:
         seq = b''
         val = self.bits
         for i in range(len(self)-1, -1, -1):
-            print(hex(val))
+            #print(hex(val))
             seq += bytes([val & 0xff])
             val >>= 8
         return seq

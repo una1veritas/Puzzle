@@ -66,6 +66,7 @@ class Mancala():
     def __bytes__(self):
         return bytes(self.board)
     
+    # the first pit goes highest bit
     def __int__(self):
         n = sum(self.board[:-1])
         bw = n.bit_length()
@@ -73,7 +74,23 @@ class Mancala():
         for e in self.board :
             val <<= bw
             val |= e
+        
+        val <<= 1
+        val |= self.turn() & 1
         return val
+    
+    def packed_bytes(self):
+        num = self.number_of_pits()
+        val = 0
+        for c in self.board[:num] :
+            val <<= 6
+            val |= c
+        for c in self.board[num+1:2*num+1] :
+            val <<= 6
+            val |= c
+        val <<= 1
+        val |= self.turn() & 1
+        return val.to_bytes( (val.bit_length() + 7)//8 or 1 )
         
     def turn(self):
         return self.board[-1]
@@ -131,10 +148,12 @@ def search_moves(mboard : Mancala, db : dict):
     while len(moves) > 0 :
         if moves[-1][0].won_by(0) or moves[-1][0].won_by(1) :
             wonby = 1 if moves[-1][0].won_by(0) else 2
-            if bytes(moves[-1][0]) not in db :
-                db[bytes(moves[-1][0])] = (len(moves)<<8) | wonby
-                print(len(db), moves[-1][0], len(moves), wonby)
-                #print(moves)
+            mw = db.get(moves[-1][0].packed_bytes())
+            if mw is None or (mw>>8 & 0xff > len(moves)):
+                if mw is not None :
+                    wonby |= mw & 0xff
+                db[moves[-1][0].packed_bytes()] = (len(moves)<<8) | wonby
+                print(len(db), moves[-1][0], len(moves), wonby, moves[-1][0].packed_bytes())
             moves.pop()
         
         # dig the tree
@@ -142,7 +161,7 @@ def search_moves(mboard : Mancala, db : dict):
         for mvix in currboard.valid_moves(restartix) :
             newboard = Mancala(currboard)
             newboard.move(mvix)
-            mw = db.get(bytes(newboard))
+            mw = db.get(newboard.packed_bytes())
             if mw is None :
                 moves[-1][1] = mvix + 1   #register the next (?) index as a restart index
                 moves.append( [newboard, 0, 0] )
@@ -153,11 +172,9 @@ def search_moves(mboard : Mancala, db : dict):
         else:
             # exhausted the searches within the children of current board
             prevboard, restartix, wonby = moves.pop()
-            val = db.get(bytes(prevboard))
-            if val is None:
-                db[bytes(prevboard)] = ((len(moves) + 1)<<8) | wonby
-                if wonby in (1,2) :
-                    print(len(db), moves[-1][0], len(moves), wonby)
+            mw = db.get(prevboard.packed_bytes()) 
+            if mw is None or (mw>>8 & 0xff > len(moves)):
+                db[prevboard.packed_bytes()] = (len(moves)<<8) | wonby
             if len(moves) != 0 :
                 moves[-1][2] |= wonby
     return
@@ -179,15 +196,15 @@ if __name__ == "__main__":
                 params[values[0]] = values[1]
                 argix += 1
     print(params)
-    mancalaboard = Mancala([3, 3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 3, 0, 0])
+    mancalaboard = Mancala([3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 0, 0])
     if 'test' in params :
         print(mancalaboard)
         print(bytes(mancalaboard))
         print(int(mancalaboard))
-    
+        print(mancalaboard.packed_bytes())
+        exit()
         db = dict()
         search_moves(mancalaboard, db)
-        print('finished search.')
     #exit()
     
     if 'search' in params and 'file' in params:
