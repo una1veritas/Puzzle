@@ -17,24 +17,25 @@ class Mancala():
     classdocs
     '''
     
-    def __init__(self, params = None):
+    def __init__(self, params = None, num_of_pits = 6, pieces_in_pit = 3):
         '''
         default setting
         '''
-        num_of_pits = 6 # except a house (store) per player
-        pieces_in_pit = 3    # in pits
+        # num_of_pits = the number of pits per player except a house (store)
+        # pieces_in_pit = the initial number of pieces in pits
         
         if params == None :
-            self.board = [pieces_in_pit] * num_of_pits + [0] \
-            + [pieces_in_pit] * num_of_pits + [0] + [0]
+            self.board = bytearray((num_of_pits + 1) * 2 + 1)
+            for ix in range(len(self.board[:-1])) :
+                self.board[ix] = pieces_in_pit if ix % (num_of_pits + 1) < num_of_pits else 0
         elif isinstance(params, (list, tuple, bytes) ) and len(params) > 3 :
             num_of_pits = (len(params)>>1) - 1
-            self.board = [params[pix] for pix in range((num_of_pits + 1)* 2)] + [0]
+            self.board = bytearray([params[pix] for pix in range((num_of_pits + 1)* 2)] + [0])
             if len(params) > (num_of_pits+1) * 2 :
                 self.board[-1] = params[(num_of_pits + 1) * 2]
         elif isinstance(params, Mancala ) :
             #print(params.board)
-            self.board = [ea for ea in params.board]
+            self.board = bytearray(params.board)
         else:
             raise ValueError(f'Not implemented')
     
@@ -68,13 +69,11 @@ class Mancala():
     
     # the first pit goes highest bit
     def __int__(self):
-        n = sum(self.board[:-1])
-        bw = n.bit_length()
+        bw = sum(self.board[:-1]).bit_length()
         val = 0
-        for e in self.board :
+        for e in self.board[:-1] :
             val <<= bw
             val |= e
-        
         val <<= 1
         val |= self.turn() & 1
         return val
@@ -82,10 +81,10 @@ class Mancala():
     def packed_bytes(self, bitwidth = 6):
         num = self.number_of_pits()
         val = 0
-        for c in self.board[:num] :
+        for c in self.board[:num]:
             val <<= bitwidth
             val |= c
-        for c in self.board[num+1:2*num+1] :
+        for c in self.board[num+1:2*num+1]:
             val <<= bitwidth
             val |= c
         val <<= 1
@@ -148,12 +147,13 @@ def search_moves(mboard : Mancala, db : dict):
     while len(moves) > 0 :
         if moves[-1][0].won_by(0) or moves[-1][0].won_by(1) :
             wonby = 1 if moves[-1][0].won_by(0) else 2
-            mw = db.get(moves[-1][0].packed_bytes())
-            if mw is None or (mw>>8 & 0xff > len(moves)):
+            packed = moves[-1][0].packed_bytes()
+            mw = db.get(packed)
+            if mw is None or (mw>>8 & 0xff > len(moves) - 1):
                 if mw is not None :
                     wonby |= mw & 0xff
-                db[moves[-1][0].packed_bytes()] = (len(moves)<<8) | wonby
-                print(len(db), moves[-1][0], len(moves), wonby, moves[-1][0].packed_bytes())
+                db[packed] = ((len(moves)-1)<<8) | wonby
+                #print(len(db), moves[-1][0], len(moves), wonby, packed)
             moves.pop()
         
         # dig the tree
@@ -171,11 +171,15 @@ def search_moves(mboard : Mancala, db : dict):
                 continue
         else:
             # exhausted the searches within the children of current board
-            prevboard, restartix, wonby = moves.pop()
-            mw = db.get(prevboard.packed_bytes()) 
+            currboard, restartix, wonby = moves.pop()
+            packed = currboard.packed_bytes()
+            mw = db.get(packed) 
             if mw is None or (mw>>8 & 0xff > len(moves)):
-                db[prevboard.packed_bytes()] = (len(moves)<<8) | wonby
-            if len(moves) != 0 :
+                wonby |= 0 if mw is None else (mw & 0xff)
+                db[packed] = (len(moves)<<8) | wonby 
+                if wonby in (1, 2) :
+                    print(len(db), currboard, len(moves), wonby, packed)
+            if len(moves) != 0 : 
                 moves[-1][2] |= wonby
     return
 
@@ -183,7 +187,8 @@ def search_moves(mboard : Mancala, db : dict):
 if __name__ == "__main__":
     # interpret command-line arguments 
     params = dict()
-    # params['db'] = '/Volumes/SSD256G/blobkeydict.db'
+    params['num_of_pits'] = 3
+    params['pieces_in_pit']=3
     if len(sys.argv) > 1 :
         argix = 1
         while argix < len(sys.argv) :
@@ -193,16 +198,21 @@ if __name__ == "__main__":
                 argix += 1
             elif arg.startswith( '-' ) :
                 values = sys.argv[argix][1:].split('=')
-                params[values[0]] = values[1]
+                if values[0] == 'file' :
+                    params['file'] = values[1]
+                else:
+                    params[values[0]] = int(values[1])
                 argix += 1
     print(params)
-    mancalaboard = Mancala([3, 3, 3, 3, 3, 0, 3, 3, 3, 3, 3, 0, 0])
+    mancalaboard = Mancala(num_of_pits=params['num_of_pits'], pieces_in_pit=params['pieces_in_pit'])
     if 'test' in params :
+        m = Mancala()
+        print(m)
         print(mancalaboard)
         print(bytes(mancalaboard))
         print(int(mancalaboard))
         print(mancalaboard.packed_bytes())
-        exit()
+        #exit()
         db = dict()
         search_moves(mancalaboard, db)
     #exit()
