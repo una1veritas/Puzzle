@@ -177,8 +177,8 @@ def search_moves(mboard : Mancala, db : dict):
             if mw is None or (mw>>8 & 0xff > len(moves)):
                 wonby |= 0 if mw is None else (mw & 0xff)
                 db[packed] = (len(moves)<<8) | wonby 
-                if wonby in (1, 2) :
-                    print(len(db), currboard, len(moves), wonby, packed)
+                # if wonby in (1, 2) :
+                #     print(len(db), currboard, len(moves), wonby, packed)
             if len(moves) != 0 : 
                 moves[-1][2] |= wonby
     return
@@ -219,7 +219,16 @@ if __name__ == "__main__":
     
     if 'search' in params and 'file' in params:
         with SQLiteBlobDict(params['file']) as db :
-            search_moves(mancalaboard, db)
+            try:
+                search_moves(mancalaboard, db)
+            except KeyboardInterrupt:
+                print('caught KeyboardInterrupt. search_moves terminated.')
+    elif 'search' in params:
+        with SQLiteBlobDict(':mem:') as db :
+            try:
+                search_moves(mancalaboard, db)
+            except KeyboardInterrupt:
+                print('caught KeyboardInterrupt. search_moves terminated.')
     
     if 'forcedwin' in params :
         print('\nresult:')
